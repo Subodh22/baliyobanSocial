@@ -1,4 +1,5 @@
-import { auth, signIn } from "@/auth";
+import { auth } from "@clerk/nextjs/server";
+import { SignInButton, SignUpButton } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 
 const PLATFORMS = [
@@ -37,8 +38,8 @@ const STEPS = [
 ];
 
 export default async function Home() {
-  const session = await auth();
-  if (session) redirect("/dashboard");
+  const { userId } = await auth();
+  if (userId) redirect("/dashboard");
 
   return (
     <main className="flex flex-col">
@@ -49,7 +50,11 @@ export default async function Home() {
           <div className="flex items-center gap-6 text-sm">
             <a href="#how" className="hidden sm:inline text-zinc-600 hover:text-zinc-900">How it works</a>
             <a href="#pricing" className="hidden sm:inline text-zinc-600 hover:text-zinc-900">Pricing</a>
-            <SignInButton provider="twitter" label="Sign in" small />
+            <SignInButton mode="modal" forceRedirectUrl="/dashboard">
+              <button className="px-4 py-2 rounded-lg bg-zinc-900 text-white text-sm font-semibold hover:bg-zinc-800 transition-colors">
+                Sign in
+              </button>
+            </SignInButton>
           </div>
         </div>
       </nav>
@@ -68,7 +73,11 @@ export default async function Home() {
           LinkedIn, TikTok, and YouTube.
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <SignInButton provider="twitter" label="Get started free" />
+          <SignUpButton mode="modal" forceRedirectUrl="/dashboard">
+            <button className="px-5 py-2.5 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-500 transition-colors">
+              Get started free
+            </button>
+          </SignUpButton>
           <a
             href="#how"
             className="px-5 py-2.5 rounded-lg border border-zinc-300 text-sm font-semibold text-zinc-700 hover:bg-zinc-50 transition-colors"
@@ -138,41 +147,15 @@ export default async function Home() {
               <li>✓ Per-platform results &amp; history</li>
             </ul>
             <div className="mt-8 flex justify-center">
-              <SignInButton provider="twitter" label="Get started" />
+              <SignUpButton mode="modal" forceRedirectUrl="/dashboard">
+                <button className="px-5 py-2.5 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-500 transition-colors">
+                  Get started
+                </button>
+              </SignUpButton>
             </div>
           </div>
         </div>
       </section>
     </main>
-  );
-}
-
-function SignInButton({
-  provider,
-  label,
-  small = false,
-}: {
-  provider: string;
-  label: string;
-  small?: boolean;
-}) {
-  return (
-    <form
-      action={async () => {
-        "use server";
-        await signIn(provider, { redirectTo: "/dashboard" });
-      }}
-    >
-      <button
-        type="submit"
-        className={
-          small
-            ? "px-4 py-2 rounded-lg bg-zinc-900 text-white text-sm font-semibold hover:bg-zinc-800 transition-colors"
-            : "px-5 py-2.5 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-500 transition-colors"
-        }
-      >
-        {label}
-      </button>
-    </form>
   );
 }

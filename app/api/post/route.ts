@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
-import { auth } from "@/auth";
+import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/db";
+import { ensureUser } from "@/lib/user";
 import { postToTwitter } from "@/lib/platforms/twitter";
 import { postToFacebook, postToInstagram } from "@/lib/platforms/facebook";
 import { postToLinkedIn } from "@/lib/platforms/linkedin";
@@ -8,9 +9,12 @@ import { postToTikTok } from "@/lib/platforms/tiktok";
 import { postToYouTube } from "@/lib/platforms/youtube";
 
 export async function POST(req: NextRequest) {
-  const session = await auth();
-  if (!session?.user?.id)
+  const { userId } = await auth();
+  if (!userId)
     return Response.json({ error: "Unauthorized" }, { status: 401 });
+
+  // Keep a Prisma User row for the FK on Post.
+  await ensureUser();
 
   const { content, mediaUrl, platforms } = await req.json() as {
     content: string;
@@ -23,7 +27,7 @@ export async function POST(req: NextRequest) {
 
   // Load all connected accounts for this user
   const accounts = await prisma.account.findMany({
-    where: { userId: session.user.id },
+    where: { userId },
   });
 
   const accountByProvider = Object.fromEntries(
@@ -104,7 +108,7 @@ export async function POST(req: NextRequest) {
 
   await prisma.post.create({
     data: {
-      userId: session.user.id,
+      userId,
       content,
       mediaUrl,
       platforms: JSON.stringify(platforms),
