@@ -3,8 +3,6 @@ import { UserButton } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { ensureUser } from "@/lib/user";
-import { migrateDatabase } from "@/lib/migrate";
-import { revalidatePath } from "next/cache";
 import Link from "next/link";
 
 const PROVIDER_META: Record<string, { label: string; icon: string }> = {
@@ -49,15 +47,6 @@ export default async function Dashboard() {
 
   if (dbError) {
     const urlScheme = process.env.TURSO_DATABASE_URL?.split(":")[0] ?? "(unset → using local file)";
-    const missingTables = /no such table/i.test(dbError);
-
-    async function setupDatabase() {
-      "use server";
-      await migrateDatabase();
-      revalidatePath("/dashboard");
-      redirect("/dashboard");
-    }
-
     return (
       <main className="mx-auto max-w-2xl px-6 py-16">
         <h1 className="text-2xl font-bold">Database not ready</h1>
@@ -71,20 +60,6 @@ export default async function Dashboard() {
           <li>TURSO_DATABASE_URL scheme: <span className="text-zinc-200">{urlScheme}</span></li>
           <li>TURSO_AUTH_TOKEN set: <span className="text-zinc-200">{String(Boolean(process.env.TURSO_AUTH_TOKEN))}</span></li>
         </ul>
-
-        {missingTables && (
-          <div className="mt-8 rounded-xl border border-white/10 bg-white/5 p-5">
-            <p className="text-sm text-zinc-300">
-              The tables don&rsquo;t exist in this database yet. Click below to
-              create them in the database this deployment is connected to.
-            </p>
-            <form action={setupDatabase} className="mt-4">
-              <button className="rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-500">
-                Set up database
-              </button>
-            </form>
-          </div>
-        )}
       </main>
     );
   }
