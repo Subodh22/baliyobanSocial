@@ -65,22 +65,22 @@ export default function Compose() {
           {Object.entries(results).map(([platform, r]) => (
             <li
               key={platform}
-              className={`rounded-xl border p-4 flex items-start gap-3 ${r.ok ? "bg-green-950 border-green-800" : "bg-red-950 border-red-800"}`}
+              className={`rounded-xl border p-4 flex items-start gap-3 ${r.ok ? "bg-green-50 border-green-200" : "bg-red-50 border-red-200"}`}
             >
-              <span className={`text-sm font-semibold w-24 ${r.ok ? "text-green-400" : "text-red-400"}`}>
+              <span className={`text-sm font-semibold w-24 ${r.ok ? "text-green-700" : "text-red-700"}`}>
                 {platform}
               </span>
               <div className="text-sm">
                 {r.ok ? (
                   r.url ? (
-                    <a href={r.url} target="_blank" rel="noopener noreferrer" className="text-blue-400 underline">
+                    <a href={r.url} target="_blank" rel="noopener noreferrer" className="text-indigo-600 underline">
                       View post
                     </a>
                   ) : (
-                    <span className="text-green-400">Posted!</span>
+                    <span className="text-green-700">Posted!</span>
                   )
                 ) : (
-                  <span className="text-red-400">{r.error}</span>
+                  <span className="text-red-700">{r.error}</span>
                 )}
               </div>
             </li>
@@ -89,13 +89,13 @@ export default function Compose() {
         <div className="flex gap-3">
           <button
             onClick={() => { setResults(null); setContent(""); setMediaUrl(""); }}
-            className="px-4 py-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-sm font-medium transition-colors"
+            className="px-4 py-2 rounded-lg border border-zinc-300 text-zinc-700 hover:bg-zinc-50 text-sm font-medium transition-colors"
           >
             Post Again
           </button>
           <Link
             href="/dashboard"
-            className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-sm font-semibold transition-colors"
+            className="px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-500 text-sm font-semibold transition-colors"
           >
             Back to Dashboard
           </Link>
@@ -108,13 +108,13 @@ export default function Compose() {
     <div className="max-w-2xl mx-auto px-6 py-12 space-y-8">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">New Post</h1>
-        <Link href="/dashboard" className="text-zinc-500 hover:text-zinc-300 text-sm transition-colors">
+        <Link href="/dashboard" className="text-zinc-500 hover:text-zinc-900 text-sm transition-colors">
           ← Dashboard
         </Link>
       </div>
 
       <section className="space-y-2">
-        <label className="text-sm font-medium text-zinc-400">Post to</label>
+        <label className="text-sm font-medium text-zinc-600">Post to</label>
         <div className="flex flex-wrap gap-2">
           {PLATFORMS.map((p) => (
             <button
@@ -123,7 +123,7 @@ export default function Compose() {
               className={`px-3 py-1.5 rounded-lg border text-sm font-medium transition-colors flex items-center gap-1.5 ${
                 selected.has(p.id)
                   ? "bg-indigo-600 border-indigo-500 text-white"
-                  : "bg-zinc-800 border-zinc-700 text-zinc-400 hover:border-zinc-500"
+                  : "bg-white border-zinc-300 text-zinc-600 hover:border-zinc-400"
               }`}
             >
               <span>{p.icon}</span>
@@ -134,9 +134,9 @@ export default function Compose() {
       </section>
 
       <section className="space-y-2">
-        <label className="text-sm font-medium text-zinc-400" htmlFor="content">
+        <label className="text-sm font-medium text-zinc-600" htmlFor="content">
           Content
-          <span className="ml-2 text-zinc-600">({content.length} chars)</span>
+          <span className="ml-2 text-zinc-400">({content.length} chars)</span>
         </label>
         <textarea
           id="content"
@@ -144,7 +144,7 @@ export default function Compose() {
           onChange={(e) => setContent(e.target.value)}
           rows={6}
           placeholder="What's on your mind?"
-          className="w-full rounded-xl bg-zinc-900 border border-zinc-700 p-4 text-sm text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-indigo-500 resize-none"
+          className="w-full rounded-xl bg-white border border-zinc-300 p-4 text-sm text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 resize-none"
         />
       </section>
 
