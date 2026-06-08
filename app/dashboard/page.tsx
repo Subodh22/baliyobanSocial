@@ -31,13 +31,42 @@ export default async function Dashboard() {
   const { userId } = await auth();
   if (!userId) redirect("/");
 
-  const profile = await ensureUser();
+  let profile: Awaited<ReturnType<typeof ensureUser>> = null;
+  let accounts: { provider: string; providerAccountId: string }[] = [];
+  let dbError: string | null = null;
+  try {
+    profile = await ensureUser();
+    accounts = await prisma.account.findMany({
+      where: { userId },
+      select: { provider: true, providerAccountId: true },
+    });
+  } catch (e) {
+    dbError = e instanceof Error ? e.message : String(e);
+  }
   const name = profile?.name ?? profile?.email?.split("@")[0] ?? "Account";
 
-  const accounts = await prisma.account.findMany({
-    where: { userId },
-    select: { provider: true, providerAccountId: true },
-  });
+  if (dbError) {
+    const urlScheme = process.env.TURSO_DATABASE_URL?.split(":")[0] ?? "(unset → using local file)";
+    return (
+      <main className="mx-auto max-w-2xl px-6 py-16">
+        <h1 className="text-2xl font-bold">Database not ready</h1>
+        <p className="mt-2 text-sm text-zinc-400">
+          You&rsquo;re signed in, but the dashboard couldn&rsquo;t reach the database.
+        </p>
+        <pre className="mt-6 overflow-x-auto rounded-lg border border-white/10 bg-white/5 p-4 text-xs text-red-300">
+          {dbError}
+        </pre>
+        <ul className="mt-6 space-y-1 text-sm text-zinc-400">
+          <li>TURSO_DATABASE_URL scheme: <span className="text-zinc-200">{urlScheme}</span></li>
+          <li>TURSO_AUTH_TOKEN set: <span className="text-zinc-200">{String(Boolean(process.env.TURSO_AUTH_TOKEN))}</span></li>
+        </ul>
+        <p className="mt-6 text-sm text-zinc-400">
+          If the error mentions <code className="text-zinc-200">no such table</code>, run{" "}
+          <code className="text-zinc-200">node scripts/push-schema.mjs</code> against this exact database.
+        </p>
+      </main>
+    );
+  }
 
   return (
     <div className="flex flex-1 min-h-[calc(100vh-1px)]">
