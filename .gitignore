@@ -36,6 +36,14 @@ yarn-error.log*
 # vercel
 .vercel
 
+# local sqlite database (use Turso in production)
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+/app/generated/prisma
