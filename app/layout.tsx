@@ -14,23 +14,57 @@ export const metadata: Metadata = {
 };
 
 const FOOTER = {
-  PRODUCT: ["Documentation", "Dashboard", "Pricing", "Enterprise", "Features", "Changelog", "AI Agents", "Roadmap"],
-  INTEGRATIONS: [
-    "Twitter/X", "Instagram", "TikTok", "WhatsApp", "LinkedIn", "Facebook",
-    "YouTube", "Threads", "Reddit", "Pinterest", "Bluesky", "Telegram",
-    "Snapchat", "Google Business", "Discord", "Meta Ads", "Google Ads",
+  PRODUCT: [
+    { label: "Dashboard", href: "/dashboard" },
+    { label: "Compose", href: "/compose" },
+    { label: "Documentation", href: "/#endpoints" },
+    { label: "Pricing", href: "/#pricing" },
+    { label: "Features", href: "/#what" },
+    { label: "AI Agents", href: "/#endpoints" },
+    { label: "Sign In", href: "/sign-in" },
+    { label: "Sign Up", href: "/sign-up" },
   ],
-  COMPANY: ["Blog", "Terms", "Privacy", "Content Guidelines", "About", "Customers", "Careers", "Status"],
-  COMPARISONS: ["vs Buffer", "vs Ayrshare", "vs Blotato", "vs Publer", "vs Postiz", "vs Unipile"],
-  COMMUNITY: ["LinkedIn", "YouTube", "Telegram", "GitHub"],
+  INTEGRATIONS: [
+    { label: "Twitter/X", href: "/#platforms" },
+    { label: "Instagram", href: "/#platforms" },
+    { label: "TikTok", href: "/#platforms" },
+    { label: "WhatsApp", href: "/#platforms" },
+    { label: "LinkedIn", href: "/#platforms" },
+    { label: "Facebook", href: "/#platforms" },
+    { label: "YouTube", href: "/#platforms" },
+    { label: "Threads", href: "/#platforms" },
+    { label: "Reddit", href: "/#platforms" },
+    { label: "Pinterest", href: "/#platforms" },
+    { label: "Bluesky", href: "/#platforms" },
+    { label: "Telegram", href: "/#platforms" },
+    { label: "Snapchat", href: "/#platforms" },
+    { label: "Google Business", href: "/#platforms" },
+    { label: "Discord", href: "/#platforms" },
+    { label: "Meta Ads", href: "/#platforms" },
+    { label: "Google Ads", href: "/#platforms" },
+  ],
+  LEGAL: [
+    { label: "Terms of Service", href: "/terms" },
+    { label: "Privacy Policy", href: "/privacy" },
+    { label: "Data Deletion", href: "/data-deletion" },
+    { label: "Content Guidelines", href: "/terms" },
+  ],
+  COMPANY: [
+    { label: "About", href: "/" },
+    { label: "Blog", href: "/" },
+    { label: "Customers", href: "/" },
+    { label: "Careers", href: "/" },
+    { label: "Status", href: "/" },
+  ],
+  COMPARISONS: [
+    { label: "vs Buffer", href: "/" },
+    { label: "vs Ayrshare", href: "/" },
+    { label: "vs Blotato", href: "/" },
+    { label: "vs Publer", href: "/" },
+    { label: "vs Postiz", href: "/" },
+    { label: "vs Unipile", href: "/" },
+  ],
 } as const;
-
-const LINK_HREF: Record<string, string> = {
-  Privacy: "/privacy",
-  Terms: "/terms",
-  Documentation: "/",
-  Dashboard: "/dashboard",
-};
 
 export default function RootLayout({
   children,
@@ -49,15 +83,15 @@ export default function RootLayout({
           <div className="flex-1 flex flex-col">{children}</div>
           <footer className="border-t border-white/10 bg-[#0a0a0a]">
             <div className="mx-auto max-w-6xl px-6 py-14">
-              <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-5">
+              <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-6">
                 {Object.entries(FOOTER).map(([heading, links]) => (
                   <div key={heading}>
                     <h3 className="text-xs font-semibold uppercase tracking-widest text-zinc-500">{heading}</h3>
                     <ul className="mt-4 space-y-2.5 text-sm">
-                      {links.map((label) => (
-                        <li key={label}>
-                          <Link href={LINK_HREF[label] ?? "#"} className="text-zinc-400 transition-colors hover:text-white">
-                            {label}
+                      {links.map((item) => (
+                        <li key={item.label}>
+                          <Link href={item.href} className="text-zinc-400 transition-colors hover:text-white">
+                            {item.label}
                           </Link>
                         </li>
                       ))}
