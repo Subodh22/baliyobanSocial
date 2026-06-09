@@ -10,20 +10,6 @@ const PLATFORMS = [
 
 const ADS = ["Meta Ads", "Google Ads", "LinkedIn Ads", "TikTok Ads", "Pinterest Ads", "X Ads"];
 
-const STATS = [
-  { value: "353,519", label: "posts this week" },
-  { value: "12,212", label: "accounts connected this week" },
-];
-
-const TESTIMONIALS = [
-  { quote: "Thanks for baliyoban — I have just discovered it, but I love it already!", name: "Dmytro Potekhin", title: "Founder, Factology.Systems" },
-  { quote: "Integration was incredibly easy — had everything up and running in less than an hour. The API is super straightforward.", name: "Razvan Ghetiu", title: "Founder, purplepalm.ai" },
-  { quote: "I was looking for a simple solution to integrate into a self-hosted n8n. baliyoban was just perfect — I highly recommend it.", name: "Zahareus", title: "Developer" },
-  { quote: "An API-first social media scheduler is just phenomenal. The amount of time saved and the automation are unlike anything else.", name: "Deborah", title: "Social Media Manager" },
-  { quote: "Easiest set-up ever, great reliability, saves me hours per week. I love customizing the message per platform from the same content.", name: "Valentina", title: "Content Creator" },
-  { quote: "baliyoban makes programmatic multi-platform posting as simple as I've ever seen it. Well-documented and simple. It just works.", name: "Jim", title: "Developer" },
-];
-
 const STEPS = [
   { n: "1", title: "Get your API key.", body: "Sign up and grab your key. Takes 30 seconds." },
   { n: "2", title: "Connect accounts.", body: "Link social accounts via OAuth. No developer apps needed." },
@@ -146,32 +132,6 @@ export default async function Home() {
               </span>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* Stats / social proof */}
-      <section className="mx-auto max-w-6xl px-6 py-20">
-        <p className="text-center text-sm text-zinc-500">Trusted by builders shipping in production</p>
-        <div className="mx-auto mt-8 grid max-w-2xl grid-cols-2 gap-6">
-          {STATS.map((s) => (
-            <div key={s.label} className="rounded-2xl border border-white/10 bg-white/5 p-8 text-center">
-              <p className="text-4xl font-bold" style={{ color: ACCENT }}>{s.value}</p>
-              <p className="mt-2 text-sm text-zinc-400">{s.label}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Testimonials */}
-        <div className="mt-16 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {TESTIMONIALS.map((t) => (
-            <figure key={t.name} className="flex flex-col rounded-2xl border border-white/10 bg-white/5 p-6">
-              <blockquote className="text-sm leading-relaxed text-zinc-300">&ldquo;{t.quote}&rdquo;</blockquote>
-              <figcaption className="mt-4 text-sm">
-                <span className="font-semibold text-white">{t.name}</span>
-                <span className="block text-xs text-zinc-500">{t.title}</span>
-              </figcaption>
-            </figure>
-          ))}
         </div>
       </section>
 
