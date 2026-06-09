@@ -60,27 +60,27 @@ export default function Compose() {
   if (results) {
     return (
       <div className="max-w-2xl mx-auto px-6 py-12 space-y-8">
-        <h1 className="text-3xl font-bold">Post Results</h1>
+        <h1 className="text-3xl font-bold text-zinc-100">Post Results</h1>
         <ul className="space-y-3">
           {Object.entries(results).map(([platform, r]) => (
             <li
               key={platform}
-              className={`rounded-xl border p-4 flex items-start gap-3 ${r.ok ? "bg-green-50 border-green-200" : "bg-red-50 border-red-200"}`}
+              className={`rounded-xl border p-4 flex items-start gap-3 ${r.ok ? "bg-green-500/10 border-green-500/20" : "bg-red-500/10 border-red-500/20"}`}
             >
-              <span className={`text-sm font-semibold w-24 ${r.ok ? "text-green-700" : "text-red-700"}`}>
+              <span className={`text-sm font-semibold w-24 ${r.ok ? "text-green-400" : "text-red-400"}`}>
                 {platform}
               </span>
               <div className="text-sm">
                 {r.ok ? (
                   r.url ? (
-                    <a href={r.url} target="_blank" rel="noopener noreferrer" className="text-indigo-600 underline">
+                    <a href={r.url} target="_blank" rel="noopener noreferrer" className="text-[#EB3514] underline">
                       View post
                     </a>
                   ) : (
-                    <span className="text-green-700">Posted!</span>
+                    <span className="text-green-400">Posted!</span>
                   )
                 ) : (
-                  <span className="text-red-700">{r.error}</span>
+                  <span className="text-red-400">{r.error}</span>
                 )}
               </div>
             </li>
@@ -89,13 +89,13 @@ export default function Compose() {
         <div className="flex gap-3">
           <button
             onClick={() => { setResults(null); setContent(""); setMediaUrl(""); }}
-            className="px-4 py-2 rounded-lg border border-zinc-300 text-zinc-700 hover:bg-zinc-50 text-sm font-medium transition-colors"
+            className="px-4 py-2 rounded-lg border border-white/10 text-zinc-300 hover:bg-white/5 text-sm font-medium transition-colors"
           >
             Post Again
           </button>
           <Link
             href="/dashboard"
-            className="px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-500 text-sm font-semibold transition-colors"
+            className="px-4 py-2 rounded-lg bg-[#EB3514] text-white hover:opacity-90 text-sm font-semibold transition-colors"
           >
             Back to Dashboard
           </Link>
@@ -107,14 +107,14 @@ export default function Compose() {
   return (
     <div className="max-w-2xl mx-auto px-6 py-12 space-y-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">New Post</h1>
-        <Link href="/dashboard" className="text-zinc-500 hover:text-zinc-900 text-sm transition-colors">
+        <h1 className="text-3xl font-bold text-zinc-100">New Post</h1>
+        <Link href="/dashboard" className="text-zinc-400 hover:text-white text-sm transition-colors">
           ← Dashboard
         </Link>
       </div>
 
       <section className="space-y-2">
-        <label className="text-sm font-medium text-zinc-600">Post to</label>
+        <label className="text-sm font-medium text-zinc-400">Post to</label>
         <div className="flex flex-wrap gap-2">
           {PLATFORMS.map((p) => (
             <button
@@ -122,8 +122,8 @@ export default function Compose() {
               onClick={() => togglePlatform(p.id)}
               className={`px-3 py-1.5 rounded-lg border text-sm font-medium transition-colors flex items-center gap-1.5 ${
                 selected.has(p.id)
-                  ? "bg-indigo-600 border-indigo-500 text-white"
-                  : "bg-white border-zinc-300 text-zinc-600 hover:border-zinc-400"
+                  ? "bg-[#EB3514] border-[#EB3514] text-white"
+                  : "bg-white/5 border-white/10 text-zinc-300 hover:border-white/20"
               }`}
             >
               <span>{p.icon}</span>
@@ -134,7 +134,7 @@ export default function Compose() {
       </section>
 
       <section className="space-y-2">
-        <label className="text-sm font-medium text-zinc-600" htmlFor="content">
+        <label className="text-sm font-medium text-zinc-400" htmlFor="content">
           Content
           <span className="ml-2 text-zinc-400">({content.length} chars)</span>
         </label>
@@ -144,13 +144,13 @@ export default function Compose() {
           onChange={(e) => setContent(e.target.value)}
           rows={6}
           placeholder="What's on your mind?"
-          className="w-full rounded-xl bg-white border border-zinc-300 p-4 text-sm text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 resize-none"
+          className="w-full rounded-xl bg-white/5 border border-white/10 p-4 text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-[#EB3514] focus:ring-1 focus:ring-[#EB3514] resize-none"
         />
       </section>
 
       <section className="space-y-2">
         <label className="text-sm font-medium text-zinc-400" htmlFor="media">
-          Media URL <span className="text-zinc-600">(image or video — required for Instagram, TikTok, YouTube)</span>
+          Media URL <span className="text-zinc-500">(image or video — required for Instagram, TikTok, YouTube)</span>
         </label>
         <input
           id="media"
@@ -158,7 +158,7 @@ export default function Compose() {
           value={mediaUrl}
           onChange={(e) => setMediaUrl(e.target.value)}
           placeholder="https://example.com/image.jpg"
-          className="w-full rounded-xl bg-zinc-900 border border-zinc-700 p-3 text-sm text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-indigo-500"
+          className="w-full rounded-xl bg-white/5 border border-white/10 p-3 text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-[#EB3514] focus:ring-1 focus:ring-[#EB3514]"
         />
       </section>
 
@@ -171,7 +171,7 @@ export default function Compose() {
       <button
         onClick={handlePost}
         disabled={loading || !content.trim()}
-        className="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed text-base font-semibold transition-colors"
+        className="w-full py-3 rounded-xl bg-[#EB3514] hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-white text-base font-semibold transition-colors"
       >
         {loading ? "Posting…" : `Post to ${selected.size} platform${selected.size !== 1 ? "s" : ""}`}
       </button>
