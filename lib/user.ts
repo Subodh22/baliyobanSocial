@@ -12,11 +12,16 @@ export async function ensureUser() {
   const name = user.fullName ?? user.firstName ?? null;
   const image = user.imageUrl ?? null;
 
-  await prisma.user.upsert({
-    where: { id: user.id },
-    update: { email, name, image },
-    create: { id: user.id, email, name, image },
-  });
+  // Try a fast read first; only upsert if the row is missing or stale.
+  const existing = await prisma.user.findUnique({ where: { id: user.id } });
+
+  if (!existing || existing.email !== email || existing.name !== name || existing.image !== image) {
+    await prisma.user.upsert({
+      where: { id: user.id },
+      update: { email, name, image },
+      create: { id: user.id, email, name, image },
+    });
+  }
 
   return { id: user.id, email, name, image };
 }

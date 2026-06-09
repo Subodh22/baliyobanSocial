@@ -35,11 +35,13 @@ export default async function Dashboard() {
   let accounts: { provider: string; providerAccountId: string }[] = [];
   let dbError: string | null = null;
   try {
-    profile = await ensureUser();
-    accounts = await prisma.account.findMany({
-      where: { userId },
-      select: { provider: true, providerAccountId: true },
-    });
+    [profile, accounts] = await Promise.all([
+      ensureUser(),
+      prisma.account.findMany({
+        where: { userId },
+        select: { provider: true, providerAccountId: true },
+      }),
+    ]);
   } catch (e) {
     dbError = e instanceof Error ? e.message : String(e);
   }
