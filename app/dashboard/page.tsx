@@ -16,15 +16,15 @@ const PROVIDER_META: Record<string, { label: string; icon: string; color: string
 const NAV = [
   { label: "Connections", href: "/dashboard", active: true },
   { label: "Posts", href: "/compose" },
-  { label: "Analytics", href: "#" },
-  { label: "Inbox", href: "#" },
-  { label: "Ads", href: "#" },
-  { label: "Numbers", href: "#" },
-  { label: "API Keys", href: "#" },
-  { label: "Users", href: "#" },
-  { label: "Webhooks", href: "#" },
-  { label: "Logs", href: "#" },
-  { label: "Settings", href: "#" },
+  { label: "Analytics", href: "/analytics" },
+  { label: "Inbox", href: "/inbox" },
+  { label: "Ads", href: "/ads" },
+  { label: "Numbers", href: "/numbers" },
+  { label: "API Keys", href: "/api-keys" },
+  { label: "Users", href: "/users" },
+  { label: "Webhooks", href: "/webhooks" },
+  { label: "Logs", href: "/logs" },
+  { label: "Settings", href: "/settings" },
 ];
 
 export default async function Dashboard() {
