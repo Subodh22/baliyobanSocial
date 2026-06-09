@@ -14,22 +14,60 @@ export const metadata: Metadata = {
 };
 
 const FOOTER = {
-  PRODUCT: ["Documentation", "Dashboard", "Pricing", "Enterprise", "Features", "Changelog", "AI Agents", "Roadmap"],
+  PRODUCT: ["Dashboard", "Compose", "Documentation", "Pricing", "Features", "AI Agents", "Sign In", "Sign Up"],
   INTEGRATIONS: [
     "Twitter/X", "Instagram", "TikTok", "WhatsApp", "LinkedIn", "Facebook",
     "YouTube", "Threads", "Reddit", "Pinterest", "Bluesky", "Telegram",
     "Snapchat", "Google Business", "Discord", "Meta Ads", "Google Ads",
   ],
-  COMPANY: ["Blog", "Terms", "Privacy", "Content Guidelines", "About", "Customers", "Careers", "Status"],
+  LEGAL: ["Terms of Service", "Privacy Policy", "Data Deletion", "Content Guidelines"],
+  COMPANY: ["About", "Blog", "Customers", "Careers", "Status"],
   COMPARISONS: ["vs Buffer", "vs Ayrshare", "vs Blotato", "vs Publer", "vs Postiz", "vs Unipile"],
   COMMUNITY: ["LinkedIn", "YouTube", "Telegram", "GitHub"],
 } as const;
 
 const LINK_HREF: Record<string, string> = {
-  Privacy: "/privacy",
-  Terms: "/terms",
-  Documentation: "/",
   Dashboard: "/dashboard",
+  Compose: "/compose",
+  Documentation: "/#endpoints",
+  Pricing: "/#pricing",
+  Features: "/#what",
+  "AI Agents": "/#endpoints",
+  "Sign In": "/sign-in",
+  "Sign Up": "/sign-up",
+  "Twitter/X": "/#platforms",
+  Instagram: "/#platforms",
+  TikTok: "/#platforms",
+  WhatsApp: "/#platforms",
+  LinkedIn: "/#platforms",
+  Facebook: "/#platforms",
+  YouTube: "/#platforms",
+  Threads: "/#platforms",
+  Reddit: "/#platforms",
+  Pinterest: "/#platforms",
+  Bluesky: "/#platforms",
+  Telegram: "/#platforms",
+  Snapchat: "/#platforms",
+  "Google Business": "/#platforms",
+  Discord: "/#platforms",
+  "Meta Ads": "/#platforms",
+  "Google Ads": "/#platforms",
+  "Terms of Service": "/terms",
+  "Privacy Policy": "/privacy",
+  "Data Deletion": "/data-deletion",
+  "Content Guidelines": "/terms",
+  About: "/",
+  Blog: "/",
+  Customers: "/",
+  Careers: "/",
+  Status: "/",
+  "vs Buffer": "/",
+  "vs Ayrshare": "/",
+  "vs Blotato": "/",
+  "vs Publer": "/",
+  "vs Postiz": "/",
+  "vs Unipile": "/",
+  GitHub: "/docs",
 };
 
 export default function RootLayout({
@@ -49,7 +87,7 @@ export default function RootLayout({
           <div className="flex-1 flex flex-col">{children}</div>
           <footer className="border-t border-white/10 bg-[#0a0a0a]">
             <div className="mx-auto max-w-6xl px-6 py-14">
-              <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-5">
+              <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-6">
                 {Object.entries(FOOTER).map(([heading, links]) => (
                   <div key={heading}>
                     <h3 className="text-xs font-semibold uppercase tracking-widest text-zinc-500">{heading}</h3>
