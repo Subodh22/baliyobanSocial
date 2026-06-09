@@ -1,11 +1,25 @@
+import { Suspense } from "react";
+import { auth } from "@clerk/nextjs/server";
 import { DashboardShell } from "@/app/components/dashboard-shell";
 import { getDashboardProps } from "@/app/components/dashboard-page";
+import { ConnectedAccounts } from "@/app/components/connected-accounts";
+import { prisma } from "@/lib/db";
 import Link from "next/link";
 
 const CONTACT_EMAIL = "subodhmaharjan3@gmail.com";
 
 export default async function Settings() {
-  const { name, email } = await getDashboardProps();
+  const [{ name, email }, { userId }] = await Promise.all([
+    getDashboardProps(),
+    auth(),
+  ]);
+
+  const accounts = userId
+    ? await prisma.account.findMany({
+        where: { userId },
+        select: { provider: true, providerAccountId: true },
+      })
+    : [];
 
   return (
     <DashboardShell active="Settings" name={name} email={email}>
@@ -40,6 +54,11 @@ export default async function Settings() {
             </div>
           </div>
         </div>
+
+        {/* Connected Accounts */}
+        <Suspense>
+          <ConnectedAccounts accounts={accounts} />
+        </Suspense>
 
         {/* Plan & Billing */}
         <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-6">
