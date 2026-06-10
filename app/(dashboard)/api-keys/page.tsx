@@ -1,11 +1,6 @@
-import { DashboardShell } from "@/app/components/dashboard-shell";
-import { getDashboardProps } from "@/app/components/dashboard-page";
-
-export default async function ApiKeys() {
-  const { name, email } = await getDashboardProps();
-
+export default function ApiKeys() {
   return (
-    <DashboardShell active="API Keys" name={name} email={email}>
+    <>
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-zinc-100">API Keys</h1>
@@ -59,6 +54,6 @@ export default async function ApiKeys() {
           <span className="text-zinc-300">10,000 requests / month (free tier)</span>
         </div>
       </div>
-    </DashboardShell>
+    </>
   );
 }

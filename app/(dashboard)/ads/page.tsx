@@ -1,6 +1,3 @@
-import { DashboardShell } from "@/app/components/dashboard-shell";
-import { getDashboardProps } from "@/app/components/dashboard-page";
-
 const AD_NETWORKS = [
   { name: "Meta Ads", platforms: "Facebook & Instagram", status: "Not connected" },
   { name: "Google Ads", platforms: "YouTube & Search", status: "Not connected" },
@@ -10,11 +7,9 @@ const AD_NETWORKS = [
   { name: "X Ads", platforms: "Twitter / X", status: "Not connected" },
 ];
 
-export default async function Ads() {
-  const { name, email } = await getDashboardProps();
-
+export default function Ads() {
   return (
-    <DashboardShell active="Ads" name={name} email={email}>
+    <>
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-zinc-100">Ads</h1>
@@ -64,6 +59,6 @@ export default async function Ads() {
           Connect ad network accounts to boost posts and create campaigns directly from baliyoban.
         </p>
       </div>
-    </DashboardShell>
+    </>
   );
 }

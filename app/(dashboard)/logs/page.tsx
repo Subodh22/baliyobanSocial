@@ -1,11 +1,6 @@
-import { DashboardShell } from "@/app/components/dashboard-shell";
-import { getDashboardProps } from "@/app/components/dashboard-page";
-
-export default async function Logs() {
-  const { name, email } = await getDashboardProps();
-
+export default function Logs() {
   return (
-    <DashboardShell active="Logs" name={name} email={email}>
+    <>
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-zinc-100">Logs</h1>
@@ -63,6 +58,6 @@ export default async function Logs() {
           </tbody>
         </table>
       </div>
-    </DashboardShell>
+    </>
   );
 }

@@ -1,10 +1,9 @@
 import { Suspense } from "react";
 import { auth } from "@clerk/nextjs/server";
-import { DashboardShell } from "@/app/components/dashboard-shell";
-import { getDashboardProps } from "@/app/components/dashboard-page";
 import { ConnectedAccounts } from "@/app/components/connected-accounts";
 import { prisma } from "@/lib/db";
 import Link from "next/link";
+import { getDashboardProps } from "@/app/components/dashboard-page";
 
 const CONTACT_EMAIL = "subodhmaharjan3@gmail.com";
 
@@ -22,7 +21,7 @@ export default async function Settings() {
     : [];
 
   return (
-    <DashboardShell active="Settings" name={name} email={email}>
+    <>
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-zinc-100">Settings</h1>
         <p className="mt-1 text-sm text-zinc-500">Account preferences, billing, and workspace configuration</p>
@@ -121,6 +120,6 @@ export default async function Settings() {
           </div>
         </div>
       </div>
-    </DashboardShell>
+    </>
   );
 }
