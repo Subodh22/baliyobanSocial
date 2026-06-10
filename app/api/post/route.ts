@@ -6,6 +6,7 @@ import { postToTwitter } from "@/lib/platforms/twitter";
 import { postToFacebook, postToInstagram } from "@/lib/platforms/facebook";
 import { postToLinkedIn } from "@/lib/platforms/linkedin";
 import { postToTikTok } from "@/lib/platforms/tiktok";
+import { refreshAccessToken } from "@/lib/platforms/tiktok-auth";
 import { postToYouTube } from "@/lib/platforms/youtube";
 
 export async function POST(req: NextRequest) {
@@ -85,7 +86,26 @@ export async function POST(req: NextRequest) {
         if (!acc?.access_token) {
           results.tiktok = { ok: false, error: "TikTok not connected" };
         } else {
-          results.tiktok = await postToTikTok(acc.access_token, mediaUrl ?? "", content);
+          let token = acc.access_token;
+          // Refresh if token is expired (or within 60s of expiring).
+          if (acc.expires_at && acc.expires_at < Math.floor(Date.now() / 1000) + 60 && acc.refresh_token) {
+            try {
+              const refreshed = await refreshAccessToken(acc.refresh_token);
+              token = refreshed.access_token;
+              await prisma.account.update({
+                where: { id: acc.id },
+                data: {
+                  access_token: refreshed.access_token,
+                  refresh_token: refreshed.refresh_token,
+                  expires_at: Math.floor(Date.now() / 1000) + refreshed.expires_in,
+                },
+              });
+            } catch {
+              results.tiktok = { ok: false, error: "TikTok token expired — please reconnect" };
+              break;
+            }
+          }
+          results.tiktok = await postToTikTok(token, mediaUrl ?? "", content);
         }
         break;
       }

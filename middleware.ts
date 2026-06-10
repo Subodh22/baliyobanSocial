@@ -4,6 +4,9 @@ const isProtectedRoute = createRouteMatcher([
   "/dashboard(.*)",
   "/compose(.*)",
   "/api/post(.*)",
+  "/api/auth/tiktok(.*)",
+  "/api/auth/callback/tiktok(.*)",
+  "/api/auth/disconnect(.*)",
 ]);
 
 export default clerkMiddleware(async (auth, req) => {

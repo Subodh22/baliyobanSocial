@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { ensureUser } from "@/lib/user";
 import Link from "next/link";
+import { NewConnectionButton, DisconnectButton } from "@/app/components/connection-actions";
 
 const PROVIDER_META: Record<string, { label: string; icon: string; color: string }> = {
   twitter:  { label: "Twitter / X", icon: "𝕏",  color: "bg-zinc-100 text-black" },
@@ -27,9 +28,15 @@ const NAV = [
   { label: "Settings", href: "/settings" },
 ];
 
-export default async function Dashboard() {
+export default async function Dashboard({
+  searchParams,
+}: {
+  searchParams: Promise<{ connected?: string; error?: string }>;
+}) {
   const { userId } = await auth();
   if (!userId) redirect("/");
+
+  const params = await searchParams;
 
   let profile: Awaited<ReturnType<typeof ensureUser>> = null;
   let accounts: { provider: string; providerAccountId: string }[] = [];
@@ -111,13 +118,7 @@ export default async function Dashboard() {
             <p className="mt-1 text-sm text-zinc-500">Manage profiles and platform integrations</p>
           </div>
           <div className="flex items-center gap-2">
-            <button
-              disabled
-              title="Platform connections coming soon"
-              className="cursor-not-allowed rounded-lg bg-indigo-600/40 px-4 py-2 text-sm font-semibold text-indigo-300/60"
-            >
-              + New Connection
-            </button>
+            <NewConnectionButton />
             <button
               disabled
               title="Coming soon"
@@ -143,6 +144,18 @@ export default async function Dashboard() {
           </div>
         </div>
 
+        {/* Status banners */}
+        {params.connected && (
+          <div className="mt-6 rounded-lg border border-emerald-500/20 bg-emerald-950/30 px-4 py-3 text-sm text-emerald-300">
+            {PROVIDER_META[params.connected]?.label ?? params.connected} connected successfully!
+          </div>
+        )}
+        {params.error && (
+          <div className="mt-6 rounded-lg border border-red-500/20 bg-red-950/30 px-4 py-3 text-sm text-red-300">
+            Connection failed: {params.error}
+          </div>
+        )}
+
         {/* Cards */}
         {accounts.length === 0 ? (
           <div className="mt-10 flex flex-col items-center rounded-2xl border border-dashed border-white/10 bg-white/[0.02] px-6 py-16 text-center">
@@ -153,16 +166,9 @@ export default async function Dashboard() {
             </div>
             <p className="mt-4 text-sm font-medium text-zinc-300">No platform connections yet</p>
             <p className="mx-auto mt-1.5 max-w-sm text-sm leading-relaxed text-zinc-500">
-              You&rsquo;re signed in. Connecting social accounts for posting is
-              coming soon&nbsp;&mdash; it needs each platform&rsquo;s API approval.
+              Click &ldquo;+ New Connection&rdquo; above to link your TikTok account
+              and start posting.
             </p>
-            <Link
-              href="/compose"
-              className="mt-6 inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-indigo-500"
-            >
-              Try the composer
-              <span aria-hidden="true">&rarr;</span>
-            </Link>
           </div>
         ) : (
           <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -189,9 +195,7 @@ export default async function Dashboard() {
                     <span className="inline-flex items-center gap-1.5 rounded-md bg-white/[0.04] px-2 py-0.5 text-xs text-zinc-500">
                       <span className="h-1.5 w-1.5 rounded-full bg-amber-400" /> Default
                     </span>
-                    <span className="text-xs text-zinc-600 opacity-0 transition-opacity group-hover:opacity-100">
-                      Manage &rarr;
-                    </span>
+                    <DisconnectButton provider={acc.provider} />
                   </div>
                 </div>
               );
