@@ -14,6 +14,8 @@ export type InboxItem = {
   messageId?: string; // RFC 2822 Message-ID header, for In-Reply-To/References
   // Instagram DM only: the other participant's IG-scoped id, to send a reply.
   recipientId?: string;
+  // Optional thumbnail (e.g. the Instagram post a comment was left on).
+  imageUrl?: string;
 };
 
 // Optional per-source summary (e.g. YouTube channel stats).

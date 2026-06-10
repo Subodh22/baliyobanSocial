@@ -10,6 +10,7 @@ type Item = {
   timestamp: number;
   url?: string;
   recipientId?: string;
+  imageUrl?: string;
 };
 
 function timeAgo(unix: number): string {
@@ -184,20 +185,40 @@ export default function InstagramClient({
               key={item.id}
               className="rounded-lg border border-white/[0.04] bg-white/[0.02] p-4"
             >
-              <div className="flex items-center justify-between gap-2">
-                <span className="text-sm font-semibold text-zinc-200">
-                  {item.author}
-                </span>
-                <span className="flex-shrink-0 text-[11px] text-zinc-600">
-                  {timeAgo(item.timestamp)}
-                </span>
+              <div className="flex gap-3">
+                {view === "comments" && item.imageUrl && (
+                  <a
+                    href={item.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-shrink-0"
+                    title="View post on Instagram"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={item.imageUrl}
+                      alt=""
+                      className="h-12 w-12 rounded-md object-cover"
+                    />
+                  </a>
+                )}
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-sm font-semibold text-zinc-200">
+                      {item.author}
+                    </span>
+                    <span className="flex-shrink-0 text-[11px] text-zinc-600">
+                      {timeAgo(item.timestamp)}
+                    </span>
+                  </div>
+                  {view === "comments" && (
+                    <p className="mt-0.5 truncate text-xs text-zinc-500">
+                      on “{item.title}”
+                    </p>
+                  )}
+                  <p className="mt-1.5 text-sm text-zinc-300">{item.snippet}</p>
+                </div>
               </div>
-              {view === "comments" && item.title && (
-                <p className="mt-0.5 truncate text-xs text-zinc-500">
-                  on “{item.title}”
-                </p>
-              )}
-              <p className="mt-1.5 text-sm text-zinc-300">{item.snippet}</p>
 
               <div className="mt-2 flex items-center gap-4 text-xs">
                 {view === "dms" && !item.recipientId ? null : repliedIds.has(
