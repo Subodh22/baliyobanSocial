@@ -3,7 +3,8 @@
 export async function postToFacebook(
   accessToken: string,
   text: string,
-  mediaUrl?: string
+  mediaUrl?: string,
+  mediaType?: "image" | "video"
 ): Promise<{ ok: boolean; url?: string; error?: string }> {
   // Get managed pages
   const pagesRes = await fetch(
@@ -19,6 +20,31 @@ export async function postToFacebook(
   const pageToken = page.access_token;
   const pageId = page.id;
 
+  // Video: use the Page Videos endpoint
+  if (mediaUrl && mediaType === "video") {
+    const res = await fetch(
+      `https://graph.facebook.com/${pageId}/videos`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          file_url: mediaUrl,
+          description: text,
+          access_token: pageToken,
+        }),
+      }
+    );
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      return { ok: false, error: err.error?.message ?? "Facebook video post failed" };
+    }
+
+    const data = await res.json();
+    return { ok: true, url: `https://facebook.com/${data.id}` };
+  }
+
+  // Image or text: use the Page Feed endpoint
   const endpoint = `https://graph.facebook.com/${pageId}/feed`;
   const body: Record<string, string> = {
     message: text,
@@ -49,10 +75,13 @@ export async function postToFacebook(
 export async function postToInstagram(
   accessToken: string,
   text: string,
-  mediaUrl?: string
+  mediaUrl?: string,
+  mediaType?: "image" | "video"
 ): Promise<{ ok: boolean; url?: string; error?: string }> {
   if (!mediaUrl)
     return { ok: false, error: "Instagram requires an image or video URL" };
+
+  const isVideo = mediaType === "video";
 
   // Get IG business account via linked page
   const pagesRes = await fetch(
@@ -65,17 +94,24 @@ export async function postToInstagram(
   const igId = pagesData.data?.[0]?.instagram_business_account?.id;
   if (!igId) return { ok: false, error: "No Instagram Business account found" };
 
-  // Create media container
+  // Create media container (video uses video_url + media_type REELS)
+  const containerBody: Record<string, string> = {
+    caption: text,
+    access_token: accessToken,
+  };
+  if (isVideo) {
+    containerBody.video_url = mediaUrl;
+    containerBody.media_type = "REELS";
+  } else {
+    containerBody.image_url = mediaUrl;
+  }
+
   const containerRes = await fetch(
     `https://graph.facebook.com/${igId}/media`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        image_url: mediaUrl,
-        caption: text,
-        access_token: accessToken,
-      }),
+      body: JSON.stringify(containerBody),
     }
   );
 
@@ -85,6 +121,22 @@ export async function postToInstagram(
   }
 
   const { id: creationId } = await containerRes.json();
+
+  // For video, poll until the container is ready before publishing
+  if (isVideo) {
+    for (let i = 0; i < 30; i++) {
+      await new Promise((r) => setTimeout(r, 2000));
+      const statusRes = await fetch(
+        `https://graph.facebook.com/${creationId}?fields=status_code&access_token=${accessToken}`
+      );
+      if (statusRes.ok) {
+        const status = await statusRes.json();
+        if (status.status_code === "FINISHED") break;
+        if (status.status_code === "ERROR")
+          return { ok: false, error: "Instagram video processing failed" };
+      }
+    }
+  }
 
   // Publish the container
   const publishRes = await fetch(

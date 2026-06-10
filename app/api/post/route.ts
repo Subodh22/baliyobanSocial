@@ -16,9 +16,10 @@ export async function POST(req: NextRequest) {
   // Keep a Prisma User row for the FK on Post.
   await ensureUser();
 
-  const { content, mediaUrl, platforms } = await req.json() as {
+  const { content, mediaUrl, mediaType, platforms } = await req.json() as {
     content: string;
     mediaUrl?: string;
+    mediaType?: "image" | "video";
     platforms: string[];
   };
 
@@ -44,7 +45,7 @@ export async function POST(req: NextRequest) {
         if (!acc?.access_token) {
           results.twitter = { ok: false, error: "Twitter not connected" };
         } else {
-          results.twitter = await postToTwitter(acc.access_token, content, mediaUrl);
+          results.twitter = await postToTwitter(acc.access_token, content, mediaUrl, mediaType);
         }
         break;
       }
@@ -53,7 +54,7 @@ export async function POST(req: NextRequest) {
         if (!acc?.access_token) {
           results.facebook = { ok: false, error: "Facebook not connected" };
         } else {
-          results.facebook = await postToFacebook(acc.access_token, content, mediaUrl);
+          results.facebook = await postToFacebook(acc.access_token, content, mediaUrl, mediaType);
         }
         break;
       }
@@ -62,7 +63,7 @@ export async function POST(req: NextRequest) {
         if (!acc?.access_token) {
           results.instagram = { ok: false, error: "Instagram/Facebook not connected" };
         } else {
-          results.instagram = await postToInstagram(acc.access_token, content, mediaUrl);
+          results.instagram = await postToInstagram(acc.access_token, content, mediaUrl, mediaType);
         }
         break;
       }
@@ -75,7 +76,8 @@ export async function POST(req: NextRequest) {
             acc.access_token,
             acc.providerAccountId,
             content,
-            mediaUrl
+            mediaUrl,
+            mediaType
           );
         }
         break;

@@ -17,6 +17,7 @@ type Result = { ok: boolean; url?: string; error?: string };
 export default function Compose() {
   const [content, setContent] = useState("");
   const [mediaUrl, setMediaUrl] = useState("");
+  const [mediaType, setMediaType] = useState<"image" | "video">("image");
   const [selected, setSelected] = useState<Set<string>>(new Set(["twitter", "facebook", "linkedin"]));
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<Record<string, Result> | null>(null);
@@ -42,6 +43,7 @@ export default function Compose() {
         body: JSON.stringify({
           content,
           mediaUrl: mediaUrl.trim() || undefined,
+          mediaType: mediaUrl.trim() ? mediaType : undefined,
           platforms: Array.from(selected),
         }),
       });
@@ -86,7 +88,7 @@ export default function Compose() {
         </ul>
         <div className="flex gap-3">
           <button
-            onClick={() => { setResults(null); setContent(""); setMediaUrl(""); }}
+            onClick={() => { setResults(null); setContent(""); setMediaUrl(""); setMediaType("image"); }}
             className="px-4 py-2 rounded-lg border border-white/10 text-zinc-300 hover:bg-white/[0.04] text-sm font-medium transition-colors"
           >
             Post Again
@@ -145,16 +147,32 @@ export default function Compose() {
 
       <section className="space-y-2">
         <label className="text-sm font-medium text-zinc-400" htmlFor="media">
-          Media URL <span className="text-zinc-600">(image or video — required for Instagram, TikTok, YouTube)</span>
+          Media URL <span className="text-zinc-600">(required for Instagram, TikTok, YouTube)</span>
         </label>
         <input
           id="media"
           type="url"
           value={mediaUrl}
           onChange={(e) => setMediaUrl(e.target.value)}
-          placeholder="https://example.com/image.jpg"
+          placeholder={mediaType === "video" ? "https://example.com/video.mp4" : "https://example.com/image.jpg"}
           className="w-full rounded-xl bg-white/[0.03] border border-white/[0.06] p-3 text-sm text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-indigo-500"
         />
+        <div className="flex gap-2">
+          {(["image", "video"] as const).map((type) => (
+            <button
+              key={type}
+              type="button"
+              onClick={() => setMediaType(type)}
+              className={`px-3 py-1 rounded-lg border text-xs font-medium transition-colors ${
+                mediaType === type
+                  ? "bg-indigo-600 border-indigo-500 text-white"
+                  : "border-white/10 text-zinc-400 hover:border-white/20 hover:text-zinc-300"
+              }`}
+            >
+              {type === "image" ? "Image" : "Video"}
+            </button>
+          ))}
+        </div>
       </section>
 
       {error && (

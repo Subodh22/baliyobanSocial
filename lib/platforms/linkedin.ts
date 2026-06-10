@@ -4,15 +4,20 @@ export async function postToLinkedIn(
   accessToken: string,
   personId: string,
   text: string,
-  mediaUrl?: string
+  mediaUrl?: string,
+  mediaType?: "image" | "video"
 ): Promise<{ ok: boolean; url?: string; error?: string }> {
+  const mediaCategory = mediaUrl
+    ? mediaType === "video" ? "VIDEO" : "IMAGE"
+    : "NONE";
+
   const body: Record<string, unknown> = {
     author: `urn:li:person:${personId}`,
     lifecycleState: "PUBLISHED",
     specificContent: {
       "com.linkedin.ugc.ShareContent": {
         shareCommentary: { text },
-        shareMediaCategory: mediaUrl ? "IMAGE" : "NONE",
+        shareMediaCategory: mediaCategory,
         ...(mediaUrl
           ? {
               media: [
