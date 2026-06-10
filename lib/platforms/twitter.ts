@@ -1,11 +1,13 @@
 export async function postToTwitter(
   accessToken: string,
   text: string,
-  mediaUrl?: string
+  mediaUrl?: string,
+  mediaType?: "image" | "video"
 ): Promise<{ ok: boolean; url?: string; error?: string }> {
   // If media is provided, upload it first
   let mediaIds: string[] | undefined;
   if (mediaUrl) {
+    const category = mediaType === "video" ? "tweet_video" : "tweet_image";
     // Twitter v2 media upload uses v1.1 endpoint
     const uploadRes = await fetch(
       "https://upload.twitter.com/1.1/media/upload.json",
@@ -15,7 +17,7 @@ export async function postToTwitter(
           Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/x-www-form-urlencoded",
         },
-        body: new URLSearchParams({ media_category: "tweet_image" }),
+        body: new URLSearchParams({ media_category: category }),
       }
     );
     if (uploadRes.ok) {
