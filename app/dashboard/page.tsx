@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { ensureUser } from "@/lib/user";
 import Link from "next/link";
+import NewConnectionButton from "./new-connection-button";
 
 const PROVIDER_META: Record<string, { label: string; icon: string; color: string }> = {
   twitter:  { label: "Twitter / X", icon: "𝕏",  color: "bg-zinc-100 text-black" },
@@ -111,13 +112,7 @@ export default async function Dashboard() {
             <p className="mt-1 text-sm text-zinc-500">Manage profiles and platform integrations</p>
           </div>
           <div className="flex items-center gap-2">
-            <button
-              disabled
-              title="Platform connections coming soon"
-              className="cursor-not-allowed rounded-lg bg-indigo-600/40 px-4 py-2 text-sm font-semibold text-indigo-300/60"
-            >
-              + New Connection
-            </button>
+            <NewConnectionButton />
             <button
               disabled
               title="Coming soon"
