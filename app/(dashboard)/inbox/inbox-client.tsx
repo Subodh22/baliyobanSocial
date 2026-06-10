@@ -233,7 +233,7 @@ export default function InboxClient({
             To view and reply to comments, reconnect your TikTok account with
             updated permissions.{" "}
             <a
-              href="/api/connect/tiktok"
+              href="/api/connect/tiktok?comments=1"
               className="font-medium underline hover:text-amber-300"
             >
               Reconnect TikTok

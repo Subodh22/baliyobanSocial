@@ -1,3 +1,4 @@
+import { NextRequest } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { randomBytes } from "crypto";
 import { cookies } from "next/headers";
@@ -5,7 +6,7 @@ import { cookies } from "next/headers";
 // Redirects the user to TikTok's OAuth authorization page.
 // Works with both sandbox and production TikTok apps — the sandbox
 // behavior is controlled by the app's status on the TikTok Developer Portal.
-export async function GET() {
+export async function GET(req: NextRequest) {
   const { userId } = await auth();
   if (!userId)
     return Response.json({ error: "Unauthorized" }, { status: 401 });
@@ -30,15 +31,20 @@ export async function GET() {
     path: "/",
   });
 
+  // Base scopes that every TikTok connection needs.
+  const scopes = ["user.info.profile", "video.list", "video.upload"];
+
+  // Only request comment scopes when the user explicitly reconnects for
+  // Inbox access (?comments=1). This prevents the OAuth flow from failing
+  // when comment scopes aren't yet approved in the TikTok Developer Portal.
+  if (req.nextUrl.searchParams.get("comments") === "1") {
+    scopes.push("comment.list", "comment.list.manage");
+  }
+
   const params = new URLSearchParams({
     client_key: clientKey,
     response_type: "code",
-    // Must be a subset of the scopes enabled on the TikTok app/sandbox.
-    // video.list: read the user's videos (shown in "Manage")
-    // video.upload: post content as a draft (Content Posting API)
-    // user.info.profile: basic profile info
-    // comment.list.manage: read comments and reply (Inbox)
-    scope: "user.info.profile,video.list,video.upload,comment.list.manage",
+    scope: scopes.join(","),
     redirect_uri: redirectUri,
     state: csrfState,
   });
