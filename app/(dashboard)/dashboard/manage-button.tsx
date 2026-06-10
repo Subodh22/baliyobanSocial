@@ -20,6 +20,7 @@ const PROVIDER_META: Record<string, { label: string; icon: string }> = {
   tiktok:    { label: "TikTok", icon: "♪" },
   facebook:  { label: "Facebook", icon: "f" },
   instagram: { label: "Instagram", icon: "📷" },
+  google:    { label: "YouTube", icon: "▶" },
 };
 
 export default function ManageButton({ provider }: { provider: string }) {
@@ -123,7 +124,7 @@ export default function ManageButton({ provider }: { provider: string }) {
                       rel="noopener noreferrer"
                       className="group/post overflow-hidden rounded-xl border border-white/[0.06] bg-white/[0.02] transition-colors hover:border-white/15"
                     >
-                      <div className="aspect-[9/16] w-full overflow-hidden bg-black/40">
+                      <div className={`w-full overflow-hidden bg-black/40 ${provider === "google" ? "aspect-video" : "aspect-[9/16]"}`}>
                         {v.cover_image_url ? (
                           // eslint-disable-next-line @next/next/no-img-element
                           <img
