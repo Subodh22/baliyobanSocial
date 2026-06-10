@@ -21,6 +21,7 @@ export default function Compose() {
   const [mediaUrl, setMediaUrl] = useState("");
   const [mediaType, setMediaType] = useState<"image" | "video">("image");
   const [selected, setSelected] = useState<Set<string>>(new Set(["twitter", "facebook", "linkedin"]));
+  const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<Record<string, Result> | null>(null);
   const [error, setError] = useState("");
@@ -95,7 +96,7 @@ export default function Compose() {
         </ul>
         <div className="flex gap-3">
           <button
-            onClick={() => { setResults(null); setContent(""); setMediaUrl(""); setMediaType("image"); }}
+            onClick={() => { setResults(null); setContent(""); setMediaUrl(""); setMediaType("image"); setUploading(false); }}
             className="px-4 py-2 rounded-lg border border-white/10 text-zinc-300 hover:bg-white/[0.04] text-sm font-medium transition-colors"
           >
             Post Again
@@ -160,23 +161,42 @@ export default function Compose() {
         {!mediaUrl ? (
           <label
             htmlFor="media-file"
-            className="flex flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-white/10 bg-white/[0.02] p-8 cursor-pointer hover:border-indigo-500/40 transition-colors"
+            className={`flex flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-white/10 bg-white/[0.02] p-8 cursor-pointer hover:border-indigo-500/40 transition-colors ${uploading ? "pointer-events-none opacity-60" : ""}`}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9A2.25 2.25 0 0013.5 5.25h-9A2.25 2.25 0 002.25 7.5v9A2.25 2.25 0 004.5 18.75z" />
-            </svg>
-            <span className="text-sm text-zinc-400">Click to attach a video or image</span>
-            <span className="text-xs text-zinc-600">or paste a URL below</span>
+            {uploading ? (
+              <svg className="h-8 w-8 text-indigo-400 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+              </svg>
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9A2.25 2.25 0 0013.5 5.25h-9A2.25 2.25 0 002.25 7.5v9A2.25 2.25 0 004.5 18.75z" />
+              </svg>
+            )}
+            <span className="text-sm text-zinc-400">{uploading ? "Uploading…" : "Click to attach a video or image"}</span>
+            {!uploading && <span className="text-xs text-zinc-600">or paste a URL below</span>}
             <input
               id="media-file"
               type="file"
               accept="video/*,image/*"
               className="hidden"
-              onChange={(e) => {
+              onChange={async (e) => {
                 const file = e.target.files?.[0];
-                if (file) {
-                  setMediaUrl(URL.createObjectURL(file));
+                if (!file) return;
+                setUploading(true);
+                setError("");
+                try {
+                  const fd = new FormData();
+                  fd.append("file", file);
+                  const res = await fetch("/api/upload", { method: "POST", body: fd });
+                  const data = await res.json();
+                  if (!res.ok) throw new Error(data.error ?? "Upload failed");
+                  setMediaUrl(data.url);
                   setMediaType(file.type.startsWith("video/") ? "video" : "image");
+                } catch (err) {
+                  setError(err instanceof Error ? err.message : "Upload failed");
+                } finally {
+                  setUploading(false);
                 }
               }}
             />
@@ -191,7 +211,7 @@ export default function Compose() {
           </label>
         ) : (
           <div className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-3 space-y-3">
-            {mediaType === "video" || mediaUrl.startsWith("blob:") ? (
+            {mediaType === "video" ? (
               <video
                 src={mediaUrl}
                 controls
@@ -237,10 +257,10 @@ export default function Compose() {
 
       <button
         onClick={handlePost}
-        disabled={loading || !content.trim()}
+        disabled={loading || uploading || !content.trim()}
         className="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed text-base font-semibold transition-colors"
       >
-        {loading ? "Posting…" : `Post to ${selected.size} platform${selected.size !== 1 ? "s" : ""}`}
+        {loading ? "Posting…" : uploading ? "Uploading media…" : `Post to ${selected.size} platform${selected.size !== 1 ? "s" : ""}`}
       </button>
     </div>
   );
