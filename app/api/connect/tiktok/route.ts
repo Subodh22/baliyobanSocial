@@ -33,7 +33,7 @@ export async function GET() {
   const params = new URLSearchParams({
     client_key: clientKey,
     response_type: "code",
-    scope: "user.info.basic,user.info.profile,video.list",
+    scope: "user.info.basic,video.publish",
     redirect_uri: redirectUri,
     state: csrfState,
   });

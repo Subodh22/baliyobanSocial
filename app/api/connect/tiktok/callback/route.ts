@@ -68,11 +68,13 @@ export async function GET(req: NextRequest) {
   }
 
   const tokenData = await tokenRes.json();
-  const accessToken: string = tokenData.access_token;
-  const refreshToken: string | undefined = tokenData.refresh_token;
-  const expiresIn: number | undefined = tokenData.expires_in;
-  const openId: string = tokenData.open_id;
-  const scope: string | undefined = tokenData.scope;
+  // TikTok v2 API may wrap the response in a `data` field
+  const payload = tokenData.data ?? tokenData;
+  const accessToken: string = payload.access_token;
+  const refreshToken: string | undefined = payload.refresh_token;
+  const expiresIn: number | undefined = payload.expires_in;
+  const openId: string = payload.open_id;
+  const scope: string | undefined = payload.scope;
 
   if (!accessToken || !openId) {
     console.error("TikTok token response missing fields:", tokenData);
