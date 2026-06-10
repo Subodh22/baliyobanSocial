@@ -10,6 +10,7 @@ const PLATFORMS = [
   { id: "tiktok",    label: "TikTok",      icon: "♪",   color: "bg-pink-600 text-white" },
   { id: "google",    label: "YouTube",     icon: "▶",   color: "bg-red-600 text-white" },
   { id: "gmail",     label: "Gmail",       icon: "✉",   color: "bg-white text-red-600" },
+  { id: "slack",     label: "Slack",       icon: "#",   color: "bg-purple-700 text-white" },
 ];
 
 export default function NewConnectionButton() {
