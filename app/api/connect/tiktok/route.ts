@@ -37,7 +37,8 @@ export async function GET() {
     // video.list: read the user's videos (shown in "Manage")
     // video.upload: post content as a draft (Content Posting API)
     // user.info.profile: basic profile info
-    scope: "user.info.profile,video.list,video.upload",
+    // comment.list.manage: read comments and reply (Inbox)
+    scope: "user.info.profile,video.list,video.upload,comment.list.manage",
     redirect_uri: redirectUri,
     state: csrfState,
   });

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { formatCount } from "@/lib/format";
 
 type Video = {
   id: string;
@@ -14,13 +15,6 @@ type Video = {
   comment_count?: number;
   view_count?: number;
 };
-
-function formatCount(n?: number): string {
-  if (n == null) return "—";
-  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
-  if (n >= 1_000) return `${(n / 1_000).toFixed(1)}K`;
-  return String(n);
-}
 
 const PROVIDER_META: Record<string, { label: string; icon: string }> = {
   tiktok:    { label: "TikTok", icon: "♪" },

@@ -1,5 +1,5 @@
 import { auth } from "@clerk/nextjs/server";
-import { prisma } from "@/lib/db";
+import { getTikTokAccount } from "@/lib/platforms/tiktok-auth";
 
 // Fields to request from TikTok's video.list endpoint.
 const VIDEO_FIELDS = [
@@ -15,71 +15,17 @@ const VIDEO_FIELDS = [
   "view_count",
 ].join(",");
 
-// Refreshes an expired TikTok access token and persists the new credentials.
-async function refreshAccessToken(account: {
-  id: string;
-  refresh_token: string | null;
-}): Promise<string | null> {
-  if (!account.refresh_token) return null;
-
-  const res = await fetch("https://open.tiktokapis.com/v2/oauth/token/", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams({
-      client_key: process.env.AUTH_TIKTOK_ID!,
-      client_secret: process.env.AUTH_TIKTOK_SECRET!,
-      grant_type: "refresh_token",
-      refresh_token: account.refresh_token,
-    }),
-  });
-
-  const data = await res.json();
-  if (!res.ok || data.error || !data.access_token) {
-    console.error("TikTok token refresh failed:", JSON.stringify(data));
-    return null;
-  }
-
-  await prisma.account.update({
-    where: { id: account.id },
-    data: {
-      access_token: data.access_token,
-      refresh_token: data.refresh_token ?? account.refresh_token,
-      expires_at: data.expires_in
-        ? Math.floor(Date.now() / 1000) + data.expires_in
-        : null,
-    },
-  });
-
-  return data.access_token;
-}
-
 // Returns the authenticated user's TikTok videos.
 export async function GET() {
   const { userId } = await auth();
   if (!userId)
     return Response.json({ error: "Unauthorized" }, { status: 401 });
 
-  const account = await prisma.account.findFirst({
-    where: { userId, provider: "tiktok" },
-  });
-  if (!account || !account.access_token)
-    return Response.json(
-      { error: "TikTok account not connected" },
-      { status: 404 }
-    );
+  const result = await getTikTokAccount(userId);
+  if ("error" in result)
+    return Response.json({ error: result.error }, { status: result.status });
 
-  // Refresh the token if it has expired (or is about to, within 60s).
-  let accessToken = account.access_token;
-  const now = Math.floor(Date.now() / 1000);
-  if (account.expires_at && account.expires_at <= now + 60) {
-    const refreshed = await refreshAccessToken(account);
-    if (!refreshed)
-      return Response.json(
-        { error: "Session expired — please reconnect TikTok." },
-        { status: 401 }
-      );
-    accessToken = refreshed;
-  }
+  const { accessToken, account } = result;
 
   const res = await fetch(
     `https://open.tiktokapis.com/v2/video/list/?fields=${VIDEO_FIELDS}`,
