@@ -1,21 +1,34 @@
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/db";
-import InboxClient from "./inbox-client";
+import { gmailCanSend } from "@/lib/inbox/gmail";
+import InboxTabs from "./inbox-tabs";
 
 export default async function Inbox() {
   const { userId } = await auth();
 
-  let hasCommentScope = false;
+  let tiktok = { connected: false, hasCommentScope: false };
+  let gmail = { connected: false, canSend: false };
+
   if (userId) {
-    const account = await prisma.account.findFirst({
-      where: { userId, provider: "tiktok" },
-      select: { scope: true },
+    const accounts = await prisma.account.findMany({
+      where: { userId, provider: { in: ["tiktok", "gmail"] } },
+      select: { provider: true, scope: true },
     });
-    if (account?.scope) {
-      const scopes = account.scope.split(",");
-      hasCommentScope =
-        scopes.includes("comment.list.manage") ||
-        scopes.includes("comment.list");
+
+    const tt = accounts.find((a) => a.provider === "tiktok");
+    if (tt) {
+      const scopes = (tt.scope ?? "").split(",");
+      tiktok = {
+        connected: true,
+        hasCommentScope:
+          scopes.includes("comment.list.manage") ||
+          scopes.includes("comment.list"),
+      };
+    }
+
+    const gm = accounts.find((a) => a.provider === "gmail");
+    if (gm) {
+      gmail = { connected: true, canSend: gmailCanSend(gm.scope) };
     }
   }
 
@@ -27,12 +40,12 @@ export default async function Inbox() {
             Inbox
           </h1>
           <p className="mt-1 text-sm text-zinc-500">
-            Comments and engagement across your TikTok posts
+            Read and reply to messages across your connected accounts
           </p>
         </div>
       </div>
 
-      <InboxClient hasCommentScope={hasCommentScope} />
+      <InboxTabs tiktok={tiktok} gmail={gmail} />
     </>
   );
 }

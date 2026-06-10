@@ -8,6 +8,10 @@ export type InboxItem = {
   snippet: string; // body preview
   timestamp: number; // unix seconds
   url?: string; // deep link back to the source
+  // Gmail-only fields used to compose a threaded reply.
+  threadId?: string; // Gmail thread id
+  fromEmail?: string; // sender's bare email address
+  messageId?: string; // RFC 2822 Message-ID header, for In-Reply-To/References
 };
 
 // Optional per-source summary (e.g. YouTube channel stats).

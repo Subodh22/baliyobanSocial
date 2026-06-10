@@ -3,14 +3,15 @@ import { randomBytes } from "crypto";
 import { cookies } from "next/headers";
 import { googleAuthUrl } from "@/lib/oauth/google";
 
-// Connects the user's Gmail (read-only) via Google OAuth, stored as provider
-// "gmail". Uses the same Google app as the YouTube connection but a different
-// scope, so it's a separate Account row.
+// Connects the user's Gmail via Google OAuth, stored as provider "gmail". Uses
+// the same Google app as the YouTube connection but different scopes, so it's a
+// separate Account row. gmail.send lets us reply/compose straight from the Inbox.
 const SCOPE = [
   "openid",
   "email",
   "profile",
   "https://www.googleapis.com/auth/gmail.readonly",
+  "https://www.googleapis.com/auth/gmail.send",
 ].join(" ");
 
 export async function GET() {
