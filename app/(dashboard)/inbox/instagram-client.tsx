@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useCachedFetch } from "./use-cached-fetch";
 
 type Item = {
   id: string;
@@ -29,13 +30,22 @@ export default function InstagramClient({
   canMessages: boolean;
 }) {
   const [view, setView] = useState<"comments" | "dms">("comments");
-  const [comments, setComments] = useState<Item[]>([]);
-  const [dms, setDms] = useState<Item[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [sectionErrors, setSectionErrors] = useState<
-    { kind: string; error: string }[]
-  >([]);
+  const {
+    data: igData,
+    loading,
+    error,
+    refreshing,
+    refresh,
+  } = useCachedFetch<{
+    comments: Item[];
+    dms: Item[];
+    errors: { kind: string; error: string }[];
+    canComments: boolean;
+    canMessages: boolean;
+  }>("/api/inbox/instagram");
+  const comments = igData?.comments ?? [];
+  const dms = igData?.dms ?? [];
+  const sectionErrors = igData?.errors ?? [];
   const [needsReconnect, setNeedsReconnect] = useState(
     !canComments || !canMessages
   );
@@ -87,23 +97,12 @@ export default function InstagramClient({
   }
 
   useEffect(() => {
-    (async () => {
-      try {
-        const res = await fetch("/api/inbox/instagram");
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error ?? "Failed to load Instagram");
-        setComments(data.comments ?? []);
-        setDms(data.dms ?? []);
-        setSectionErrors(data.errors ?? []);
-        if (data.canComments === false || data.canMessages === false)
-          setNeedsReconnect(true);
-      } catch (e) {
-        setError(e instanceof Error ? e.message : "Failed to load Instagram");
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, []);
+    if (
+      igData &&
+      (igData.canComments === false || igData.canMessages === false)
+    )
+      setNeedsReconnect(true);
+  }, [igData]);
 
   const items = view === "comments" ? comments : dms;
   const sectionError = sectionErrors.find((e) =>
@@ -128,27 +127,37 @@ export default function InstagramClient({
         </div>
       )}
 
-      <div className="flex items-center gap-1 border-b border-white/[0.06]">
+      <div className="flex items-center justify-between border-b border-white/[0.06]">
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => setView("comments")}
+            className={`-mb-px border-b-2 px-4 py-2 text-sm font-medium transition-colors ${
+              view === "comments"
+                ? "border-pink-500 text-zinc-100"
+                : "border-transparent text-zinc-500 hover:text-zinc-300"
+            }`}
+          >
+            Comments{" "}
+            <span className="text-xs text-zinc-600">{comments.length}</span>
+          </button>
+          <button
+            onClick={() => setView("dms")}
+            className={`-mb-px border-b-2 px-4 py-2 text-sm font-medium transition-colors ${
+              view === "dms"
+                ? "border-pink-500 text-zinc-100"
+                : "border-transparent text-zinc-500 hover:text-zinc-300"
+            }`}
+          >
+            DMs <span className="text-xs text-zinc-600">{dms.length}</span>
+          </button>
+        </div>
         <button
-          onClick={() => setView("comments")}
-          className={`-mb-px border-b-2 px-4 py-2 text-sm font-medium transition-colors ${
-            view === "comments"
-              ? "border-pink-500 text-zinc-100"
-              : "border-transparent text-zinc-500 hover:text-zinc-300"
-          }`}
+          onClick={refresh}
+          disabled={refreshing || loading}
+          title="Refresh"
+          className="mr-1 rounded-lg border border-white/10 px-3 py-1.5 text-xs text-zinc-400 transition-colors hover:bg-white/5 hover:text-zinc-200 disabled:opacity-50"
         >
-          Comments{" "}
-          <span className="text-xs text-zinc-600">{comments.length}</span>
-        </button>
-        <button
-          onClick={() => setView("dms")}
-          className={`-mb-px border-b-2 px-4 py-2 text-sm font-medium transition-colors ${
-            view === "dms"
-              ? "border-pink-500 text-zinc-100"
-              : "border-transparent text-zinc-500 hover:text-zinc-300"
-          }`}
-        >
-          DMs <span className="text-xs text-zinc-600">{dms.length}</span>
+          {refreshing ? "Refreshing…" : "Refresh"}
         </button>
       </div>
 

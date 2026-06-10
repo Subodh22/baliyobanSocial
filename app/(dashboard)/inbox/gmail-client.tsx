@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useCachedFetch } from "./use-cached-fetch";
 
 type EmailItem = {
   id: string;
@@ -38,9 +39,16 @@ function replySubject(subject: string): string {
 }
 
 export default function GmailClient({ canSend }: { canSend: boolean }) {
-  const [emails, setEmails] = useState<EmailItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const {
+    data: gmailData,
+    loading,
+    error,
+    refreshing,
+    refresh,
+  } = useCachedFetch<{ items: EmailItem[]; canSend: boolean }>(
+    "/api/inbox/gmail"
+  );
+  const emails = gmailData?.items ?? [];
   const [needsReconnect, setNeedsReconnect] = useState(!canSend);
 
   const [selected, setSelected] = useState<EmailDetail | null>(null);
@@ -61,20 +69,8 @@ export default function GmailClient({ canSend }: { canSend: boolean }) {
   const [cSent, setCSent] = useState(false);
 
   useEffect(() => {
-    (async () => {
-      try {
-        const res = await fetch("/api/inbox/gmail");
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error ?? "Failed to load email");
-        setEmails(data.items ?? []);
-        if (data.canSend === false) setNeedsReconnect(true);
-      } catch (e) {
-        setError(e instanceof Error ? e.message : "Failed to load email");
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, []);
+    if (gmailData && gmailData.canSend === false) setNeedsReconnect(true);
+  }, [gmailData]);
 
   async function openEmail(item: EmailItem) {
     setSelected(null);
@@ -172,16 +168,26 @@ export default function GmailClient({ canSend }: { canSend: boolean }) {
               {emails.length}
             </span>
           </div>
-          <button
-            onClick={() => {
-              setComposeOpen(true);
-              setCError(null);
-              setCSent(false);
-            }}
-            className="rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-indigo-500"
-          >
-            Compose
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={refresh}
+              disabled={refreshing || loading}
+              title="Refresh"
+              className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-zinc-400 transition-colors hover:bg-white/5 hover:text-zinc-200 disabled:opacity-50"
+            >
+              {refreshing ? "Refreshing…" : "Refresh"}
+            </button>
+            <button
+              onClick={() => {
+                setComposeOpen(true);
+                setCError(null);
+                setCSent(false);
+              }}
+              className="rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-indigo-500"
+            >
+              Compose
+            </button>
+          </div>
         </div>
 
         <div className="flex-1 overflow-y-auto">
