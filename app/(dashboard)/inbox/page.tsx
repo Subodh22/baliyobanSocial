@@ -1,11 +1,6 @@
-import { DashboardShell } from "@/app/components/dashboard-shell";
-import { getDashboardProps } from "@/app/components/dashboard-page";
-
-export default async function Inbox() {
-  const { name, email } = await getDashboardProps();
-
+export default function Inbox() {
   return (
-    <DashboardShell active="Inbox" name={name} email={email}>
+    <>
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-zinc-100">Inbox</h1>
@@ -49,6 +44,6 @@ export default async function Inbox() {
           </div>
         </div>
       </div>
-    </DashboardShell>
+    </>
   );
 }

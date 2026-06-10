@@ -1,11 +1,6 @@
-import { DashboardShell } from "@/app/components/dashboard-shell";
-import { getDashboardProps } from "@/app/components/dashboard-page";
-
-export default async function Analytics() {
-  const { name, email } = await getDashboardProps();
-
+export default function Analytics() {
   return (
-    <DashboardShell active="Analytics" name={name} email={email}>
+    <>
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-zinc-100">Analytics</h1>
@@ -57,6 +52,6 @@ export default async function Analytics() {
         </div>
         <p className="mt-4 text-sm text-zinc-600">Analytics data will appear here once you connect accounts and start posting.</p>
       </div>
-    </DashboardShell>
+    </>
   );
 }
