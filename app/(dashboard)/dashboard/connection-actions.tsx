@@ -9,8 +9,8 @@ export default function ConnectionActions({ provider }: { provider: string }) {
   const [disconnecting, setDisconnecting] = useState(false);
   const [confirming, setConfirming] = useState(false);
 
-  // Only TikTok has connect/disconnect endpoints wired up so far.
-  const supported = provider === "tiktok";
+  // Providers with connect/disconnect endpoints wired up.
+  const supported = ["tiktok", "facebook", "instagram"].includes(provider);
 
   async function disconnect() {
     setDisconnecting(true);

@@ -6,11 +6,12 @@ import NewConnectionButton from "./new-connection-button";
 import ConnectionActions from "./connection-actions";
 
 const PROVIDER_META: Record<string, { label: string; icon: string; color: string }> = {
-  twitter:  { label: "Twitter / X", icon: "𝕏",  color: "bg-zinc-100 text-black" },
-  facebook: { label: "Facebook",    icon: "f",   color: "bg-blue-600 text-white" },
-  linkedin: { label: "LinkedIn",    icon: "in",  color: "bg-sky-700 text-white" },
-  tiktok:   { label: "TikTok",      icon: "♪",   color: "bg-pink-600 text-white" },
-  google:   { label: "YouTube",     icon: "▶",   color: "bg-red-600 text-white" },
+  twitter:   { label: "Twitter / X", icon: "𝕏",  color: "bg-zinc-100 text-black" },
+  facebook:  { label: "Facebook",    icon: "f",   color: "bg-blue-600 text-white" },
+  instagram: { label: "Instagram",   icon: "📷",  color: "bg-gradient-to-br from-purple-600 via-pink-500 to-amber-400 text-white" },
+  linkedin:  { label: "LinkedIn",    icon: "in",  color: "bg-sky-700 text-white" },
+  tiktok:    { label: "TikTok",      icon: "♪",   color: "bg-pink-600 text-white" },
+  google:    { label: "YouTube",     icon: "▶",   color: "bg-red-600 text-white" },
 };
 
 export default async function Dashboard() {

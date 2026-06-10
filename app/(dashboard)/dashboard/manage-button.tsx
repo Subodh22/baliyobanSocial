@@ -22,14 +22,23 @@ function formatCount(n?: number): string {
   return String(n);
 }
 
+const PROVIDER_META: Record<string, { label: string; icon: string }> = {
+  tiktok:    { label: "TikTok", icon: "♪" },
+  facebook:  { label: "Facebook", icon: "f" },
+  instagram: { label: "Instagram", icon: "📷" },
+};
+
 export default function ManageButton({ provider }: { provider: string }) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [videos, setVideos] = useState<Video[] | null>(null);
 
-  // Only TikTok has a posts endpoint wired up so far.
-  const supported = provider === "tiktok";
+  // Providers with a posts endpoint wired up.
+  const meta = PROVIDER_META[provider];
+  const supported = Boolean(meta);
+  const label = meta?.label ?? provider;
+  const icon = meta?.icon ?? "•";
 
   async function loadVideos() {
     setOpen(true);
@@ -75,9 +84,9 @@ export default function ManageButton({ provider }: { provider: string }) {
           >
             <div className="flex items-center justify-between border-b border-white/[0.06] px-6 py-4">
               <div>
-                <h2 className="text-lg font-bold text-zinc-100">TikTok posts</h2>
+                <h2 className="text-lg font-bold text-zinc-100">{label} posts</h2>
                 <p className="mt-0.5 text-xs text-zinc-500">
-                  Pulled from your connected TikTok account
+                  Pulled from your connected {label} account
                 </p>
               </div>
               <button
@@ -106,7 +115,7 @@ export default function ManageButton({ provider }: { provider: string }) {
 
               {!loading && !error && videos?.length === 0 && (
                 <div className="py-16 text-center text-sm text-zinc-500">
-                  No posts found on this TikTok account.
+                  No posts found on this {label} account.
                 </div>
               )}
 
@@ -125,12 +134,12 @@ export default function ManageButton({ provider }: { provider: string }) {
                           // eslint-disable-next-line @next/next/no-img-element
                           <img
                             src={v.cover_image_url}
-                            alt={v.title || "TikTok post"}
+                            alt={v.title || `${label} post`}
                             className="h-full w-full object-cover transition-transform group-hover/post:scale-105"
                           />
                         ) : (
                           <div className="flex h-full w-full items-center justify-center text-2xl text-zinc-700">
-                            ♪
+                            {icon}
                           </div>
                         )}
                       </div>

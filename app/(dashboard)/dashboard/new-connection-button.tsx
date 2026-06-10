@@ -3,11 +3,12 @@
 import { useState } from "react";
 
 const PLATFORMS = [
-  { id: "twitter",  label: "Twitter / X", icon: "𝕏",  color: "bg-zinc-100 text-black" },
-  { id: "facebook", label: "Facebook",    icon: "f",   color: "bg-blue-600 text-white" },
-  { id: "linkedin", label: "LinkedIn",    icon: "in",  color: "bg-sky-700 text-white" },
-  { id: "tiktok",   label: "TikTok",      icon: "♪",   color: "bg-pink-600 text-white" },
-  { id: "google",   label: "YouTube",     icon: "▶",   color: "bg-red-600 text-white" },
+  { id: "twitter",   label: "Twitter / X", icon: "𝕏",  color: "bg-zinc-100 text-black" },
+  { id: "facebook",  label: "Facebook",    icon: "f",   color: "bg-blue-600 text-white" },
+  { id: "instagram", label: "Instagram",   icon: "📷",  color: "bg-gradient-to-br from-purple-600 via-pink-500 to-amber-400 text-white" },
+  { id: "linkedin",  label: "LinkedIn",    icon: "in",  color: "bg-sky-700 text-white" },
+  { id: "tiktok",    label: "TikTok",      icon: "♪",   color: "bg-pink-600 text-white" },
+  { id: "google",    label: "YouTube",     icon: "▶",   color: "bg-red-600 text-white" },
 ];
 
 export default function NewConnectionButton() {

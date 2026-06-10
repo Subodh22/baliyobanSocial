@@ -8,6 +8,8 @@ type Props = {
 
 const PLATFORMS = [
   { provider: "tiktok", label: "TikTok", icon: "♪", connectUrl: "/api/connect/tiktok" },
+  { provider: "facebook", label: "Facebook", icon: "f", connectUrl: "/api/connect/facebook" },
+  { provider: "instagram", label: "Instagram", icon: "📷", connectUrl: "/api/connect/instagram" },
 ];
 
 export function ConnectedAccounts({ accounts }: Props) {

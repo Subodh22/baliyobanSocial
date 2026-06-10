@@ -2,27 +2,29 @@ import { auth } from "@clerk/nextjs/server";
 import { randomBytes } from "crypto";
 import { cookies } from "next/headers";
 
-// Redirects the user to TikTok's OAuth authorization page.
-// Works with both sandbox and production TikTok apps — the sandbox
-// behavior is controlled by the app's status on the TikTok Developer Portal.
+const GRAPH_VERSION = "v23.0";
+
+// Redirects the user to Facebook's OAuth (Facebook Login) authorization page.
+// A single Facebook Login grants access to the user's Pages, which is what we
+// list and post to.
 export async function GET() {
   const { userId } = await auth();
   if (!userId)
     return Response.json({ error: "Unauthorized" }, { status: 401 });
 
-  const clientKey = process.env.AUTH_TIKTOK_ID;
-  if (!clientKey)
+  const clientId = process.env.AUTH_FACEBOOK_ID;
+  if (!clientId)
     return Response.json(
-      { error: "TikTok client key (AUTH_TIKTOK_ID) not configured" },
+      { error: "Facebook app ID (AUTH_FACEBOOK_ID) not configured" },
       { status: 500 }
     );
 
-  const redirectUri = `${process.env.NEXTAUTH_URL ?? "http://localhost:3000"}/api/connect/tiktok/callback`;
+  const redirectUri = `${process.env.NEXTAUTH_URL ?? "http://localhost:3000"}/api/connect/facebook/callback`;
 
   // CSRF token stored in a cookie so the callback can verify it.
   const csrfState = randomBytes(16).toString("hex");
   const jar = await cookies();
-  jar.set("tiktok_oauth_state", csrfState, {
+  jar.set("facebook_oauth_state", csrfState, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
@@ -31,16 +33,14 @@ export async function GET() {
   });
 
   const params = new URLSearchParams({
-    client_key: clientKey,
+    client_id: clientId,
     response_type: "code",
-    // video.publish: post content (Content Posting API)
-    // video.list: read the user's videos (shown in "Manage")
-    scope: "user.info.basic,video.publish,video.list",
+    scope: "public_profile,pages_show_list,pages_read_engagement,pages_manage_posts",
     redirect_uri: redirectUri,
     state: csrfState,
   });
 
   return Response.redirect(
-    `https://www.tiktok.com/v2/auth/authorize/?${params.toString()}`
+    `https://www.facebook.com/${GRAPH_VERSION}/dialog/oauth?${params.toString()}`
   );
 }
