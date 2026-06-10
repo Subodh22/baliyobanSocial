@@ -33,9 +33,11 @@ export async function GET() {
   const params = new URLSearchParams({
     client_key: clientKey,
     response_type: "code",
-    // video.publish: post content (Content Posting API)
+    // Must be a subset of the scopes enabled on the TikTok app/sandbox.
     // video.list: read the user's videos (shown in "Manage")
-    scope: "user.info.basic,video.publish,video.list",
+    // video.upload: post content as a draft (Content Posting API)
+    // user.info.profile: basic profile info
+    scope: "user.info.profile,video.list,video.upload",
     redirect_uri: redirectUri,
     state: csrfState,
   });
