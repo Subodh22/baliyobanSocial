@@ -100,14 +100,14 @@ async function fetchComments(
 // InboxItem. Requires instagram_business_manage_messages.
 export async function fetchInstagramDMs(
   token: string,
-  selfId: string
+  self: { id: string; username: string }
 ): Promise<InboxItem[]> {
   const res = await fetch(
     `${GRAPH}/me/conversations?` +
       new URLSearchParams({
         platform: "instagram",
         fields:
-          "id,updated_time,participants,messages.limit(1){id,message,from,created_time}",
+          "id,updated_time,participants{id,username},messages.limit(1){id,message,from,created_time}",
         limit: "20",
         access_token: token,
       }).toString()
@@ -132,13 +132,20 @@ export async function fetchInstagramDMs(
 
   return (data.data ?? []).map((conv: Conversation): InboxItem => {
     const last = conv.messages?.data?.[0];
-    // Name the conversation after the participant who isn't us.
-    const other = conv.participants?.data?.find((p) => p.id !== selfId);
+    const parts = conv.participants?.data ?? [];
+    // Identify the other party. Participant ids are IG-scoped (IGSIDs) and
+    // don't match our stored account id, so match on username first (excluding
+    // our own), then fall back to id and finally the last message's sender.
+    const other =
+      parts.find((p) => p.username && p.username !== self.username) ??
+      parts.find((p) => p.id !== self.id) ??
+      (last?.from && last.from.id !== self.id ? last.from : undefined) ??
+      parts[0];
     return {
       id: `igdm_${conv.id}`,
       source: "instagram",
       kind: "dm",
-      author: other?.username || last?.from?.username || "Instagram user",
+      author: other?.username || "Instagram user",
       title: "Direct message",
       snippet: last?.message ?? "",
       timestamp: ts(last?.created_time ?? conv.updated_time),
@@ -159,12 +166,25 @@ export async function fetchInstagram(account: Account): Promise<{
 
   const errors: { kind: string; error: string }[] = [];
 
+  // Our own username, used to tell which DM participant is the other person.
+  let selfUsername = "";
+  try {
+    const meRes = await fetch(
+      `${GRAPH}/me?fields=username&access_token=${encodeURIComponent(token)}`
+    );
+    const me = await meRes.json();
+    selfUsername = me?.username ?? "";
+  } catch {
+    // Non-fatal: DM sender detection falls back to id matching.
+  }
+  const self = { id: account.providerAccountId, username: selfUsername };
+
   const [comments, dms] = await Promise.all([
     fetchInstagramComments(token).catch((e) => {
       errors.push({ kind: "comments", error: e instanceof Error ? e.message : "Failed" });
       return [] as InboxItem[];
     }),
-    fetchInstagramDMs(token, account.providerAccountId).catch((e) => {
+    fetchInstagramDMs(token, self).catch((e) => {
       errors.push({ kind: "dms", error: e instanceof Error ? e.message : "Failed" });
       return [] as InboxItem[];
     }),
