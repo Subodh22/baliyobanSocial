@@ -12,6 +12,7 @@ const PROVIDER_META: Record<string, { label: string; icon: string; color: string
   linkedin:  { label: "LinkedIn",    icon: "in",  color: "bg-sky-700 text-white" },
   tiktok:    { label: "TikTok",      icon: "♪",   color: "bg-pink-600 text-white" },
   google:    { label: "YouTube",     icon: "▶",   color: "bg-red-600 text-white" },
+  gmail:     { label: "Gmail",       icon: "✉",   color: "bg-white text-red-600" },
 };
 
 export default async function Dashboard() {
