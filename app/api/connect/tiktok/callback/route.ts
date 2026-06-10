@@ -70,11 +70,22 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  // TikTok v2 API wraps the response in a `data` field; check for API-level errors
-  if (tokenData.error?.code && tokenData.error.code !== "ok") {
-    console.error("TikTok API error:", JSON.stringify(tokenData.error));
+  // TikTok's v2 token endpoint returns HTTP 200 even on failure, with the
+  // error in the body. It can take two shapes: a flat OAuth error
+  // ({ error: "invalid_grant", error_description: "..." }) or the resource-API
+  // object form ({ error: { code, message } }). Handle both and surface the
+  // real message instead of a generic error.
+  const apiError =
+    typeof tokenData.error === "string"
+      ? tokenData.error_description || tokenData.error
+      : tokenData.error?.code && tokenData.error.code !== "ok"
+        ? tokenData.error.message || tokenData.error.code
+        : null;
+
+  if (apiError) {
+    console.error("TikTok token exchange error:", JSON.stringify(tokenData));
     return Response.redirect(
-      `${process.env.NEXTAUTH_URL ?? "http://localhost:3000"}/settings?error=${encodeURIComponent(tokenData.error.message || tokenData.error.code)}`
+      `${process.env.NEXTAUTH_URL ?? "http://localhost:3000"}/settings?error=${encodeURIComponent(apiError)}`
     );
   }
 
