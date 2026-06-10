@@ -98,8 +98,17 @@ export async function GET() {
   // TikTok wraps errors in an `error` object; code "ok" means success.
   if (data.error?.code && data.error.code !== "ok") {
     console.error("TikTok video.list error:", JSON.stringify(data.error));
+    // On a scope error, report the scopes the token actually carries so it's
+    // clear whether video.list was granted during authorization.
+    const isScopeError = data.error.code === "scope_not_authorized";
+    const grantedScope = account.scope ?? "(none recorded)";
     return Response.json(
-      { error: data.error.message || data.error.code },
+      {
+        error: isScopeError
+          ? `${data.error.message || data.error.code} — token was granted: ${grantedScope}`
+          : data.error.message || data.error.code,
+        grantedScope,
+      },
       { status: 502 }
     );
   }
