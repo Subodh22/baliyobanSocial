@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { formatCount } from "@/lib/format";
+import { useCachedFetch } from "./use-cached-fetch";
 
 type Video = {
   id: string;
@@ -38,10 +39,14 @@ export default function InboxClient({
 }: {
   hasCommentScope: boolean;
 }) {
-  const [videos, setVideos] = useState<Video[]>([]);
-  const [videosLoading, setVideosLoading] = useState(false);
-  const [videosError, setVideosError] = useState<string | null>(null);
-  const [videosLoaded, setVideosLoaded] = useState(false);
+  const {
+    data: videosData,
+    loading: videosLoading,
+    error: videosError,
+    refreshing,
+    refresh,
+  } = useCachedFetch<{ videos: Video[] }>("/api/connect/tiktok/videos");
+  const videos = videosData?.videos ?? [];
 
   const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
 
@@ -57,23 +62,6 @@ export default function InboxClient({
   const [replyError, setReplyError] = useState<string | null>(null);
 
   const [needsReconnect, setNeedsReconnect] = useState(!hasCommentScope);
-
-  async function loadVideos() {
-    if (videosLoaded) return;
-    setVideosLoading(true);
-    setVideosError(null);
-    try {
-      const res = await fetch("/api/connect/tiktok/videos");
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Failed to load videos");
-      setVideos(data.videos ?? []);
-      setVideosLoaded(true);
-    } catch (e) {
-      setVideosError(e instanceof Error ? e.message : "Failed to load videos");
-    } finally {
-      setVideosLoading(false);
-    }
-  }
 
   async function loadComments(videoId: string, cursor?: number | null) {
     setCommentsLoading(true);
@@ -144,22 +132,25 @@ export default function InboxClient({
     }
   }
 
-  // Load videos on first render.
-  if (!videosLoaded && !videosLoading && !videosError) {
-    loadVideos();
-  }
-
   return (
     <div className="mt-8 flex flex-1 overflow-hidden">
       {/* Video list (left panel) */}
       <div className="flex w-full max-w-sm flex-col border-r border-white/[0.06]">
-        <div className="border-b border-white/[0.06] px-4 py-3">
+        <div className="flex items-center justify-between border-b border-white/[0.06] px-4 py-3">
           <div className="flex items-center gap-2">
             <span className="text-sm font-medium text-zinc-300">TikTok</span>
             <span className="rounded-full bg-indigo-500/10 px-2 py-0.5 text-[11px] text-indigo-400">
               {videos.length} videos
             </span>
           </div>
+          <button
+            onClick={refresh}
+            disabled={refreshing || videosLoading}
+            title="Refresh"
+            className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-zinc-400 transition-colors hover:bg-white/5 hover:text-zinc-200 disabled:opacity-50"
+          >
+            {refreshing ? "Refreshing…" : "Refresh"}
+          </button>
         </div>
 
         <div className="flex-1 overflow-y-auto">
@@ -175,7 +166,7 @@ export default function InboxClient({
             </div>
           )}
 
-          {!videosLoading && !videosError && videos.length === 0 && videosLoaded && (
+          {!videosLoading && !videosError && videos.length === 0 && videosData && (
             <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-indigo-500/10">
                 <span className="text-lg text-indigo-400">&#9834;</span>
