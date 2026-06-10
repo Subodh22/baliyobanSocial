@@ -33,7 +33,8 @@ export async function GET() {
   const params = new URLSearchParams({
     client_id: clientId,
     response_type: "code",
-    scope: "instagram_business_basic,instagram_business_content_publish",
+    scope:
+      "instagram_business_basic,instagram_business_content_publish,instagram_business_manage_comments,instagram_business_manage_messages",
     redirect_uri: redirectUri,
     state: csrfState,
   });

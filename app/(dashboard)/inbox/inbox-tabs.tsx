@@ -3,28 +3,31 @@
 import { useState } from "react";
 import InboxClient from "./inbox-client";
 import GmailClient from "./gmail-client";
+import InstagramClient from "./instagram-client";
+
+type TabId = "gmail" | "instagram" | "tiktok";
 
 type Props = {
   tiktok: { connected: boolean; hasCommentScope: boolean };
   gmail: { connected: boolean; canSend: boolean };
+  instagram: { connected: boolean; canComments: boolean; canMessages: boolean };
 };
 
-export default function InboxTabs({ tiktok, gmail }: Props) {
+export default function InboxTabs({ tiktok, gmail, instagram }: Props) {
   const tabs = [
     gmail.connected && { id: "gmail" as const, label: "Gmail" },
+    instagram.connected && { id: "instagram" as const, label: "Instagram" },
     tiktok.connected && { id: "tiktok" as const, label: "TikTok" },
-  ].filter(Boolean) as { id: "gmail" | "tiktok"; label: string }[];
+  ].filter(Boolean) as { id: TabId; label: string }[];
 
-  const [active, setActive] = useState<"gmail" | "tiktok">(
-    tabs[0]?.id ?? "tiktok"
-  );
+  const [active, setActive] = useState<TabId>(tabs[0]?.id ?? "tiktok");
 
   if (tabs.length === 0) {
     return (
       <div className="mt-10 flex flex-col items-center rounded-2xl border border-dashed border-white/10 bg-white/[0.02] px-6 py-16 text-center">
         <p className="text-sm font-medium text-zinc-300">No inbox sources connected</p>
         <p className="mt-1.5 max-w-sm text-sm text-zinc-500">
-          Connect Gmail or TikTok to see and reply to messages here.
+          Connect Gmail, Instagram, or TikTok to see and reply to messages here.
         </p>
         <a
           href="/dashboard"
@@ -58,6 +61,12 @@ export default function InboxTabs({ tiktok, gmail }: Props) {
 
       {active === "gmail" && gmail.connected && (
         <GmailClient canSend={gmail.canSend} />
+      )}
+      {active === "instagram" && instagram.connected && (
+        <InstagramClient
+          canComments={instagram.canComments}
+          canMessages={instagram.canMessages}
+        />
       )}
       {active === "tiktok" && tiktok.connected && (
         <InboxClient hasCommentScope={tiktok.hasCommentScope} />

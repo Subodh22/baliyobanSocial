@@ -72,6 +72,15 @@ export async function GET(req: NextRequest) {
   const expiresIn: number | undefined = longData.expires_in;
   const igUserId = String(short.user_id ?? "");
 
+  // The token response reports which permissions the user actually granted
+  // (array or comma-separated). Store those so the Inbox knows whether comment
+  // / message access is available without assuming it.
+  const grantedScope = short.permissions
+    ? Array.isArray(short.permissions)
+      ? short.permissions.join(",")
+      : String(short.permissions)
+    : "instagram_business_basic,instagram_business_content_publish,instagram_business_manage_comments,instagram_business_manage_messages";
+
   if (!accessToken || !igUserId) {
     console.error("Instagram token response missing fields:", JSON.stringify({ short, longData }));
     return fail("invalid_token_response");
@@ -84,7 +93,7 @@ export async function GET(req: NextRequest) {
     refresh_token: accessToken,
     expires_at: expiresIn ? Math.floor(Date.now() / 1000) + expiresIn : null,
     token_type: "bearer",
-    scope: "instagram_business_basic,instagram_business_content_publish",
+    scope: grantedScope,
     providerAccountId: igUserId,
   };
 

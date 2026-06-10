@@ -1,7 +1,7 @@
 // A single normalized item shown in the unified Inbox, regardless of source.
 export type InboxItem = {
   id: string;
-  source: "gmail" | "youtube" | "slack";
+  source: "gmail" | "youtube" | "slack" | "instagram";
   kind: string; // "email" | "comment" | "activity" | "message" | "dm"
   author: string; // sender / commenter / channel name
   title?: string; // email subject / video title / workspace

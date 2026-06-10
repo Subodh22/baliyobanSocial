@@ -1,6 +1,11 @@
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/db";
 import { gmailCanSend } from "@/lib/inbox/gmail";
+import {
+  igHasScope,
+  IG_COMMENTS_SCOPE,
+  IG_MESSAGES_SCOPE,
+} from "@/lib/oauth/instagram";
 import InboxTabs from "./inbox-tabs";
 
 export default async function Inbox() {
@@ -8,10 +13,11 @@ export default async function Inbox() {
 
   let tiktok = { connected: false, hasCommentScope: false };
   let gmail = { connected: false, canSend: false };
+  let instagram = { connected: false, canComments: false, canMessages: false };
 
   if (userId) {
     const accounts = await prisma.account.findMany({
-      where: { userId, provider: { in: ["tiktok", "gmail"] } },
+      where: { userId, provider: { in: ["tiktok", "gmail", "instagram"] } },
       select: { provider: true, scope: true },
     });
 
@@ -30,6 +36,15 @@ export default async function Inbox() {
     if (gm) {
       gmail = { connected: true, canSend: gmailCanSend(gm.scope) };
     }
+
+    const ig = accounts.find((a) => a.provider === "instagram");
+    if (ig) {
+      instagram = {
+        connected: true,
+        canComments: igHasScope(ig.scope, IG_COMMENTS_SCOPE),
+        canMessages: igHasScope(ig.scope, IG_MESSAGES_SCOPE),
+      };
+    }
   }
 
   return (
@@ -45,7 +60,7 @@ export default async function Inbox() {
         </div>
       </div>
 
-      <InboxTabs tiktok={tiktok} gmail={gmail} />
+      <InboxTabs tiktok={tiktok} gmail={gmail} instagram={instagram} />
     </>
   );
 }
