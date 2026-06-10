@@ -84,7 +84,7 @@ export async function GET(req: NextRequest) {
     refresh_token: accessToken,
     expires_at: expiresIn ? Math.floor(Date.now() / 1000) + expiresIn : null,
     token_type: "bearer",
-    scope: "instagram_business_basic,instagram_business_content_publish",
+    scope: "instagram_business_basic,instagram_business_content_publish,instagram_business_manage_comments",
     providerAccountId: igUserId,
   };
 
