@@ -12,6 +12,8 @@ export type InboxItem = {
   threadId?: string; // Gmail thread id
   fromEmail?: string; // sender's bare email address
   messageId?: string; // RFC 2822 Message-ID header, for In-Reply-To/References
+  // Instagram DM only: the other participant's IG-scoped id, to send a reply.
+  recipientId?: string;
 };
 
 // Optional per-source summary (e.g. YouTube channel stats).

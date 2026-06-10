@@ -9,6 +9,7 @@ type Item = {
   snippet: string;
   timestamp: number;
   url?: string;
+  recipientId?: string;
 };
 
 function timeAgo(unix: number): string {
@@ -37,6 +38,52 @@ export default function InstagramClient({
   const [needsReconnect, setNeedsReconnect] = useState(
     !canComments || !canMessages
   );
+
+  const [replyingId, setReplyingId] = useState<string | null>(null);
+  const [replyText, setReplyText] = useState("");
+  const [replySending, setReplySending] = useState(false);
+  const [replyError, setReplyError] = useState<string | null>(null);
+  const [repliedIds, setRepliedIds] = useState<Set<string>>(new Set());
+
+  async function sendReply(item: Item) {
+    if (!replyText.trim()) return;
+    setReplySending(true);
+    setReplyError(null);
+    try {
+      const endpoint =
+        view === "comments"
+          ? "/api/inbox/instagram/comment-reply"
+          : "/api/inbox/instagram/dm-send";
+      const body =
+        view === "comments"
+          ? { comment_id: item.id, message: replyText.trim() }
+          : { recipient_id: item.recipientId, message: replyText.trim() };
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      const data = await res.json();
+      if (data.needsReconnect) {
+        setNeedsReconnect(true);
+        return;
+      }
+      if (!res.ok) throw new Error(data.error ?? "Failed to send reply");
+      setRepliedIds((prev) => new Set(prev).add(item.id));
+      setReplyingId(null);
+      setReplyText("");
+    } catch (e) {
+      setReplyError(e instanceof Error ? e.message : "Failed to send reply");
+    } finally {
+      setReplySending(false);
+    }
+  }
+
+  function toggleReply(id: string) {
+    setReplyingId((cur) => (cur === id ? null : id));
+    setReplyText("");
+    setReplyError(null);
+  }
 
   useEffect(() => {
     (async () => {
@@ -151,15 +198,71 @@ export default function InstagramClient({
                 </p>
               )}
               <p className="mt-1.5 text-sm text-zinc-300">{item.snippet}</p>
-              {item.url && (
-                <a
-                  href={item.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-2 inline-block text-xs text-pink-400 hover:text-pink-300"
-                >
-                  View on Instagram &rarr;
-                </a>
+
+              <div className="mt-2 flex items-center gap-4 text-xs">
+                {view === "dms" && !item.recipientId ? null : repliedIds.has(
+                    item.id
+                  ) ? (
+                  <span className="text-emerald-400">Replied ✓</span>
+                ) : (
+                  <button
+                    onClick={() => toggleReply(item.id)}
+                    className="text-pink-400 hover:text-pink-300"
+                  >
+                    Reply
+                  </button>
+                )}
+                {item.url && (
+                  <a
+                    href={item.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-zinc-500 hover:text-zinc-300"
+                  >
+                    View on Instagram &rarr;
+                  </a>
+                )}
+              </div>
+
+              {replyingId === item.id && (
+                <div className="mt-3">
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={replyText}
+                      onChange={(e) => setReplyText(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && !e.shiftKey) {
+                          e.preventDefault();
+                          sendReply(item);
+                        }
+                      }}
+                      placeholder={
+                        view === "comments"
+                          ? "Write a reply…"
+                          : `Message ${item.author}…`
+                      }
+                      disabled={replySending}
+                      className="flex-1 rounded-lg border border-white/[0.06] bg-white/[0.03] px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:border-pink-500 focus:outline-none"
+                    />
+                    <button
+                      onClick={() => sendReply(item)}
+                      disabled={replySending || !replyText.trim()}
+                      className="rounded-lg bg-pink-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-pink-500 disabled:opacity-50"
+                    >
+                      {replySending ? "Sending…" : "Send"}
+                    </button>
+                  </div>
+                  {replyError && (
+                    <p className="mt-1 text-[11px] text-red-400">{replyError}</p>
+                  )}
+                  {view === "dms" && (
+                    <p className="mt-1 text-[11px] text-zinc-600">
+                      Instagram only delivers replies within 24h of the user’s
+                      last message.
+                    </p>
+                  )}
+                </div>
               )}
             </div>
           ))}

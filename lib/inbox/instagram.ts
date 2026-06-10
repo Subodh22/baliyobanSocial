@@ -121,6 +121,7 @@ export async function fetchInstagramDMs(
       title: "Direct message",
       snippet: last?.message ?? "",
       timestamp: ts(last?.created_time ?? conv.updated_time),
+      recipientId: other?.id,
     };
   });
 }
