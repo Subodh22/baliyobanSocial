@@ -144,17 +144,78 @@ export default function Compose() {
       </section>
 
       <section className="space-y-2">
-        <label className="text-sm font-medium text-zinc-400" htmlFor="media">
-          Media URL <span className="text-zinc-600">(image or video — required for Instagram, TikTok, YouTube)</span>
+        <label className="text-sm font-medium text-zinc-400">
+          Media <span className="text-zinc-600">(image or video — required for Instagram, TikTok, YouTube)</span>
         </label>
-        <input
-          id="media"
-          type="url"
-          value={mediaUrl}
-          onChange={(e) => setMediaUrl(e.target.value)}
-          placeholder="https://example.com/image.jpg"
-          className="w-full rounded-xl bg-white/[0.03] border border-white/[0.06] p-3 text-sm text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-indigo-500"
-        />
+
+        {!mediaUrl ? (
+          <label
+            htmlFor="media-file"
+            className="flex flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-white/10 bg-white/[0.02] p-8 cursor-pointer hover:border-indigo-500/40 transition-colors"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9A2.25 2.25 0 0013.5 5.25h-9A2.25 2.25 0 002.25 7.5v9A2.25 2.25 0 004.5 18.75z" />
+            </svg>
+            <span className="text-sm text-zinc-400">Click to attach a video or image</span>
+            <span className="text-xs text-zinc-600">or paste a URL below</span>
+            <input
+              id="media-file"
+              type="file"
+              accept="video/*,image/*"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) setMediaUrl(URL.createObjectURL(file));
+              }}
+            />
+            <input
+              type="url"
+              value={mediaUrl}
+              onChange={(e) => setMediaUrl(e.target.value)}
+              placeholder="https://example.com/video.mp4"
+              onClick={(e) => e.stopPropagation()}
+              className="mt-2 w-full max-w-md rounded-lg bg-white/[0.03] border border-white/[0.06] p-2 text-sm text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-indigo-500 text-center"
+            />
+          </label>
+        ) : (
+          <div className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-3 space-y-3">
+            {/\.(mp4|mov|webm|avi|mkv)(\?|$)/i.test(mediaUrl) || mediaUrl.startsWith("blob:") ? (
+              <video
+                src={mediaUrl}
+                controls
+                className="w-full max-h-64 rounded-lg object-contain bg-black"
+              />
+            ) : (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={mediaUrl}
+                alt="Media preview"
+                className="w-full max-h-64 rounded-lg object-contain bg-black"
+                onError={(e) => {
+                  // If image fails, try rendering as video
+                  const parent = e.currentTarget.parentElement;
+                  if (parent) {
+                    const video = document.createElement("video");
+                    video.src = mediaUrl;
+                    video.controls = true;
+                    video.className = "w-full max-h-64 rounded-lg object-contain bg-black";
+                    parent.replaceChild(video, e.currentTarget);
+                  }
+                }}
+              />
+            )}
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-zinc-500 truncate max-w-[80%]">{mediaUrl}</span>
+              <button
+                type="button"
+                onClick={() => setMediaUrl("")}
+                className="text-xs text-red-400 hover:text-red-300 font-medium"
+              >
+                Remove
+              </button>
+            </div>
+          </div>
+        )}
       </section>
 
       {error && (
