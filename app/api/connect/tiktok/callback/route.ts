@@ -68,6 +68,17 @@ export async function GET(req: NextRequest) {
   }
 
   const tokenData = await tokenRes.json();
+
+  // TikTok's v2 token endpoint returns HTTP 200 even on errors, with the
+  // failure described in the body. Surface that instead of a generic error.
+  if (tokenData.error) {
+    console.error("TikTok token exchange error:", tokenData);
+    const detail = tokenData.error_description ?? tokenData.error;
+    return Response.redirect(
+      `${process.env.NEXTAUTH_URL ?? "http://localhost:3000"}/settings?error=${encodeURIComponent(detail)}`
+    );
+  }
+
   const accessToken: string = tokenData.access_token;
   const refreshToken: string | undefined = tokenData.refresh_token;
   const expiresIn: number | undefined = tokenData.expires_in;
