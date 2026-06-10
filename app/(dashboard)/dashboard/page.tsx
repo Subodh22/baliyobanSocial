@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/db";
 import Link from "next/link";
 import NewConnectionButton from "./new-connection-button";
-import ManageButton from "./manage-button";
+import ConnectionActions from "./connection-actions";
 
 const PROVIDER_META: Record<string, { label: string; icon: string; color: string }> = {
   twitter:  { label: "Twitter / X", icon: "𝕏",  color: "bg-zinc-100 text-black" },
@@ -130,7 +130,7 @@ export default async function Dashboard() {
                   <span className="inline-flex items-center gap-1.5 rounded-md bg-white/[0.04] px-2 py-0.5 text-xs text-zinc-500">
                     <span className="h-1.5 w-1.5 rounded-full bg-amber-400" /> Default
                   </span>
-                  <ManageButton provider={acc.provider} />
+                  <ConnectionActions provider={acc.provider} />
                 </div>
               </div>
             );
