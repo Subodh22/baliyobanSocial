@@ -59,16 +59,25 @@ export async function GET(req: NextRequest) {
     }
   );
 
+  const tokenData = await tokenRes.json();
+  console.log("TikTok token response status:", tokenRes.status);
+  console.log("TikTok token response body:", JSON.stringify(tokenData));
+
   if (!tokenRes.ok) {
-    const err = await tokenRes.text();
-    console.error("TikTok token exchange failed:", err);
+    console.error("TikTok token exchange failed:", JSON.stringify(tokenData));
     return Response.redirect(
       `${process.env.NEXTAUTH_URL ?? "http://localhost:3000"}/settings?error=token_exchange_failed`
     );
   }
 
-  const tokenData = await tokenRes.json();
-  // TikTok v2 API may wrap the response in a `data` field
+  // TikTok v2 API wraps the response in a `data` field; check for API-level errors
+  if (tokenData.error?.code && tokenData.error.code !== "ok") {
+    console.error("TikTok API error:", JSON.stringify(tokenData.error));
+    return Response.redirect(
+      `${process.env.NEXTAUTH_URL ?? "http://localhost:3000"}/settings?error=${encodeURIComponent(tokenData.error.message || tokenData.error.code)}`
+    );
+  }
+
   const payload = tokenData.data ?? tokenData;
   const accessToken: string = payload.access_token;
   const refreshToken: string | undefined = payload.refresh_token;
@@ -77,7 +86,7 @@ export async function GET(req: NextRequest) {
   const scope: string | undefined = payload.scope;
 
   if (!accessToken || !openId) {
-    console.error("TikTok token response missing fields:", tokenData);
+    console.error("TikTok token response missing fields:", JSON.stringify(tokenData));
     return Response.redirect(
       `${process.env.NEXTAUTH_URL ?? "http://localhost:3000"}/settings?error=invalid_token_response`
     );
