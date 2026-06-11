@@ -38,15 +38,18 @@ function writeCache<T>(key: string, data: T) {
   }
 }
 
-export function useCachedFetch<T>(url: string, ttlMs = 5 * 60 * 1000) {
+// Pass url = null to disable the fetch entirely (e.g. a platform that isn't
+// connected); data stays null and loading reports false.
+export function useCachedFetch<T>(url: string | null, ttlMs = 5 * 60 * 1000) {
   const key = `inbox-cache:${url}`;
   const [data, setData] = useState<T | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(url !== null);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(
     async (silent: boolean) => {
+      if (url === null) return;
       if (silent) setRefreshing(true);
       else setLoading(true);
       setError(null);
@@ -70,6 +73,7 @@ export function useCachedFetch<T>(url: string, ttlMs = 5 * 60 * 1000) {
   // data instantly; only hit the network when there's nothing cached or it's
   // gone stale.
   useEffect(() => {
+    if (url === null) return;
     const cached = readCache<T>(key);
     if (cached) {
       setData(cached.data);
