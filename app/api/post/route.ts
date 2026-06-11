@@ -26,6 +26,21 @@ export async function POST(req: NextRequest) {
   if (!platforms?.length)
     return Response.json({ error: "Select at least one platform" }, { status: 400 });
 
+  // Simple abuse guard: cap post creation per user per hour. DB-backed so it
+  // holds across serverless instances.
+  const HOURLY_LIMIT = 30;
+  const recentCount = await prisma.post.count({
+    where: {
+      userId,
+      createdAt: { gte: new Date(Date.now() - 60 * 60 * 1000) },
+    },
+  });
+  if (recentCount >= HOURLY_LIMIT)
+    return Response.json(
+      { error: `Rate limit reached (${HOURLY_LIMIT} posts/hour). Try again later.` },
+      { status: 429 }
+    );
+
   // Scheduled post: store it and let the cron publisher pick it up.
   if (scheduledAt) {
     const when = new Date(scheduledAt);
