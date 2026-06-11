@@ -3,10 +3,12 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 // Platforms with a working connect + post flow in the product today.
-const LIVE_PLATFORMS = ["Instagram", "TikTok", "Facebook", "YouTube"];
+const LIVE_PLATFORMS = [
+  "Twitter/X", "Instagram", "TikTok", "Facebook", "LinkedIn", "YouTube",
+];
 
 const PLANNED_PLATFORMS = [
-  "Twitter/X", "LinkedIn", "WhatsApp", "Threads", "Reddit", "Pinterest",
+  "WhatsApp", "Threads", "Reddit", "Pinterest",
   "Bluesky", "Telegram", "Snapchat", "Google Business", "Discord",
 ];
 
@@ -30,7 +32,7 @@ const ENDPOINTS = [
 const FAQS = [
   { q: "How fast can I get started?", a: "Under five minutes: sign up, connect a social account via OAuth, and publish your first post from the composer. No developer apps or API reviews on your side." },
   { q: "Do I need to create developer apps for each platform?", a: "No. We handle all developer apps, approvals, and quota limits." },
-  { q: "Can I schedule posts?", a: "Scheduling is in active development and rolling out soon. Today you can publish instantly to all connected platforms from one composer." },
+  { q: "Can I schedule posts?", a: "Yes — pick a date and time in the composer and baliyoban publishes for you, or post instantly to all connected platforms at once." },
   { q: "Is baliyoban white-label friendly?", a: "White-label is on our roadmap for Business and Enterprise plans. It isn't available yet." },
   { q: "Will posting through baliyoban get my accounts banned or reduce reach?", a: "No. We only use official platform APIs, so your posts are treated exactly like native posts." },
   { q: "Can AI agents use baliyoban to post on social media?", a: "That's where we're headed: a public API and an MCP server are in development so agents can post, read analytics, and manage DMs. Join now and you'll get early access when they launch." },

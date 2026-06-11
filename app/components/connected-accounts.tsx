@@ -13,6 +13,8 @@ const PLATFORMS = [
   { provider: "google", label: "YouTube", icon: "▶", connectUrl: "/api/connect/google" },
   { provider: "gmail", label: "Gmail", icon: "✉", connectUrl: "/api/connect/gmail" },
   { provider: "slack", label: "Slack", icon: "#", connectUrl: "/api/connect/slack" },
+  { provider: "twitter", label: "Twitter / X", icon: "𝕏", connectUrl: "/api/connect/twitter" },
+  { provider: "linkedin", label: "LinkedIn", icon: "in", connectUrl: "/api/connect/linkedin" },
 ];
 
 export function ConnectedAccounts({ accounts }: Props) {

@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
 import { freshGoogleAccessToken } from "@/lib/oauth/google";
+import { freshTwitterAccessToken } from "@/lib/oauth/twitter";
 import { postToTwitter } from "@/lib/platforms/twitter";
 import { postToFacebook, postToInstagram } from "@/lib/platforms/facebook";
 import { postToLinkedIn } from "@/lib/platforms/linkedin";
@@ -32,7 +33,13 @@ export async function publishToPlatforms(
         if (!acc?.access_token) {
           results.twitter = { ok: false, error: "Twitter not connected" };
         } else {
-          results.twitter = await postToTwitter(acc.access_token, content, mediaUrl, mediaType);
+          // X access tokens expire after ~2h; refresh before posting.
+          const token = await freshTwitterAccessToken(acc);
+          if (!token) {
+            results.twitter = { ok: false, error: "Twitter session expired — please reconnect." };
+          } else {
+            results.twitter = await postToTwitter(token, content, mediaUrl, mediaType);
+          }
         }
         break;
       }

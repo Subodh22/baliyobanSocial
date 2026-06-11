@@ -16,7 +16,7 @@ const FEATURES: {
   {
     title: "Multi-Platform Publishing",
     desc: "Post text, images, and video to every connected platform from one composer — automatically formatted for each platform.",
-    platforms: "Live: Instagram, Facebook, TikTok, YouTube · Planned: Twitter/X, LinkedIn, Threads, Reddit, Pinterest, Bluesky, Telegram, Snapchat, Google Business, Discord, WhatsApp",
+    platforms: "Live: Twitter/X, Instagram, Facebook, LinkedIn, TikTok, YouTube · Planned: Threads, Reddit, Pinterest, Bluesky, Telegram, Snapchat, Google Business, Discord, WhatsApp",
     status: "live",
   },
   {
@@ -31,8 +31,8 @@ const FEATURES: {
   },
   {
     title: "Scheduling",
-    desc: "Schedule posts for optimal engagement times. Set it and forget it — baliyoban handles timezone conversion and platform-specific timing.",
-    status: "soon",
+    desc: "Pick a date and time in the composer and baliyoban publishes the post for you.",
+    status: "live",
   },
   {
     title: "Unified Analytics",

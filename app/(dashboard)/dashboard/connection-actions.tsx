@@ -10,7 +10,16 @@ export default function ConnectionActions({ provider }: { provider: string }) {
   const [confirming, setConfirming] = useState(false);
 
   // Providers with connect/disconnect endpoints wired up.
-  const supported = ["tiktok", "facebook", "instagram", "google", "gmail"].includes(provider);
+  const supported = [
+    "tiktok",
+    "facebook",
+    "instagram",
+    "google",
+    "gmail",
+    "twitter",
+    "linkedin",
+    "slack",
+  ].includes(provider);
 
   async function disconnect() {
     setDisconnecting(true);
