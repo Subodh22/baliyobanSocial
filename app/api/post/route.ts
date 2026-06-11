@@ -16,12 +16,13 @@ export async function POST(req: NextRequest) {
   // Keep a Prisma User row for the FK on Post.
   await ensureUser();
 
-  const { content, mediaUrl, mediaType, platforms } = await req.json() as {
-    content: string;
-    mediaUrl?: string;
-    mediaType?: "image" | "video";
-    platforms: string[];
-  };
+  let body: { content: string; mediaUrl?: string; mediaType?: "image" | "video"; platforms: string[] };
+  try {
+    body = await req.json();
+  } catch {
+    return Response.json({ error: "Invalid request body" }, { status: 400 });
+  }
+  const { content, mediaUrl, mediaType, platforms } = body;
 
   if (!content?.trim())
     return Response.json({ error: "Content is required" }, { status: 400 });

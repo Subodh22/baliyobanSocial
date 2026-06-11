@@ -49,10 +49,9 @@ export async function postToLinkedIn(
     return { ok: false, error: err.message ?? "LinkedIn post failed" };
   }
 
-  const data = await res.json();
-  const postId = data.id?.split(":").pop();
+  const data = await res.json().catch(() => ({})) as { id?: string };
   return {
     ok: true,
-    url: `https://www.linkedin.com/feed/update/${data.id}/`,
+    url: data.id ? `https://www.linkedin.com/feed/update/${data.id}/` : undefined,
   };
 }
