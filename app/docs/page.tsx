@@ -69,10 +69,19 @@ export default function Docs() {
           Everything you need to integrate baliyoban into your product.
         </p>
 
+        <div className="mt-6 rounded-xl border border-amber-500/20 bg-amber-500/5 px-5 py-4 text-sm text-amber-300/90">
+          The public API and API keys are <strong>in development</strong> — the
+          endpoints below preview the planned surface. Today, posting and the
+          unified inbox are available in the{" "}
+          <Link href="/sign-up" className="underline">dashboard</Link>; sign up
+          to get early access to the API when it launches.
+        </div>
+
         {/* Base URL */}
-        <div className="mt-8 rounded-xl border border-white/[0.06] bg-[#1a1a1a] px-5 py-4 font-mono text-sm">
+        <div className="mt-6 rounded-xl border border-white/[0.06] bg-[#1a1a1a] px-5 py-4 font-mono text-sm">
           <span className="text-zinc-500">Base URL:</span>{" "}
           <span className="text-zinc-200">https://api.baliyoban.com/v1</span>
+          <span className="ml-2 rounded bg-amber-500/10 px-2 py-0.5 text-[10px] text-amber-400/90">coming soon</span>
         </div>
 
         <div className="mt-12 space-y-12">
@@ -108,7 +117,7 @@ export default function Docs() {
             href="/sign-up"
             className="rounded-lg bg-[#EB3514] px-6 py-3 font-semibold text-white transition-opacity hover:opacity-90"
           >
-            Get Your API Key
+            Start for Free
           </Link>
         </div>
       </div>

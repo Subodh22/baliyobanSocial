@@ -61,13 +61,6 @@ export default async function Dashboard() {
         </div>
         <div className="flex items-center gap-2">
           <NewConnectionButton />
-          <button
-            disabled
-            title="Coming soon"
-            className="cursor-not-allowed rounded-lg border border-white/10 px-4 py-2 text-sm font-semibold text-zinc-600"
-          >
-            New Profile
-          </button>
         </div>
       </div>
 
@@ -94,10 +87,10 @@ export default async function Dashboard() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m9.86-2.338a4.5 4.5 0 0 0-1.242-7.244l4.5-4.5a4.5 4.5 0 1 1 6.364 6.364l-1.757 1.757" />
             </svg>
           </div>
-          <p className="mt-4 text-sm font-medium text-zinc-300">No platform connections yet</p>
+          <p className="mt-4 text-sm font-medium text-zinc-300">Connect your first account</p>
           <p className="mx-auto mt-1.5 max-w-sm text-sm leading-relaxed text-zinc-500">
-            You&rsquo;re signed in. Connecting social accounts for posting is
-            coming soon&nbsp;&mdash; it needs each platform&rsquo;s API approval.
+            Link a social account with &ldquo;New Connection&rdquo; above, then
+            post to all of them at once from the composer.
           </p>
           <Link
             href="/compose"
