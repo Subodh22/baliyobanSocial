@@ -36,6 +36,8 @@ export async function GET() {
       content: post.content,
       mediaUrl: post.mediaUrl,
       createdAt: post.createdAt.toISOString(),
+      status: post.status,
+      scheduledAt: post.scheduledAt?.toISOString() ?? null,
       results,
     };
   });

@@ -14,6 +14,8 @@ type AnalyticsData = {
     content: string;
     mediaUrl: string | null;
     createdAt: string;
+    status: string;
+    scheduledAt: string | null;
     results: Record<string, PlatformResult>;
   }[];
 };
@@ -209,6 +211,14 @@ export default function AnalyticsClient({
                 </span>
               </div>
               <div className="mt-2 flex flex-wrap items-center gap-2">
+                {post.status === "scheduled" && (
+                  <span className="rounded-full bg-amber-500/10 px-2.5 py-0.5 text-xs font-medium text-amber-400">
+                    Scheduled
+                    {post.scheduledAt
+                      ? ` · ${new Date(post.scheduledAt).toLocaleString()}`
+                      : ""}
+                  </span>
+                )}
                 {Object.entries(post.results).map(([platform, r]) =>
                   r.ok && r.url ? (
                     <a

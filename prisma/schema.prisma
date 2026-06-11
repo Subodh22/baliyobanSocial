@@ -54,12 +54,18 @@ model VerificationToken {
 }
 
 model Post {
-  id        String   @id @default(cuid())
-  userId    String
-  content   String
-  mediaUrl  String?
-  platforms String
-  results   String?
-  createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id          String    @id @default(cuid())
+  userId      String
+  content     String
+  mediaUrl    String?
+  mediaType   String?
+  platforms   String
+  results     String?
+  // "published" for instant posts, "scheduled" until the cron publishes it.
+  status      String    @default("published")
+  scheduledAt DateTime?
+  createdAt   DateTime  @default(now())
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([status, scheduledAt])
 }

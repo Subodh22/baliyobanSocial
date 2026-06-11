@@ -2,11 +2,7 @@ import { NextRequest } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/db";
 import { ensureUser } from "@/lib/user";
-import { postToTwitter } from "@/lib/platforms/twitter";
-import { postToFacebook, postToInstagram } from "@/lib/platforms/facebook";
-import { postToLinkedIn } from "@/lib/platforms/linkedin";
-import { postToTikTok } from "@/lib/platforms/tiktok";
-import { postToYouTube } from "@/lib/platforms/youtube";
+import { publishToPlatforms } from "@/lib/publish";
 
 export async function POST(req: NextRequest) {
   const { userId } = await auth();
@@ -16,105 +12,60 @@ export async function POST(req: NextRequest) {
   // Keep a Prisma User row for the FK on Post.
   await ensureUser();
 
-  const { content, mediaUrl, mediaType, platforms } = await req.json() as {
-    content: string;
-    mediaUrl?: string;
-    mediaType?: "image" | "video";
-    platforms: string[];
-  };
+  const { content, mediaUrl, mediaType, platforms, scheduledAt } =
+    (await req.json()) as {
+      content: string;
+      mediaUrl?: string;
+      mediaType?: "image" | "video";
+      platforms: string[];
+      scheduledAt?: string;
+    };
 
   if (!content?.trim())
     return Response.json({ error: "Content is required" }, { status: 400 });
+  if (!platforms?.length)
+    return Response.json({ error: "Select at least one platform" }, { status: 400 });
 
-  // Load all connected accounts for this user
-  const accounts = await prisma.account.findMany({
-    where: { userId },
-  });
+  // Scheduled post: store it and let the cron publisher pick it up.
+  if (scheduledAt) {
+    const when = new Date(scheduledAt);
+    if (isNaN(when.getTime()) || when.getTime() <= Date.now())
+      return Response.json(
+        { error: "Scheduled time must be in the future" },
+        { status: 400 }
+      );
 
-  const accountByProvider = Object.fromEntries(
-    accounts.map((a) => [a.provider, a])
-  );
-
-  const results: Record<string, { ok: boolean; url?: string; error?: string }> =
-    {};
-
-  for (const platform of platforms) {
-    switch (platform) {
-      case "twitter": {
-        const acc = accountByProvider["twitter"];
-        if (!acc?.access_token) {
-          results.twitter = { ok: false, error: "Twitter not connected" };
-        } else {
-          results.twitter = await postToTwitter(acc.access_token, content, mediaUrl, mediaType);
-        }
-        break;
-      }
-      case "facebook": {
-        const acc = accountByProvider["facebook"];
-        if (!acc?.access_token) {
-          results.facebook = { ok: false, error: "Facebook not connected" };
-        } else {
-          results.facebook = await postToFacebook(acc.access_token, content, mediaUrl, mediaType);
-        }
-        break;
-      }
-      case "instagram": {
-        const acc = accountByProvider["facebook"];
-        if (!acc?.access_token) {
-          results.instagram = { ok: false, error: "Instagram/Facebook not connected" };
-        } else {
-          results.instagram = await postToInstagram(acc.access_token, content, mediaUrl, mediaType);
-        }
-        break;
-      }
-      case "linkedin": {
-        const acc = accountByProvider["linkedin"];
-        if (!acc?.access_token) {
-          results.linkedin = { ok: false, error: "LinkedIn not connected" };
-        } else {
-          results.linkedin = await postToLinkedIn(
-            acc.access_token,
-            acc.providerAccountId,
-            content,
-            mediaUrl,
-            mediaType
-          );
-        }
-        break;
-      }
-      case "tiktok": {
-        const acc = accountByProvider["tiktok"];
-        if (!acc?.access_token) {
-          results.tiktok = { ok: false, error: "TikTok not connected" };
-        } else {
-          results.tiktok = await postToTikTok(acc.access_token, mediaUrl ?? "", content);
-        }
-        break;
-      }
-      case "youtube": {
-        const acc = accountByProvider["google"];
-        if (!acc?.access_token) {
-          results.youtube = { ok: false, error: "YouTube (Google) not connected" };
-        } else {
-          results.youtube = await postToYouTube(
-            acc.access_token,
-            mediaUrl ?? "",
-            content.slice(0, 100),
-            content
-          );
-        }
-        break;
-      }
-    }
+    const post = await prisma.post.create({
+      data: {
+        userId,
+        content,
+        mediaUrl,
+        mediaType,
+        platforms: JSON.stringify(platforms),
+        status: "scheduled",
+        scheduledAt: when,
+      },
+    });
+    return Response.json({ scheduled: true, id: post.id, scheduledAt: when.toISOString() });
   }
+
+  const results = await publishToPlatforms(
+    userId,
+    content,
+    mediaUrl,
+    mediaType,
+    platforms
+  );
 
   await prisma.post.create({
     data: {
       userId,
       content,
       mediaUrl,
+      mediaType,
       platforms: JSON.stringify(platforms),
       results: JSON.stringify(results),
+      status: "published",
     },
   });
 

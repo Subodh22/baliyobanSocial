@@ -36,6 +36,9 @@ export default function ComposeClient({
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<Record<string, Result> | null>(null);
   const [error, setError] = useState("");
+  const [scheduleOn, setScheduleOn] = useState(false);
+  const [scheduledAt, setScheduledAt] = useState("");
+  const [scheduledConfirmation, setScheduledConfirmation] = useState<string | null>(null);
 
   function togglePlatform(id: string) {
     setSelected((prev) => {
@@ -53,6 +56,8 @@ export default function ComposeClient({
   async function handlePost() {
     if (!content.trim()) return setError("Write something first!");
     if (selected.size === 0) return setError("Select at least one platform.");
+    if (scheduleOn && !scheduledAt)
+      return setError("Pick a date and time, or switch back to posting now.");
     setError("");
     setLoading(true);
     try {
@@ -64,16 +69,57 @@ export default function ComposeClient({
           mediaUrl: mediaUrl.trim() || undefined,
           mediaType: mediaUrl.trim() ? mediaType : undefined,
           platforms: Array.from(selected),
+          scheduledAt: scheduleOn && scheduledAt
+            ? new Date(scheduledAt).toISOString()
+            : undefined,
         }),
       });
       const data = await res.json();
       if (!res.ok) return setError(data.error ?? "Something went wrong");
-      setResults(data.results);
+      if (data.scheduled) {
+        setScheduledConfirmation(data.scheduledAt);
+      } else {
+        setResults(data.results);
+      }
     } catch {
       setError("Network error. Try again.");
     } finally {
       setLoading(false);
     }
+  }
+
+  if (scheduledConfirmation) {
+    return (
+      <div className="max-w-2xl space-y-8">
+        <h1 className="text-3xl font-bold">Post scheduled</h1>
+        <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-5 text-sm text-emerald-300">
+          Your post will be published around{" "}
+          <strong>{new Date(scheduledConfirmation).toLocaleString()}</strong> to{" "}
+          {Array.from(selected).join(", ")}.
+        </div>
+        <div className="flex gap-3">
+          <button
+            onClick={() => {
+              setScheduledConfirmation(null);
+              setContent("");
+              setMediaUrl("");
+              setMediaType("image");
+              setScheduleOn(false);
+              setScheduledAt("");
+            }}
+            className="px-4 py-2 rounded-lg border border-white/10 text-zinc-300 hover:bg-white/[0.04] text-sm font-medium transition-colors"
+          >
+            Compose another
+          </button>
+          <Link
+            href="/analytics"
+            className="px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-500 text-sm font-semibold transition-colors"
+          >
+            View post history
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   if (results) {
@@ -288,6 +334,49 @@ export default function ComposeClient({
         )}
       </section>
 
+      {/* When to post */}
+      <section className="space-y-2">
+        <label className="text-sm font-medium text-zinc-400">When</label>
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setScheduleOn(false)}
+            className={`px-3 py-1.5 rounded-lg border text-sm font-medium transition-colors ${
+              !scheduleOn
+                ? "bg-indigo-600 border-indigo-500 text-white"
+                : "border-white/10 text-zinc-400 hover:border-white/20 hover:text-zinc-300"
+            }`}
+          >
+            Post now
+          </button>
+          <button
+            type="button"
+            onClick={() => setScheduleOn(true)}
+            className={`px-3 py-1.5 rounded-lg border text-sm font-medium transition-colors ${
+              scheduleOn
+                ? "bg-indigo-600 border-indigo-500 text-white"
+                : "border-white/10 text-zinc-400 hover:border-white/20 hover:text-zinc-300"
+            }`}
+          >
+            Schedule
+          </button>
+          {scheduleOn && (
+            <input
+              type="datetime-local"
+              value={scheduledAt}
+              onChange={(e) => setScheduledAt(e.target.value)}
+              min={new Date(Date.now() + 5 * 60 * 1000).toISOString().slice(0, 16)}
+              className="rounded-lg bg-white/[0.03] border border-white/[0.06] px-3 py-1.5 text-sm text-zinc-100 focus:outline-none focus:border-indigo-500 [color-scheme:dark]"
+            />
+          )}
+        </div>
+        {scheduleOn && (
+          <p className="text-xs text-zinc-600">
+            Scheduled posts publish within the cron window after the chosen time.
+          </p>
+        )}
+      </section>
+
       {error && (
         <p className="text-sm text-red-400 bg-red-950/30 border border-red-500/20 rounded-lg px-4 py-2">
           {error}
@@ -299,7 +388,13 @@ export default function ComposeClient({
         disabled={loading || uploading || !content.trim()}
         className="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed text-base font-semibold transition-colors"
       >
-        {loading ? "Posting…" : uploading ? "Uploading media…" : `Post to ${selected.size} platform${selected.size !== 1 ? "s" : ""}`}
+        {loading
+          ? scheduleOn ? "Scheduling…" : "Posting…"
+          : uploading
+            ? "Uploading media…"
+            : scheduleOn
+              ? `Schedule for ${selected.size} platform${selected.size !== 1 ? "s" : ""}`
+              : `Post to ${selected.size} platform${selected.size !== 1 ? "s" : ""}`}
       </button>
     </div>
   );
