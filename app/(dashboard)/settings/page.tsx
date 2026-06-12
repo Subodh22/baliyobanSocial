@@ -24,7 +24,7 @@ export default async function Settings() {
     <>
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-zinc-100">Settings</h1>
-        <p className="mt-1 text-sm text-zinc-500">Account preferences, billing, and workspace configuration</p>
+        <p className="mt-1 text-sm text-zinc-500">Account preferences and connected platforms</p>
       </div>
 
       <div className="mt-8 space-y-6 max-w-2xl">
@@ -59,42 +59,19 @@ export default async function Settings() {
           <ConnectedAccounts accounts={accounts} />
         </Suspense>
 
-        {/* Plan & Billing */}
+        {/* Plan */}
         <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-6">
-          <h2 className="text-lg font-semibold text-zinc-200">Plan &amp; Billing</h2>
+          <h2 className="text-lg font-semibold text-zinc-200">Plan</h2>
           <div className="mt-4 flex items-center gap-3">
             <span className="rounded-full bg-indigo-500/10 px-3 py-1 text-sm font-medium text-indigo-400">Free</span>
-            <span className="text-sm text-zinc-500">Up to 2 connected accounts</span>
-          </div>
-          <div className="mt-4 flex gap-3">
-            <button disabled className="cursor-not-allowed rounded-lg bg-indigo-600/40 px-4 py-2 text-sm font-semibold text-indigo-300/60">
-              Upgrade Plan
-            </button>
-            <button disabled className="cursor-not-allowed rounded-lg border border-white/10 px-4 py-2 text-sm font-semibold text-zinc-600">
-              Billing History
-            </button>
-          </div>
-        </div>
-
-        {/* Notifications */}
-        <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-6">
-          <h2 className="text-lg font-semibold text-zinc-200">Notifications</h2>
-          <div className="mt-4 space-y-3">
-            {[
-              { label: "Post published", desc: "Get notified when a scheduled post goes live" },
-              { label: "Post failed", desc: "Get alerted if a post fails to publish" },
-              { label: "Weekly digest", desc: "Receive a weekly summary of your analytics" },
-            ].map((item) => (
-              <div key={item.label} className="flex items-center justify-between rounded-lg border border-white/[0.04] bg-white/[0.02] px-4 py-3">
-                <div>
-                  <p className="text-sm font-medium text-zinc-200">{item.label}</p>
-                  <p className="text-xs text-zinc-500">{item.desc}</p>
-                </div>
-                <div className="h-5 w-9 rounded-full bg-white/[0.06] relative">
-                  <div className="absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-zinc-500 transition-transform" />
-                </div>
-              </div>
-            ))}
+            <span className="text-sm text-zinc-500">
+              Everything is free while baliyoban is in early access. Paid plans
+              are on the{" "}
+              <Link href="/roadmap" className="text-indigo-400 hover:text-indigo-300">
+                roadmap
+              </Link>
+              .
+            </span>
           </div>
         </div>
 

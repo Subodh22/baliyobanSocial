@@ -8,12 +8,7 @@ const NAV = [
   { label: "Posts", href: "/compose" },
   { label: "Analytics", href: "/analytics" },
   { label: "Inbox", href: "/inbox" },
-  { label: "Ads", href: "/ads" },
-  { label: "Numbers", href: "/numbers" },
-  { label: "API Keys", href: "/api-keys" },
   { label: "Users", href: "/users" },
-  { label: "Webhooks", href: "/webhooks" },
-  { label: "Logs", href: "/logs" },
   { label: "Settings", href: "/settings" },
 ];
 

@@ -10,12 +10,9 @@ export default async function Users() {
           <h1 className="text-2xl font-bold tracking-tight text-zinc-100">Users</h1>
           <p className="mt-1 text-sm text-zinc-500">Manage team members and their access to your profiles</p>
         </div>
-        <button
-          disabled
-          className="cursor-not-allowed rounded-lg bg-indigo-600/40 px-4 py-2 text-sm font-semibold text-indigo-300/60"
-        >
-          + Invite User
-        </button>
+        <span className="rounded-lg border border-white/10 px-4 py-2 text-sm text-zinc-500">
+          Team seats arrive with the Pro plan
+        </span>
       </div>
 
       {/* Roles overview */}

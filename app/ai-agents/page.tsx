@@ -29,21 +29,23 @@ export default function AiAgents() {
 
       <div className="mx-auto max-w-6xl px-6 py-20">
         <div className="text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-zinc-300">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#EB3514]" />
-            MCP Server
+          <span className="inline-flex items-center gap-2 rounded-full border border-amber-500/20 bg-amber-500/5 px-3 py-1 text-xs font-medium text-amber-400/90">
+            <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
+            MCP Server · In development
           </span>
           <h1 className="mt-6 text-4xl font-bold tracking-tight sm:text-5xl">
             Social media for AI agents
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-lg text-zinc-400">
-            280+ tools via Model Context Protocol. Your AI agent can post, schedule, analyze, and manage DMs — all through natural language.
+            We&apos;re building an MCP server so your AI agent can post,
+            schedule, analyze, and manage DMs through natural language. Sign up
+            now for early access when it launches.
           </p>
         </div>
 
         {/* Code example */}
         <div className="mx-auto mt-12 max-w-2xl rounded-xl border border-white/10 bg-[#1a1a1a] p-6 font-mono text-sm text-zinc-300">
-          <p className="text-zinc-500"># Claude Desktop config</p>
+          <p className="text-zinc-500"># Claude Desktop config (preview)</p>
           <pre className="mt-2 overflow-x-auto">{`{
   "mcpServers": {
     "baliyoban": {
@@ -59,7 +61,7 @@ export default function AiAgents() {
 
         {/* Capabilities */}
         <div className="mt-16">
-          <h2 className="text-center text-2xl font-bold tracking-tight">What your agent can do</h2>
+          <h2 className="text-center text-2xl font-bold tracking-tight">What your agent will be able to do</h2>
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {CAPABILITIES.map((c) => (
               <div key={c.title} className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-5">
@@ -88,7 +90,7 @@ export default function AiAgents() {
             href="/sign-up"
             className="inline-block rounded-lg bg-[#EB3514] px-8 py-3.5 text-lg font-semibold text-white transition-opacity hover:opacity-90"
           >
-            Get Your API Key
+            Get Early Access
           </Link>
         </div>
       </div>
