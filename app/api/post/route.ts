@@ -4,6 +4,10 @@ import { prisma } from "@/lib/db";
 import { ensureUser } from "@/lib/user";
 import { publishToPlatforms } from "@/lib/publish";
 
+// Publishing can involve downloading and re-uploading video to platforms,
+// which easily exceeds the default serverless timeout.
+export const maxDuration = 300;
+
 export async function POST(req: NextRequest) {
   const { userId } = await auth();
   if (!userId)

@@ -18,6 +18,16 @@ const VIDEO_RE = /\.(mp4|mov|webm|avi|mkv)(\?|$)/i;
 
 type Result = { ok: boolean; url?: string; error?: string };
 
+// Parse a response body that may be empty or non-JSON (e.g. a gateway
+// timeout or 413 from the platform) without throwing.
+async function safeJson(res: Response): Promise<Record<string, any> | null> {
+  try {
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
 export default function ComposeClient({
   connectedProviders,
 }: {
@@ -74,8 +84,14 @@ export default function ComposeClient({
             : undefined,
         }),
       });
-      const data = await res.json();
-      if (!res.ok) return setError(data.error ?? "Something went wrong");
+      const data = await safeJson(res);
+      if (!res.ok || !data)
+        return setError(
+          data?.error ??
+            (res.status === 504
+              ? "Publishing timed out. Check Analytics to see if the post went through."
+              : `Something went wrong (status ${res.status}).`)
+        );
       if (data.scheduled) {
         setScheduledConfirmation(data.scheduledAt);
       } else {
@@ -274,8 +290,14 @@ export default function ComposeClient({
                   const fd = new FormData();
                   fd.append("file", file);
                   const res = await fetch("/api/upload", { method: "POST", body: fd });
-                  const data = await res.json();
-                  if (!res.ok) throw new Error(data.error ?? "Upload failed");
+                  const data = await safeJson(res);
+                  if (!res.ok || !data)
+                    throw new Error(
+                      data?.error ??
+                        (res.status === 413
+                          ? "File is too large to upload."
+                          : `Upload failed (status ${res.status}).`)
+                    );
                   setMediaUrl(data.url);
                   setMediaType(file.type.startsWith("video/") ? "video" : "image");
                 } catch (err) {
