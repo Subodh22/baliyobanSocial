@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { upload } from "@vercel/blob/client";
 
 const PLATFORMS = [
   // provider = the connected Account provider each platform posts through
@@ -18,16 +19,6 @@ const VIDEO_RE = /\.(mp4|mov|webm|avi|mkv)(\?|$)/i;
 
 type Result = { ok: boolean; url?: string; error?: string };
 
-// Parse a response body that may be empty or non-JSON (e.g. a gateway
-// timeout or 413 from the platform) without throwing.
-async function safeJson(res: Response): Promise<Record<string, any> | null> {
-  try {
-    return await res.json();
-  } catch {
-    return null;
-  }
-}
-
 export default function ComposeClient({
   connectedProviders,
 }: {
@@ -43,6 +34,7 @@ export default function ComposeClient({
     () => new Set(PLATFORMS.filter((p) => connected.has(p.provider)).map((p) => p.id))
   );
   const [uploading, setUploading] = useState(false);
+  const [uploadPct, setUploadPct] = useState(0);
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<Record<string, Result> | null>(null);
   const [error, setError] = useState("");
@@ -61,6 +53,28 @@ export default function ComposeClient({
   function handleMediaUrl(url: string) {
     setMediaUrl(url);
     setMediaType(VIDEO_RE.test(url) ? "video" : "image");
+  }
+
+  async function handleFile(file: File) {
+    setError("");
+    setUploading(true);
+    setUploadPct(0);
+    try {
+      // Upload straight from the browser to Vercel Blob; /api/upload only
+      // mints the token. This bypasses the serverless body-size limit
+      // (~4.5MB) that large videos would hit on a FormData upload.
+      const blob = await upload(file.name, file, {
+        access: "public",
+        handleUploadUrl: "/api/upload",
+        onUploadProgress: ({ percentage }) => setUploadPct(percentage),
+      });
+      setMediaUrl(blob.url);
+      setMediaType(file.type.startsWith("image/") ? "image" : "video");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Upload failed. Try again.");
+    } finally {
+      setUploading(false);
+    }
   }
 
   async function handlePost() {
@@ -84,14 +98,11 @@ export default function ComposeClient({
             : undefined,
         }),
       });
-      const data = await safeJson(res);
-      if (!res.ok || !data)
-        return setError(
-          data?.error ??
-            (res.status === 504
-              ? "Publishing timed out. Check Analytics to see if the post went through."
-              : `Something went wrong (status ${res.status}).`)
-        );
+      // Guard against empty/non-JSON error responses (e.g. a 413 or crash),
+      // which previously surfaced as "Unexpected end of JSON input".
+      const data = await res.json().catch(() => null);
+      if (!res.ok) return setError(data?.error ?? `Request failed (${res.status})`);
+      if (!data) return setError("Empty response from server. Try again.");
       if (data.scheduled) {
         setScheduledConfirmation(data.scheduledAt);
       } else {
@@ -256,7 +267,7 @@ export default function ComposeClient({
 
       <section className="space-y-2">
         <label className="text-sm font-medium text-zinc-400">
-          Media <span className="text-zinc-600">(image or video — required for Instagram, TikTok, YouTube)</span>
+          Media <span className="text-zinc-600">(image, video, or audio — required for Instagram, TikTok, YouTube)</span>
         </label>
 
         {!mediaUrl ? (
@@ -274,37 +285,27 @@ export default function ComposeClient({
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9A2.25 2.25 0 0013.5 5.25h-9A2.25 2.25 0 002.25 7.5v9A2.25 2.25 0 004.5 18.75z" />
               </svg>
             )}
-            <span className="text-sm text-zinc-400">{uploading ? "Uploading…" : "Click to attach a video or image"}</span>
+            <span className="text-sm text-zinc-400">
+              {uploading ? `Uploading… ${Math.round(uploadPct)}%` : "Click to attach a video, image, or audio file"}
+            </span>
             {!uploading && <span className="text-xs text-zinc-600">or paste a URL below</span>}
+            {uploading && (
+              <div className="w-full max-w-md h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
+                <div
+                  className="h-full bg-indigo-500 transition-all"
+                  style={{ width: `${uploadPct}%` }}
+                />
+              </div>
+            )}
             <input
               id="media-file"
               type="file"
-              accept="video/*,image/*"
+              accept="video/*,image/*,audio/*"
               className="hidden"
-              onChange={async (e) => {
+              onChange={(e) => {
                 const file = e.target.files?.[0];
-                if (!file) return;
-                setUploading(true);
-                setError("");
-                try {
-                  const fd = new FormData();
-                  fd.append("file", file);
-                  const res = await fetch("/api/upload", { method: "POST", body: fd });
-                  const data = await safeJson(res);
-                  if (!res.ok || !data)
-                    throw new Error(
-                      data?.error ??
-                        (res.status === 413
-                          ? "File is too large to upload."
-                          : `Upload failed (status ${res.status}).`)
-                    );
-                  setMediaUrl(data.url);
-                  setMediaType(file.type.startsWith("video/") ? "video" : "image");
-                } catch (err) {
-                  setError(err instanceof Error ? err.message : "Upload failed");
-                } finally {
-                  setUploading(false);
-                }
+                e.target.value = "";
+                if (file) handleFile(file);
               }}
             />
             <input
