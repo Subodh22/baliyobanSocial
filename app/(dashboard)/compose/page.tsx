@@ -13,6 +13,9 @@ export default async function Compose() {
   });
 
   return (
-    <ComposeClient connectedProviders={accounts.map((a) => a.provider)} />
+    <ComposeClient
+      connectedProviders={accounts.map((a) => a.provider)}
+      tiktokDirectPost={process.env.TIKTOK_DIRECT_POST_ENABLED === "true"}
+    />
   );
 }

@@ -4,10 +4,19 @@ import { freshTwitterAccessToken } from "@/lib/oauth/twitter";
 import { postToTwitter } from "@/lib/platforms/twitter";
 import { postToFacebook, postToInstagram } from "@/lib/platforms/facebook";
 import { postToLinkedIn } from "@/lib/platforms/linkedin";
-import { postToTikTok } from "@/lib/platforms/tiktok";
+import {
+  postToTikTokInbox,
+  postToTikTokDirect,
+  type TikTokDirectPostOptions,
+} from "@/lib/platforms/tiktok";
 import { postToYouTube } from "@/lib/platforms/youtube";
 
-export type PublishResult = { ok: boolean; url?: string; error?: string };
+export type PublishResult = {
+  ok: boolean;
+  url?: string;
+  note?: string;
+  error?: string;
+};
 
 // TikTok PULL_FROM_URL requires the media URL's host to be verified with
 // TikTok. Our uploads live on an unverifiable Vercel Blob host, so swap a blob
@@ -33,7 +42,10 @@ export async function publishToPlatforms(
   content: string,
   mediaUrl: string | undefined,
   mediaType: "image" | "video" | undefined,
-  platforms: string[]
+  platforms: string[],
+  // User-chosen TikTok Direct Post settings (instant posts only). When absent
+  // — or when Direct Post is disabled — TikTok falls back to inbox upload.
+  tiktok?: TikTokDirectPostOptions
 ): Promise<Record<string, PublishResult>> {
   const accounts = await prisma.account.findMany({ where: { userId } });
   const accountByProvider = Object.fromEntries(
@@ -96,21 +108,31 @@ export async function publishToPlatforms(
         const acc = accountByProvider["tiktok"];
         if (!acc?.access_token) {
           results.tiktok = { ok: false, error: "TikTok not connected" };
-        } else if (!(acc.scope ?? "").split(",").includes("video.publish")) {
-          // Direct Post needs video.publish. Tokens minted before that scope
-          // was granted fail with TikTok's raw "user did not authorize the
-          // scope" error — surface a clear reconnect prompt instead.
+          break;
+        }
+        const granted = (acc.scope ?? "").split(",");
+        const directEnabled =
+          process.env.TIKTOK_DIRECT_POST_ENABLED === "true";
+        // Direct Post requires the env flag, per-post settings (instant posts),
+        // AND the video.publish scope. Missing any of these degrades to inbox
+        // upload (needs video.upload) rather than failing the post.
+        const useDirect =
+          directEnabled && Boolean(tiktok) && granted.includes("video.publish");
+        const videoUrl = toVerifiedMediaUrl(mediaUrl ?? "");
+        if (useDirect) {
+          results.tiktok = await postToTikTokDirect(
+            acc.access_token,
+            videoUrl,
+            content,
+            tiktok!
+          );
+        } else if (!granted.includes("video.upload")) {
           results.tiktok = {
             ok: false,
-            error:
-              "Publishing permission not granted. Please reconnect TikTok to allow posting.",
+            error: "Upload permission not granted. Please reconnect TikTok.",
           };
         } else {
-          results.tiktok = await postToTikTok(
-            acc.access_token,
-            toVerifiedMediaUrl(mediaUrl ?? ""),
-            content
-          );
+          results.tiktok = await postToTikTokInbox(acc.access_token, videoUrl);
         }
         break;
       }

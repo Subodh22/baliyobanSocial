@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import TikTokOptions from "./tiktok-options";
+import type { TikTokDirectPostOptions } from "@/lib/platforms/tiktok";
 
 const PLATFORMS = [
   // provider = the connected Account provider each platform posts through
@@ -16,12 +18,23 @@ const PLATFORMS = [
 
 const VIDEO_RE = /\.(mp4|mov|webm|avi|mkv)(\?|$)/i;
 
-type Result = { ok: boolean; url?: string; error?: string };
+type Result = { ok: boolean; url?: string; note?: string; error?: string };
+
+const DEFAULT_TIKTOK_OPTIONS: TikTokDirectPostOptions = {
+  privacyLevel: "",
+  allowComment: false,
+  allowDuet: false,
+  allowStitch: false,
+  yourBrand: false,
+  brandedContent: false,
+};
 
 export default function ComposeClient({
   connectedProviders,
+  tiktokDirectPost,
 }: {
   connectedProviders: string[];
+  tiktokDirectPost: boolean;
 }) {
   const connected = new Set(connectedProviders);
 
@@ -40,6 +53,16 @@ export default function ComposeClient({
   const [scheduleOn, setScheduleOn] = useState(false);
   const [scheduledAt, setScheduledAt] = useState("");
   const [scheduledConfirmation, setScheduledConfirmation] = useState<string | null>(null);
+  const [tiktokOptions, setTiktokOptions] = useState<TikTokDirectPostOptions>(
+    DEFAULT_TIKTOK_OPTIONS
+  );
+  const [tiktokReady, setTiktokReady] = useState(false);
+
+  // The compliant Direct Post picker is shown only when Direct Post is enabled
+  // and TikTok is a chosen target. Scheduled posts use inbox upload, which
+  // needs no options.
+  const showTikTokOptions =
+    tiktokDirectPost && selected.has("tiktok") && !scheduleOn;
 
   function togglePlatform(id: string) {
     setSelected((prev) => {
@@ -78,6 +101,8 @@ export default function ComposeClient({
     if (selected.size === 0) return setError("Select at least one platform.");
     if (scheduleOn && !scheduledAt)
       return setError("Pick a date and time, or switch back to posting now.");
+    if (showTikTokOptions && !tiktokReady)
+      return setError("Finish the TikTok options — choose who can view your post.");
     setError("");
     setLoading(true);
     try {
@@ -92,6 +117,7 @@ export default function ComposeClient({
           scheduledAt: scheduleOn && scheduledAt
             ? new Date(scheduledAt).toISOString()
             : undefined,
+          tiktok: showTikTokOptions ? tiktokOptions : undefined,
         }),
       });
       // Guard against empty/non-JSON error responses (e.g. a 413 or crash),
@@ -160,7 +186,9 @@ export default function ComposeClient({
               </span>
               <div className="text-sm">
                 {r.ok ? (
-                  r.url ? (
+                  r.note ? (
+                    <span className="text-emerald-400">{r.note}</span>
+                  ) : r.url ? (
                     <a href={r.url} target="_blank" rel="noopener noreferrer" className="text-indigo-400 underline">
                       View post
                     </a>
@@ -352,6 +380,24 @@ export default function ComposeClient({
           </div>
         )}
       </section>
+
+      {showTikTokOptions && (
+        <section className="space-y-2">
+          <label className="text-sm font-medium text-zinc-400">TikTok</label>
+          <TikTokOptions
+            value={tiktokOptions}
+            onChange={setTiktokOptions}
+            onValidityChange={setTiktokReady}
+          />
+        </section>
+      )}
+
+      {selected.has("tiktok") && !showTikTokOptions && (
+        <p className="text-xs text-zinc-500 bg-white/[0.02] border border-white/[0.06] rounded-lg px-4 py-2">
+          TikTok posts are sent to your TikTok inbox — open the app and tap the
+          notification to finish posting.
+        </p>
+      )}
 
       {/* When to post */}
       <section className="space-y-2">

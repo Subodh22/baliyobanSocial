@@ -3,6 +3,7 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/db";
 import { ensureUser } from "@/lib/user";
 import { publishToPlatforms } from "@/lib/publish";
+import type { TikTokDirectPostOptions } from "@/lib/platforms/tiktok";
 
 // Publishing can involve downloading and re-uploading video to platforms,
 // which easily exceeds the default serverless timeout.
@@ -16,13 +17,14 @@ export async function POST(req: NextRequest) {
   // Keep a Prisma User row for the FK on Post.
   await ensureUser();
 
-  const { content, mediaUrl, mediaType, platforms, scheduledAt } =
+  const { content, mediaUrl, mediaType, platforms, scheduledAt, tiktok } =
     (await req.json()) as {
       content: string;
       mediaUrl?: string;
       mediaType?: "image" | "video";
       platforms: string[];
       scheduledAt?: string;
+      tiktok?: TikTokDirectPostOptions;
     };
 
   if (!content?.trim())
@@ -73,7 +75,8 @@ export async function POST(req: NextRequest) {
     content,
     mediaUrl,
     mediaType,
-    platforms
+    platforms,
+    tiktok
   );
 
   await prisma.post.create({
