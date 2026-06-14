@@ -34,10 +34,7 @@ export async function GET() {
     client_key: clientKey,
     response_type: "code",
     // Must be a subset of the scopes enabled on the TikTok app/sandbox.
-    // user.info.basic: open id, avatar, display name (Login Kit)
-    // video.publish: directly post to TikTok (Content Posting API)
-    // video.upload: upload as draft (Content Posting API)
-    scope: "user.info.basic,video.publish,video.upload",
+    scope: "user.info.profile,video.list,video.upload",
     redirect_uri: redirectUri,
     state: csrfState,
   });
