@@ -9,6 +9,22 @@ import { postToYouTube } from "@/lib/platforms/youtube";
 
 export type PublishResult = { ok: boolean; url?: string; error?: string };
 
+// TikTok PULL_FROM_URL requires the media URL's host to be verified with
+// TikTok. Our uploads live on an unverifiable Vercel Blob host, so swap a blob
+// URL for its proxied equivalent on our own verified domain (see the /media
+// rewrite in next.config.ts). Non-blob URLs (e.g. a pasted link) pass through.
+function toVerifiedMediaUrl(mediaUrl: string): string {
+  const base = process.env.NEXTAUTH_URL;
+  if (!base) return mediaUrl;
+  try {
+    const u = new URL(mediaUrl);
+    if (!u.hostname.endsWith(".blob.vercel-storage.com")) return mediaUrl;
+    return `${base.replace(/\/$/, "")}/media${u.pathname}`;
+  } catch {
+    return mediaUrl;
+  }
+}
+
 // Publishes content to the given platforms using the user's connected
 // accounts. Shared by the /api/post route (instant posts) and the cron
 // publisher (scheduled posts).
@@ -90,7 +106,11 @@ export async function publishToPlatforms(
               "Publishing permission not granted. Please reconnect TikTok to allow posting.",
           };
         } else {
-          results.tiktok = await postToTikTok(acc.access_token, mediaUrl ?? "", content);
+          results.tiktok = await postToTikTok(
+            acc.access_token,
+            toVerifiedMediaUrl(mediaUrl ?? ""),
+            content
+          );
         }
         break;
       }
