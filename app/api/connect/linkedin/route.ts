@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 
 // Starts the LinkedIn OAuth flow. w_member_social is needed to post;
 // openid/profile give us a stable member id via /v2/userinfo.
-const SCOPE = "openid profile email w_member_social";
+const SCOPE = "openid profile email w_member_social_v2";
 
 export async function GET() {
   const { userId } = await auth();

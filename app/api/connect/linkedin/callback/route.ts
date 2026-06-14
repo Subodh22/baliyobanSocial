@@ -62,7 +62,7 @@ export async function GET(req: NextRequest) {
       ? Math.floor(Date.now() / 1000) + tokens.expires_in
       : null,
     token_type: "bearer",
-    scope: tokens.scope ?? "openid profile email w_member_social",
+    scope: tokens.scope ?? "openid profile email w_member_social_v2",
     providerAccountId: String(me.sub),
   };
 

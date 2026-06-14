@@ -1,5 +1,5 @@
 // Posts a share to LinkedIn on behalf of the authenticated user.
-// Requires w_member_social scope.
+// Uses the Community Management Posts API (w_member_social_v2 scope).
 export async function postToLinkedIn(
   accessToken: string,
   personId: string,
@@ -7,38 +7,33 @@ export async function postToLinkedIn(
   mediaUrl?: string,
   mediaType?: "image" | "video"
 ): Promise<{ ok: boolean; url?: string; error?: string }> {
-  const mediaCategory = mediaUrl
-    ? mediaType === "video" ? "VIDEO" : "IMAGE"
-    : "NONE";
-
   const body: Record<string, unknown> = {
     author: `urn:li:person:${personId}`,
     lifecycleState: "PUBLISHED",
-    specificContent: {
-      "com.linkedin.ugc.ShareContent": {
-        shareCommentary: { text },
-        shareMediaCategory: mediaCategory,
-        ...(mediaUrl
-          ? {
-              media: [
-                {
-                  status: "READY",
-                  description: { text },
-                  originalUrl: mediaUrl,
-                },
-              ],
-            }
-          : {}),
-      },
+    visibility: "PUBLIC",
+    commentary: text,
+    distribution: {
+      feedDistribution: "MAIN_FEED",
+      targetEntities: [],
+      thirdPartyDistributionChannels: [],
     },
-    visibility: { "com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC" },
   };
 
-  const res = await fetch("https://api.linkedin.com/v2/ugcPosts", {
+  if (mediaUrl) {
+    body.content = {
+      media: {
+        altText: text.slice(0, 200),
+        id: mediaUrl,
+      },
+    };
+  }
+
+  const res = await fetch("https://api.linkedin.com/rest/posts", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
+      "LinkedIn-Version": "202402",
       "X-Restli-Protocol-Version": "2.0.0",
     },
     body: JSON.stringify(body),
@@ -49,10 +44,12 @@ export async function postToLinkedIn(
     return { ok: false, error: err.message ?? "LinkedIn post failed" };
   }
 
-  const data = await res.json();
-  const postId = data.id?.split(":").pop();
+  // The Posts API returns 201 with the post URN in the x-restli-id header.
+  const postUrn = res.headers.get("x-restli-id") ?? "";
   return {
     ok: true,
-    url: `https://www.linkedin.com/feed/update/${data.id}/`,
+    url: postUrn
+      ? `https://www.linkedin.com/feed/update/${postUrn}/`
+      : undefined,
   };
 }
