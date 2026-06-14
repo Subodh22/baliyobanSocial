@@ -70,10 +70,11 @@ export async function postToFacebook(
   };
 }
 
-// Posts a photo to Instagram Business account linked to the first Page.
-// Requires instagram_basic,instagram_content_publish permissions.
+// Posts a photo or video to Instagram using the Instagram Graph API.
+// Requires instagram_business_content_publish permission.
 export async function postToInstagram(
   accessToken: string,
+  igUserId: string,
   text: string,
   mediaUrl?: string,
   mediaType?: "image" | "video"
@@ -82,17 +83,7 @@ export async function postToInstagram(
     return { ok: false, error: "Instagram requires an image or video URL" };
 
   const isVideo = mediaType === "video";
-
-  // Get IG business account via linked page
-  const pagesRes = await fetch(
-    `https://graph.facebook.com/me/accounts?fields=instagram_business_account&access_token=${accessToken}`
-  );
-  if (!pagesRes.ok)
-    return { ok: false, error: "Could not fetch Instagram account" };
-
-  const pagesData = await pagesRes.json();
-  const igId = pagesData.data?.[0]?.instagram_business_account?.id;
-  if (!igId) return { ok: false, error: "No Instagram Business account found" };
+  const igId = igUserId;
 
   // Create media container (video uses video_url + media_type REELS)
   const containerBody: Record<string, string> = {

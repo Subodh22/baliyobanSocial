@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
 import { freshGoogleAccessToken } from "@/lib/oauth/google";
+import { freshInstagramAccessToken } from "@/lib/oauth/instagram";
 import { freshTwitterAccessToken } from "@/lib/oauth/twitter";
 import { postToTwitter } from "@/lib/platforms/twitter";
 import { postToFacebook, postToInstagram } from "@/lib/platforms/facebook";
@@ -81,11 +82,16 @@ export async function publishToPlatforms(
         break;
       }
       case "instagram": {
-        const acc = accountByProvider["facebook"];
+        const acc = accountByProvider["instagram"];
         if (!acc?.access_token) {
-          results.instagram = { ok: false, error: "Instagram/Facebook not connected" };
+          results.instagram = { ok: false, error: "Instagram not connected" };
         } else {
-          results.instagram = await postToInstagram(acc.access_token, content, mediaUrl, mediaType);
+          const token = await freshInstagramAccessToken(acc);
+          if (!token) {
+            results.instagram = { ok: false, error: "Instagram session expired — please reconnect." };
+          } else {
+            results.instagram = await postToInstagram(token, acc.providerAccountId, content, mediaUrl, mediaType);
+          }
         }
         break;
       }
