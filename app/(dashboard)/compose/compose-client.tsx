@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { upload } from "@vercel/blob/client";
 
 const PLATFORMS = [
   // provider = the connected Account provider each platform posts through
@@ -60,15 +59,12 @@ export default function ComposeClient({
     setUploading(true);
     setUploadPct(0);
     try {
-      // Upload straight from the browser to Vercel Blob; /api/upload only
-      // mints the token. This bypasses the serverless body-size limit
-      // (~4.5MB) that large videos would hit on a FormData upload.
-      const blob = await upload(file.name, file, {
-        access: "public",
-        handleUploadUrl: "/api/upload",
-        onUploadProgress: ({ percentage }) => setUploadPct(percentage),
-      });
-      setMediaUrl(blob.url);
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("/api/upload", { method: "POST", body: fd });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Upload failed");
+      setMediaUrl(data.url);
       setMediaType(file.type.startsWith("image/") ? "image" : "video");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Upload failed. Try again.");
