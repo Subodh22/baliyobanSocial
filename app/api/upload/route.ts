@@ -1,34 +1,36 @@
 import { auth } from "@clerk/nextjs/server";
-import { put } from "@vercel/blob";
+import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
+import { NextResponse } from "next/server";
 
 export const maxDuration = 60;
 
 export async function POST(req: Request) {
   const { userId } = await auth();
   if (!userId)
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const token = process.env.BLOB_READ_WRITE_TOKEN;
-  if (!token)
-    return Response.json(
-      { error: "File storage is not configured. Add BLOB_READ_WRITE_TOKEN to your environment." },
-      { status: 500 },
-    );
-
-  const formData = await req.formData();
-  const file = formData.get("file");
-  if (!(file instanceof File))
-    return Response.json({ error: "No file provided" }, { status: 400 });
+  const body = (await req.json()) as HandleUploadBody;
 
   try {
-    const blob = await put(file.name, file, {
-      access: "public",
-      addRandomSuffix: true,
-      token,
+    const jsonResponse = await handleUpload({
+      body,
+      request: req,
+      onBeforeGenerateToken: async () => ({
+        allowedContentTypes: [
+          "image/*",
+          "video/*",
+          "audio/*",
+        ],
+        maximumSizeInBytes: 500 * 1024 * 1024, // 500 MB
+      }),
+      onUploadCompleted: async () => {
+        // no-op – the client reads the blob URL from the response
+      },
     });
-    return Response.json({ url: blob.url });
+
+    return NextResponse.json(jsonResponse);
   } catch (err) {
-    return Response.json(
+    return NextResponse.json(
       { error: err instanceof Error ? err.message : "Upload failed" },
       { status: 400 },
     );

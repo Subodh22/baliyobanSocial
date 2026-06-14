@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import TikTokOptions from "./tiktok-options";
 import type { TikTokDirectPostOptions } from "@/lib/platforms/tiktok";
+import { upload } from "@vercel/blob/client";
 
 const PLATFORMS = [
   // provider = the connected Account provider each platform posts through
@@ -82,12 +83,12 @@ export default function ComposeClient({
     setUploading(true);
     setUploadPct(0);
     try {
-      const fd = new FormData();
-      fd.append("file", file);
-      const res = await fetch("/api/upload", { method: "POST", body: fd });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Upload failed");
-      setMediaUrl(data.url);
+      const blob = await upload(file.name, file, {
+        access: "public",
+        handleUploadUrl: "/api/upload",
+        onUploadProgress: ({ percentage }) => setUploadPct(percentage),
+      });
+      setMediaUrl(blob.url);
       setMediaType(file.type.startsWith("image/") ? "image" : "video");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Upload failed. Try again.");
