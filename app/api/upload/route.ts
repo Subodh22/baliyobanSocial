@@ -1,5 +1,5 @@
 import { auth } from "@clerk/nextjs/server";
-import { put } from "@vercel/blob";
+import { put, getDownloadUrl } from "@vercel/blob";
 
 export const maxDuration = 60;
 
@@ -22,11 +22,11 @@ export async function POST(req: Request) {
 
   try {
     const blob = await put(file.name, file, {
-      access: "public",
+      access: "private",
       addRandomSuffix: true,
       token,
     });
-    return Response.json({ url: blob.url });
+    return Response.json({ url: getDownloadUrl(blob.url) });
   } catch (err) {
     return Response.json(
       { error: err instanceof Error ? err.message : "Upload failed" },
