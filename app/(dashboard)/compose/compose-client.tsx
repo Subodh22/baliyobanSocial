@@ -449,6 +449,25 @@ export default function ComposeClient({
         </p>
       )}
 
+      {loading && (
+        <div className="flex items-center gap-3 rounded-xl border border-indigo-500/20 bg-indigo-500/10 px-4 py-3">
+          <svg className="h-5 w-5 shrink-0 text-indigo-400 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+          </svg>
+          <div className="text-sm">
+            <p className="font-medium text-indigo-300">
+              {scheduleOn ? "Scheduling your post…" : "Publishing to your platforms…"}
+            </p>
+            {mediaType === "video" && !scheduleOn && (
+              <p className="text-indigo-400/70 text-xs mt-0.5">
+                Video processing can take up to a minute — please don&apos;t close this page.
+              </p>
+            )}
+          </div>
+        </div>
+      )}
+
       <button
         onClick={handlePost}
         disabled={loading || uploading || !content.trim()}
