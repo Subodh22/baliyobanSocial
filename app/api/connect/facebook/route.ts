@@ -35,7 +35,7 @@ export async function GET() {
   const params = new URLSearchParams({
     client_id: clientId,
     response_type: "code",
-    scope: "public_profile,pages_show_list,pages_read_engagement,pages_manage_posts,pages_manage_engagement,publish_video",
+    scope: "public_profile,pages_show_list,pages_read_engagement,pages_manage_posts,pages_manage_engagement",
     redirect_uri: redirectUri,
     state: csrfState,
   });
