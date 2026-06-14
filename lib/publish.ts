@@ -119,12 +119,22 @@ export async function publishToPlatforms(
           Boolean(tiktok) && granted.includes("video.publish");
         const videoUrl = toVerifiedMediaUrl(mediaUrl ?? "");
         if (useDirect) {
-          results.tiktok = await postToTikTokDirect(
+          const direct = await postToTikTokDirect(
             acc.access_token,
             videoUrl,
             content,
             tiktok!
           );
+          if (direct.ok) {
+            results.tiktok = direct;
+          } else if (granted.includes("video.upload")) {
+            // Direct Post failed (app may not be audited yet) — fall back to
+            // inbox upload so the post still goes through.
+            console.warn("TikTok Direct Post failed, falling back to inbox:", direct.error);
+            results.tiktok = await postToTikTokInbox(acc.access_token, videoUrl);
+          } else {
+            results.tiktok = direct;
+          }
         } else if (!granted.includes("video.upload")) {
           results.tiktok = {
             ok: false,
