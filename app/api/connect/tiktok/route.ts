@@ -35,11 +35,10 @@ export async function GET() {
     response_type: "code",
     // Must be a subset of the scopes enabled on the TikTok app/sandbox.
     // video.list: read the user's videos (shown in "Manage")
-    // video.publish: publish content via the Content Posting API
-    // video.upload: upload video files
+    // video.upload: post content via the Content Posting API
     // user.info.profile: basic profile info
     // comment.list.manage: read comments and reply (Inbox)
-    scope: "user.info.profile,video.list,video.publish,video.upload,comment.list.manage",
+    scope: "user.info.profile,video.list,video.upload,comment.list.manage",
     redirect_uri: redirectUri,
     state: csrfState,
   });
