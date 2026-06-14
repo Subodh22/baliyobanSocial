@@ -98,7 +98,7 @@ export async function postToInstagram(
   }
 
   const containerRes = await fetch(
-    `https://graph.facebook.com/${igId}/media`,
+    `https://graph.instagram.com/${igId}/media`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -118,7 +118,7 @@ export async function postToInstagram(
     for (let i = 0; i < 30; i++) {
       await new Promise((r) => setTimeout(r, 2000));
       const statusRes = await fetch(
-        `https://graph.facebook.com/${creationId}?fields=status_code&access_token=${accessToken}`
+        `https://graph.instagram.com/${creationId}?fields=status_code&access_token=${accessToken}`
       );
       if (statusRes.ok) {
         const status = await statusRes.json();
@@ -131,7 +131,7 @@ export async function postToInstagram(
 
   // Publish the container
   const publishRes = await fetch(
-    `https://graph.facebook.com/${igId}/media_publish`,
+    `https://graph.instagram.com/${igId}/media_publish`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
