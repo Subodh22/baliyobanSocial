@@ -116,6 +116,7 @@ export async function postToInstagram(
   // Poll until the container is ready before publishing.
   // Videos can take a while; images are usually fast but still need a moment.
   const maxAttempts = isVideo ? 30 : 10;
+  let finished = false;
   for (let i = 0; i < maxAttempts; i++) {
     await new Promise((r) => setTimeout(r, 2000));
     const statusRes = await fetch(
@@ -123,11 +124,14 @@ export async function postToInstagram(
     );
     if (statusRes.ok) {
       const status = await statusRes.json();
-      if (status.status_code === "FINISHED") break;
+      if (status.status_code === "FINISHED") { finished = true; break; }
       if (status.status_code === "ERROR")
         return { ok: false, error: "Instagram media processing failed" };
     }
   }
+
+  if (!finished)
+    return { ok: false, error: "Instagram media processing timed out — try a shorter or smaller video" };
 
   // Publish the container
   const publishRes = await fetch(
