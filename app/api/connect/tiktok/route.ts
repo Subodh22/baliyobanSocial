@@ -34,7 +34,9 @@ export async function GET() {
     client_key: clientKey,
     response_type: "code",
     // Must be a subset of the scopes enabled on the TikTok app/sandbox.
-    scope: "user.info.profile,video.list,video.upload",
+    // video.publish is required for Direct Post (publish straight to TikTok);
+    // video.upload alone only creates drafts.
+    scope: "user.info.profile,video.list,video.publish,video.upload",
     redirect_uri: redirectUri,
     state: csrfState,
   });

@@ -80,6 +80,15 @@ export async function publishToPlatforms(
         const acc = accountByProvider["tiktok"];
         if (!acc?.access_token) {
           results.tiktok = { ok: false, error: "TikTok not connected" };
+        } else if (!(acc.scope ?? "").split(",").includes("video.publish")) {
+          // Direct Post needs video.publish. Tokens minted before that scope
+          // was granted fail with TikTok's raw "user did not authorize the
+          // scope" error — surface a clear reconnect prompt instead.
+          results.tiktok = {
+            ok: false,
+            error:
+              "Publishing permission not granted. Please reconnect TikTok to allow posting.",
+          };
         } else {
           results.tiktok = await postToTikTok(acc.access_token, mediaUrl ?? "", content);
         }
