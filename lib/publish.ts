@@ -111,13 +111,12 @@ export async function publishToPlatforms(
           break;
         }
         const granted = (acc.scope ?? "").split(",");
-        const directEnabled =
-          process.env.TIKTOK_DIRECT_POST_ENABLED === "true";
-        // Direct Post requires the env flag, per-post settings (instant posts),
-        // AND the video.publish scope. Missing any of these degrades to inbox
-        // upload (needs video.upload) rather than failing the post.
+        // Direct Post publishes immediately and requires the video.publish
+        // scope plus per-post settings from the compose UI. Falls back to
+        // inbox upload for scheduled posts (no UI settings) or accounts
+        // that only have video.upload.
         const useDirect =
-          directEnabled && Boolean(tiktok) && granted.includes("video.publish");
+          Boolean(tiktok) && granted.includes("video.publish");
         const videoUrl = toVerifiedMediaUrl(mediaUrl ?? "");
         if (useDirect) {
           results.tiktok = await postToTikTokDirect(
