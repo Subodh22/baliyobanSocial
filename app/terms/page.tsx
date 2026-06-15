@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 };
 
 const CONTACT_EMAIL = "subodhmaharjan3@gmail.com";
-const LAST_UPDATED = "June 8, 2026";
+const LAST_UPDATED = "June 15, 2026";
 
 export default function TermsOfService() {
   return (
