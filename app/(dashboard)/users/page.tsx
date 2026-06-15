@@ -1,15 +1,11 @@
+import { Suspense } from "react";
 import { getDashboardProps } from "@/app/components/dashboard-page";
 
-export default async function Users() {
+async function UsersContent() {
   const { name, email } = await getDashboardProps();
 
   return (
     <>
-      <div className="mb-11">
-        <h1 className="font-[family-name:var(--font-jetbrains-mono)] text-[21px] font-medium tracking-[-0.02em]">Users</h1>
-        <p className="mt-1.5 text-sm text-[#5A5A5A]">Team members and their access to your profiles.</p>
-      </div>
-
       {/* Roles overview */}
       <div className="grid grid-cols-3 border border-[#E8E8E8] rounded overflow-hidden mb-4">
         {[
@@ -71,6 +67,36 @@ export default async function Users() {
       <p className="mt-[18px] text-[13px] text-[#969696] text-center font-[family-name:var(--font-jetbrains-mono)]">
         Team seats arrive with the Pro plan.
       </p>
+    </>
+  );
+}
+
+function UsersSkeleton() {
+  return (
+    <div className="animate-pulse">
+      <div className="grid grid-cols-3 border border-[#E8E8E8] rounded overflow-hidden mb-4">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className={`p-5 ${i < 3 ? "border-r border-[#E8E8E8]" : ""}`}>
+            <div className="h-8 w-8 rounded bg-[#E8E8E8] mb-2" />
+            <div className="h-3 w-12 rounded bg-[#F4F4F4]" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default function Users() {
+  return (
+    <>
+      <div className="mb-11">
+        <h1 className="font-[family-name:var(--font-jetbrains-mono)] text-[21px] font-medium tracking-[-0.02em]">Users</h1>
+        <p className="mt-1.5 text-sm text-[#5A5A5A]">Team members and their access to your profiles.</p>
+      </div>
+
+      <Suspense fallback={<UsersSkeleton />}>
+        <UsersContent />
+      </Suspense>
     </>
   );
 }
