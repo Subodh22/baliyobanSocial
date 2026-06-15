@@ -24,14 +24,14 @@ export default function InboxTabs({ tiktok, gmail, instagram }: Props) {
 
   if (tabs.length === 0) {
     return (
-      <div className="mt-10 flex flex-col items-center rounded-2xl border border-dashed border-white/10 bg-white/[0.02] px-6 py-16 text-center">
-        <p className="text-sm font-medium text-zinc-300">No inbox sources connected</p>
-        <p className="mt-1.5 max-w-sm text-sm text-zinc-500">
+      <div className="flex flex-col items-center rounded border border-dashed border-[#DEDEDE] bg-white px-6 py-16 text-center">
+        <p className="text-sm font-medium text-[#0A0A0A]">No inbox sources connected</p>
+        <p className="mt-1.5 max-w-sm text-sm text-[#5A5A5A]">
           Connect Gmail, Instagram, or TikTok to see and reply to messages here.
         </p>
         <a
           href="/dashboard"
-          className="mt-6 rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-indigo-500"
+          className="mt-6 rounded bg-[#0A0A0A] px-[15px] py-[9px] text-[13px] font-medium text-white transition-opacity hover:opacity-85"
         >
           Manage connections
         </a>
@@ -40,17 +40,17 @@ export default function InboxTabs({ tiktok, gmail, instagram }: Props) {
   }
 
   return (
-    <div className="mt-6 flex flex-1 flex-col overflow-hidden">
+    <div className="flex flex-1 flex-col overflow-hidden">
       {tabs.length > 1 && (
-        <div className="flex items-center gap-1 border-b border-white/[0.06]">
+        <div className="flex items-center gap-6 border-b border-[#E8E8E8]">
           {tabs.map((t) => (
             <button
               key={t.id}
               onClick={() => setActive(t.id)}
-              className={`-mb-px border-b-2 px-4 py-2 text-sm font-medium transition-colors ${
+              className={`-mb-px border-b px-0 pb-3 text-[13.5px] transition-colors ${
                 active === t.id
-                  ? "border-indigo-500 text-zinc-100"
-                  : "border-transparent text-zinc-500 hover:text-zinc-300"
+                  ? "border-[#0A0A0A] text-[#0A0A0A] font-medium"
+                  : "border-transparent text-[#969696] font-[450] hover:text-[#0A0A0A]"
               }`}
             >
               {t.label}

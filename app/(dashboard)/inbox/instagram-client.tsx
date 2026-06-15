@@ -112,7 +112,7 @@ export default function InstagramClient({
   return (
     <div className="mt-6 flex flex-1 flex-col overflow-hidden">
       {needsReconnect && (
-        <div className="mb-4 rounded-lg border border-amber-500/20 bg-amber-950/40 px-4 py-3 text-sm text-amber-400">
+        <div className="mb-4 rounded border border-[#9A6B00]/20 bg-amber-50 px-4 py-3 text-sm text-[#9A6B00]">
           {!canComments && !canMessages
             ? "Reconnect Instagram to grant comment and message access."
             : !canComments
@@ -120,42 +120,42 @@ export default function InstagramClient({
               : "Reconnect Instagram to grant message access."}{" "}
           <a
             href="/api/connect/instagram"
-            className="font-medium underline hover:text-amber-300"
+            className="font-medium underline hover:opacity-70"
           >
             Reconnect Instagram
           </a>
         </div>
       )}
 
-      <div className="flex items-center justify-between border-b border-white/[0.06]">
-        <div className="flex items-center gap-1">
+      <div className="flex items-center justify-between border-b border-[#E8E8E8]">
+        <div className="flex items-center gap-6">
           <button
             onClick={() => setView("comments")}
-            className={`-mb-px border-b-2 px-4 py-2 text-sm font-medium transition-colors ${
+            className={`-mb-px border-b px-0 pb-3 text-[13.5px] transition-colors ${
               view === "comments"
-                ? "border-pink-500 text-zinc-100"
-                : "border-transparent text-zinc-500 hover:text-zinc-300"
+                ? "border-[#0A0A0A] text-[#0A0A0A] font-medium"
+                : "border-transparent text-[#969696] font-[450] hover:text-[#0A0A0A]"
             }`}
           >
             Comments{" "}
-            <span className="text-xs text-zinc-600">{comments.length}</span>
+            <span className="font-[family-name:var(--font-jetbrains-mono)] text-[11px] text-[#969696]">{comments.length}</span>
           </button>
           <button
             onClick={() => setView("dms")}
-            className={`-mb-px border-b-2 px-4 py-2 text-sm font-medium transition-colors ${
+            className={`-mb-px border-b px-0 pb-3 text-[13.5px] transition-colors ${
               view === "dms"
-                ? "border-pink-500 text-zinc-100"
-                : "border-transparent text-zinc-500 hover:text-zinc-300"
+                ? "border-[#0A0A0A] text-[#0A0A0A] font-medium"
+                : "border-transparent text-[#969696] font-[450] hover:text-[#0A0A0A]"
             }`}
           >
-            DMs <span className="text-xs text-zinc-600">{dms.length}</span>
+            DMs <span className="font-[family-name:var(--font-jetbrains-mono)] text-[11px] text-[#969696]">{dms.length}</span>
           </button>
         </div>
         <button
           onClick={refresh}
           disabled={refreshing || loading}
           title="Refresh"
-          className="mr-1 rounded-lg border border-white/10 px-3 py-1.5 text-xs text-zinc-400 transition-colors hover:bg-white/5 hover:text-zinc-200 disabled:opacity-50"
+          className="mr-1 rounded border border-[#DEDEDE] px-3 py-1.5 text-xs text-[#5A5A5A] transition-colors hover:bg-[#F6F6F6] hover:text-[#0A0A0A] disabled:opacity-50"
         >
           {refreshing ? "Refreshing…" : "Refresh"}
         </button>
@@ -163,25 +163,25 @@ export default function InstagramClient({
 
       <div className="flex-1 overflow-y-auto pt-4">
         {loading && (
-          <div className="py-16 text-center text-sm text-zinc-500">
+          <div className="py-16 text-center text-sm text-[#969696]">
             Loading Instagram&hellip;
           </div>
         )}
 
         {error && !loading && (
-          <div className="rounded-lg border border-red-500/20 bg-red-950/40 px-4 py-3 text-sm text-red-400">
+          <div className="rounded border border-[#CC2A1E]/20 bg-red-50 px-4 py-3 text-sm text-[#CC2A1E]">
             {error}
           </div>
         )}
 
         {!loading && !error && sectionError && (
-          <div className="mb-3 rounded-lg border border-red-500/20 bg-red-950/40 px-4 py-3 text-sm text-red-400">
+          <div className="mb-3 rounded border border-[#CC2A1E]/20 bg-red-50 px-4 py-3 text-sm text-[#CC2A1E]">
             {sectionError.error}
           </div>
         )}
 
         {!loading && !error && items.length === 0 && !sectionError && (
-          <div className="py-16 text-center text-sm text-zinc-500">
+          <div className="py-16 text-center text-sm text-[#969696]">
             {view === "comments"
               ? "No comments on your recent posts."
               : "No direct messages."}
@@ -192,7 +192,7 @@ export default function InstagramClient({
           {items.map((item) => (
             <div
               key={item.id}
-              className="rounded-lg border border-white/[0.04] bg-white/[0.02] p-4"
+              className="rounded border border-[#E8E8E8] bg-white p-4"
             >
               <div className="flex gap-3">
                 {view === "comments" && item.imageUrl && (
@@ -207,25 +207,25 @@ export default function InstagramClient({
                     <img
                       src={item.imageUrl}
                       alt=""
-                      className="h-12 w-12 rounded-md object-cover"
+                      className="h-12 w-12 rounded object-cover"
                     />
                   </a>
                 )}
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-sm font-semibold text-zinc-200">
+                    <span className="text-sm font-medium text-[#0A0A0A]">
                       {item.author}
                     </span>
-                    <span className="flex-shrink-0 text-[11px] text-zinc-600">
+                    <span className="flex-shrink-0 text-[11px] text-[#C2C2C2]">
                       {timeAgo(item.timestamp)}
                     </span>
                   </div>
                   {view === "comments" && (
-                    <p className="mt-0.5 truncate text-xs text-zinc-500">
-                      on “{item.title}”
+                    <p className="mt-0.5 truncate text-xs text-[#969696]">
+                      on &ldquo;{item.title}&rdquo;
                     </p>
                   )}
-                  <p className="mt-1.5 text-sm text-zinc-300">{item.snippet}</p>
+                  <p className="mt-1.5 text-sm text-[#5A5A5A]">{item.snippet}</p>
                 </div>
               </div>
 
@@ -233,11 +233,11 @@ export default function InstagramClient({
                 {view === "dms" && !item.recipientId ? null : repliedIds.has(
                     item.id
                   ) ? (
-                  <span className="text-emerald-400">Replied ✓</span>
+                  <span className="text-[#1F7A4D]">Replied &#10003;</span>
                 ) : (
                   <button
                     onClick={() => toggleReply(item.id)}
-                    className="text-pink-400 hover:text-pink-300"
+                    className="text-[#0A0A0A] hover:opacity-55"
                   >
                     Reply
                   </button>
@@ -247,7 +247,7 @@ export default function InstagramClient({
                     href={item.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-zinc-500 hover:text-zinc-300"
+                    className="text-[#969696] hover:text-[#0A0A0A]"
                   >
                     View on Instagram &rarr;
                   </a>
@@ -273,22 +273,22 @@ export default function InstagramClient({
                           : `Message ${item.author}…`
                       }
                       disabled={replySending}
-                      className="flex-1 rounded-lg border border-white/[0.06] bg-white/[0.03] px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:border-pink-500 focus:outline-none"
+                      className="flex-1 rounded border border-[#DEDEDE] bg-white px-3 py-2 text-sm text-[#0A0A0A] placeholder-[#969696] focus:border-[#0A0A0A] focus:outline-none"
                     />
                     <button
                       onClick={() => sendReply(item)}
                       disabled={replySending || !replyText.trim()}
-                      className="rounded-lg bg-pink-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-pink-500 disabled:opacity-50"
+                      className="rounded bg-[#0A0A0A] px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-85 disabled:opacity-50"
                     >
                       {replySending ? "Sending…" : "Send"}
                     </button>
                   </div>
                   {replyError && (
-                    <p className="mt-1 text-[11px] text-red-400">{replyError}</p>
+                    <p className="mt-1 text-[11px] text-[#CC2A1E]">{replyError}</p>
                   )}
                   {view === "dms" && (
-                    <p className="mt-1 text-[11px] text-zinc-600">
-                      Instagram only delivers replies within 24h of the user’s
+                    <p className="mt-1 text-[11px] text-[#C2C2C2]">
+                      Instagram only delivers replies within 24h of the user&apos;s
                       last message.
                     </p>
                   )}

@@ -15,12 +15,12 @@ export default async function Analytics() {
 
   return (
     <>
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight text-zinc-100">
+      <div className="mb-11">
+        <h1 className="font-[family-name:var(--font-jetbrains-mono)] text-[21px] font-medium tracking-[-0.02em]">
           Analytics
         </h1>
-        <p className="mt-1 text-sm text-zinc-500">
-          Publishing history and engagement across your connected platforms
+        <p className="mt-1.5 text-sm text-[#5A5A5A]">
+          Publishing history and engagement across your accounts.
         </p>
       </div>
 

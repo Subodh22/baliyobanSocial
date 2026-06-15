@@ -30,30 +30,30 @@ const POSTS = [
 
 export default function Blog() {
   return (
-    <main className="bg-[#0a0a0a] text-zinc-100">
+    <main className="text-[#0A0A0A]">
       <MarketingNav />
 
       <div className="mx-auto max-w-4xl px-6 py-20">
         <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">Blog</h1>
-        <p className="mt-4 text-lg text-zinc-400">News, guides, and updates from the baliyoban team</p>
+        <p className="mt-4 text-lg text-[#5A5A5A]">News, guides, and updates from the baliyoban team</p>
 
         <div className="mt-12 space-y-6">
           {POSTS.map((post) => (
             <article
               key={post.title}
-              className="group rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 transition-colors hover:border-white/10 hover:bg-white/[0.04]"
+              className="group rounded-2xl border border-[#E8E8E8] bg-[#F6F6F6] p-6 transition-colors hover:border-[#E8E8E8] hover:bg-[#F6F6F6]"
             >
               <div className="flex items-center gap-3 text-xs">
-                <span className="rounded-full bg-indigo-500/10 px-2.5 py-0.5 font-medium text-indigo-400">
+                <span className="rounded-full bg-[#0A0A0A]/10 px-2.5 py-0.5 font-medium text-[#0A0A0A]">
                   {post.tag}
                 </span>
-                <span className="text-zinc-600">{post.date}</span>
+                <span className="text-[#969696]">{post.date}</span>
               </div>
-              <h2 className="mt-3 text-xl font-bold text-zinc-100 group-hover:text-white">
+              <h2 className="mt-3 text-xl font-bold text-[#0A0A0A] group-hover:text-[#0A0A0A]">
                 {post.title}
               </h2>
-              <p className="mt-2 text-sm leading-relaxed text-zinc-400">{post.excerpt}</p>
-              <Link href="#" className="mt-4 inline-block text-sm font-medium text-indigo-400 hover:underline">
+              <p className="mt-2 text-sm leading-relaxed text-[#5A5A5A]">{post.excerpt}</p>
+              <Link href="#" className="mt-4 inline-block text-sm font-medium text-[#0A0A0A] hover:underline">
                 Read more &rarr;
               </Link>
             </article>

@@ -60,12 +60,12 @@ const SECTIONS = [
 
 export default function Docs() {
   return (
-    <main className="bg-[#0a0a0a] text-zinc-100">
+    <main className="text-[#0A0A0A]">
       <MarketingNav />
 
       <div className="mx-auto max-w-4xl px-6 py-20">
         <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">Documentation</h1>
-        <p className="mt-4 text-lg text-zinc-400">
+        <p className="mt-4 text-lg text-[#5A5A5A]">
           Everything you need to integrate baliyoban into your product.
         </p>
 
@@ -78,24 +78,24 @@ export default function Docs() {
         </div>
 
         {/* Base URL */}
-        <div className="mt-6 rounded-xl border border-white/[0.06] bg-[#1a1a1a] px-5 py-4 font-mono text-sm">
-          <span className="text-zinc-500">Base URL:</span>{" "}
-          <span className="text-zinc-200">https://api.baliyoban.com/v1</span>
+        <div className="mt-6 rounded-xl border border-[#E8E8E8] bg-[#F6F6F6] px-5 py-4 font-mono text-sm">
+          <span className="text-[#969696]">Base URL:</span>{" "}
+          <span className="text-[#0A0A0A]">https://api.baliyoban.com/v1</span>
           <span className="ml-2 rounded bg-amber-500/10 px-2 py-0.5 text-[10px] text-amber-400/90">coming soon</span>
         </div>
 
         <div className="mt-12 space-y-12">
           {SECTIONS.map((section) => (
             <div key={section.title}>
-              <h2 className="text-xl font-bold text-zinc-100">{section.title}</h2>
+              <h2 className="text-xl font-bold text-[#0A0A0A]">{section.title}</h2>
               <div className="mt-4 space-y-2">
                 {section.links.map((link) => (
                   <div
                     key={link.label}
-                    className="rounded-xl border border-white/[0.06] bg-white/[0.02] px-5 py-4 transition-colors hover:border-white/10 hover:bg-white/[0.04]"
+                    className="rounded-xl border border-[#E8E8E8] bg-[#F6F6F6] px-5 py-4 transition-colors hover:border-[#E8E8E8] hover:bg-[#F6F6F6]"
                   >
-                    <p className="font-mono text-sm font-medium text-zinc-200">{link.label}</p>
-                    <p className="mt-1 text-sm text-zinc-500">{link.desc}</p>
+                    <p className="font-mono text-sm font-medium text-[#0A0A0A]">{link.label}</p>
+                    <p className="mt-1 text-sm text-[#969696]">{link.desc}</p>
                   </div>
                 ))}
               </div>
@@ -103,10 +103,10 @@ export default function Docs() {
           ))}
         </div>
 
-        <div className="mt-12 rounded-xl border border-white/[0.06] bg-white/[0.02] p-6 text-center">
-          <p className="text-sm text-zinc-400">
+        <div className="mt-12 rounded-xl border border-[#E8E8E8] bg-[#F6F6F6] p-6 text-center">
+          <p className="text-sm text-[#5A5A5A]">
             Full API reference coming soon. Questions?{" "}
-            <a href="mailto:subodhmaharjan3@gmail.com" className="text-indigo-400 hover:underline">
+            <a href="mailto:subodhmaharjan3@gmail.com" className="text-[#0A0A0A] hover:underline">
               Contact us
             </a>
           </p>
@@ -115,7 +115,7 @@ export default function Docs() {
         <div className="mt-8 flex justify-center">
           <Link
             href="/sign-up"
-            className="rounded-lg bg-[#EB3514] px-6 py-3 font-semibold text-white transition-opacity hover:opacity-90"
+            className="rounded-lg bg-[#0A0A0A] px-6 py-3 font-semibold text-white transition-opacity hover:opacity-90"
           >
             Start for Free
           </Link>

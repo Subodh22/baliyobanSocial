@@ -18,7 +18,7 @@ const SERVICES = [
 
 export default function Status() {
   return (
-    <main className="bg-[#0a0a0a] text-zinc-100">
+    <main className="text-[#0A0A0A]">
       <MarketingNav />
 
       <div className="mx-auto max-w-3xl px-6 py-20">
@@ -34,24 +34,24 @@ export default function Status() {
           {SERVICES.map((s) => (
             <div
               key={s.name}
-              className="flex items-center justify-between rounded-xl border border-white/[0.06] bg-white/[0.02] px-5 py-4"
+              className="flex items-center justify-between rounded-xl border border-[#E8E8E8] bg-[#F6F6F6] px-5 py-4"
             >
               <div className="flex items-center gap-3">
                 <span className="h-2 w-2 rounded-full bg-emerald-400" />
-                <span className="text-sm font-medium text-zinc-200">{s.name}</span>
+                <span className="text-sm font-medium text-[#0A0A0A]">{s.name}</span>
               </div>
               <div className="flex items-center gap-4 text-sm">
                 <span className="text-emerald-400">{s.status}</span>
-                <span className="text-zinc-500">{s.uptime} uptime</span>
+                <span className="text-[#969696]">{s.uptime} uptime</span>
               </div>
             </div>
           ))}
         </div>
 
         <div className="mt-12">
-          <h2 className="text-lg font-semibold text-zinc-200">Recent Incidents</h2>
-          <div className="mt-4 rounded-xl border border-dashed border-white/10 bg-white/[0.02] px-6 py-8 text-center">
-            <p className="text-sm text-zinc-500">No incidents reported</p>
+          <h2 className="text-lg font-semibold text-[#0A0A0A]">Recent Incidents</h2>
+          <div className="mt-4 rounded-xl border border-dashed border-[#E8E8E8] bg-[#F6F6F6] px-6 py-8 text-center">
+            <p className="text-sm text-[#969696]">No incidents reported</p>
           </div>
         </div>
       </div>

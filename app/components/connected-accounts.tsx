@@ -25,48 +25,50 @@ export function ConnectedAccounts({ accounts }: Props) {
   const connectedProviders = new Set(accounts.map((a) => a.provider));
 
   return (
-    <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-6">
-      <h2 className="text-lg font-semibold text-zinc-200">Connected Accounts</h2>
-      <p className="mt-1 text-sm text-zinc-500">
-        Connect your social media accounts to post from Social Hub.
-      </p>
+    <div>
+      <div className="flex items-baseline justify-between mb-[18px]">
+        <span className="font-[family-name:var(--font-jetbrains-mono)] text-[11px] font-medium uppercase tracking-[0.04em] text-[#969696]">Connected accounts</span>
+      </div>
 
       {connected && (
-        <div className="mt-3 rounded-lg bg-green-950/40 border border-green-500/20 px-4 py-2 text-sm text-green-400">
+        <div className="mb-3 rounded border border-[#1F7A4D]/20 bg-green-50 px-4 py-2 text-sm text-[#1F7A4D]">
           Successfully connected {connected}!
         </div>
       )}
       {error && (
-        <div className="mt-3 rounded-lg bg-red-950/40 border border-red-500/20 px-4 py-2 text-sm text-red-400">
+        <div className="mb-3 rounded border border-[#CC2A1E]/20 bg-red-50 px-4 py-2 text-sm text-[#CC2A1E]">
           Connection failed: {decodeURIComponent(error)}
         </div>
       )}
 
-      <div className="mt-4 space-y-3">
-        {PLATFORMS.map((p) => {
+      <div className="border border-[#E8E8E8] rounded overflow-hidden">
+        {PLATFORMS.map((p, i) => {
           const isConnected = connectedProviders.has(p.provider);
           return (
             <div
               key={p.provider}
-              className="flex items-center justify-between rounded-lg border border-white/[0.04] bg-white/[0.02] px-4 py-3"
+              className={`flex items-center gap-4 px-5 py-[18px] transition-colors hover:bg-[#F6F6F6] ${
+                i < PLATFORMS.length - 1 ? "border-b border-[#E8E8E8]" : ""
+              }`}
             >
-              <div className="flex items-center gap-3">
-                <span className="text-lg">{p.icon}</span>
-                <div>
-                  <p className="text-sm font-medium text-zinc-200">{p.label}</p>
-                  <p className="text-xs text-zinc-500">
-                    {isConnected ? "Connected" : "Not connected"}
-                  </p>
-                </div>
+              <div className="flex h-[34px] w-[34px] items-center justify-center rounded bg-[#0A0A0A] text-white text-sm font-bold shrink-0">
+                {p.icon}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-[#0A0A0A]">{p.label}</p>
+                <p className="text-[13px] text-[#969696] font-[family-name:var(--font-jetbrains-mono)]">
+                  {isConnected ? "Connected" : "Not connected"}
+                </p>
               </div>
               {isConnected ? (
-                <span className="rounded-full bg-green-500/10 px-3 py-1 text-xs font-medium text-green-400">
+                <span className="inline-flex items-center gap-1.5 text-xs font-[450] text-[#1F7A4D]">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#1F7A4D]" />
                   Active
                 </span>
               ) : (
                 <a
                   href={p.connectUrl}
-                  className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-indigo-500"
+                  className="rounded border border-[#DEDEDE] bg-white px-[15px] py-[6px] text-xs font-[450] text-[#0A0A0A] transition-colors hover:bg-[#F6F6F6]"
                 >
                   Connect
                 </a>

@@ -123,7 +123,6 @@ export default function InboxClient({
       if (!res.ok) throw new Error(data.error ?? "Failed to send reply");
       setReplyText("");
       setReplyingTo(null);
-      // Refresh comments to show the new reply.
       loadComments(selectedVideo.id);
     } catch (e) {
       setReplyError(e instanceof Error ? e.message : "Failed to send reply");
@@ -133,13 +132,13 @@ export default function InboxClient({
   }
 
   return (
-    <div className="mt-8 flex flex-1 overflow-hidden">
+    <div className="mt-6 flex flex-1 overflow-hidden">
       {/* Video list (left panel) */}
-      <div className="flex w-full max-w-sm flex-col border-r border-white/[0.06]">
-        <div className="flex items-center justify-between border-b border-white/[0.06] px-4 py-3">
+      <div className="flex w-full max-w-sm flex-col border-r border-[#E8E8E8]">
+        <div className="flex items-center justify-between border-b border-[#E8E8E8] px-4 py-3">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-zinc-300">TikTok</span>
-            <span className="rounded-full bg-indigo-500/10 px-2 py-0.5 text-[11px] text-indigo-400">
+            <span className="text-sm font-medium text-[#0A0A0A]">TikTok</span>
+            <span className="font-[family-name:var(--font-jetbrains-mono)] text-[10.5px] font-medium text-[#5A5A5A] bg-[#F4F4F4] border border-[#DEDEDE] px-[7px] py-[2px] rounded-[3px]">
               {videos.length} videos
             </span>
           </div>
@@ -147,7 +146,7 @@ export default function InboxClient({
             onClick={refresh}
             disabled={refreshing || videosLoading}
             title="Refresh"
-            className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-zinc-400 transition-colors hover:bg-white/5 hover:text-zinc-200 disabled:opacity-50"
+            className="rounded border border-[#DEDEDE] px-3 py-1.5 text-xs text-[#5A5A5A] transition-colors hover:bg-[#F6F6F6] hover:text-[#0A0A0A] disabled:opacity-50"
           >
             {refreshing ? "Refreshing…" : "Refresh"}
           </button>
@@ -155,40 +154,37 @@ export default function InboxClient({
 
         <div className="flex-1 overflow-y-auto">
           {videosLoading && (
-            <div className="py-16 text-center text-sm text-zinc-500">
+            <div className="py-16 text-center text-sm text-[#969696]">
               Loading videos&hellip;
             </div>
           )}
 
           {videosError && !videosLoading && (
-            <div className="m-4 rounded-lg border border-red-500/20 bg-red-950/40 px-4 py-3 text-sm text-red-400">
+            <div className="m-4 rounded border border-[#CC2A1E]/20 bg-red-50 px-4 py-3 text-sm text-[#CC2A1E]">
               {videosError}
             </div>
           )}
 
           {!videosLoading && !videosError && videos.length === 0 && videosData && (
             <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-indigo-500/10">
-                <span className="text-lg text-indigo-400">&#9834;</span>
-              </div>
-              <p className="mt-3 text-sm font-medium text-zinc-300">
+              <p className="text-sm font-medium text-[#0A0A0A]">
                 No TikTok videos found
               </p>
-              <p className="mt-1 text-xs text-zinc-500">
+              <p className="mt-1 text-xs text-[#969696]">
                 Post a video on TikTok to see engagement here.
               </p>
             </div>
           )}
 
-          {videos.map((v) => (
+          {videos.map((v, i) => (
             <button
               key={v.id}
               onClick={() => selectVideo(v)}
-              className={`flex w-full items-start gap-3 border-b border-white/[0.04] px-4 py-3 text-left transition-colors hover:bg-white/[0.03] ${
-                selectedVideo?.id === v.id ? "bg-white/[0.05]" : ""
-              }`}
+              className={`flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-[#F6F6F6] ${
+                i < videos.length - 1 ? "border-b border-[#E8E8E8]" : ""
+              } ${selectedVideo?.id === v.id ? "bg-[#F6F6F6]" : ""}`}
             >
-              <div className="h-12 w-9 flex-shrink-0 overflow-hidden rounded-md bg-black/40">
+              <div className="h-12 w-9 flex-shrink-0 overflow-hidden rounded bg-[#F4F4F4]">
                 {v.cover_image_url ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
@@ -197,16 +193,16 @@ export default function InboxClient({
                     className="h-full w-full object-cover"
                   />
                 ) : (
-                  <div className="flex h-full w-full items-center justify-center text-xs text-zinc-700">
+                  <div className="flex h-full w-full items-center justify-center text-xs text-[#969696]">
                     &#9834;
                   </div>
                 )}
               </div>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium text-zinc-200">
+                <p className="truncate text-sm font-medium text-[#0A0A0A]">
                   {v.title || v.video_description || "Untitled"}
                 </p>
-                <div className="mt-1 flex items-center gap-3 text-[11px] text-zinc-500">
+                <div className="mt-1 flex items-center gap-3 text-[11px] text-[#969696]">
                   <span>&#9654; {formatCount(v.view_count)}</span>
                   <span>&#9829; {formatCount(v.like_count)}</span>
                   <span>&#128172; {formatCount(v.comment_count)}</span>
@@ -220,12 +216,12 @@ export default function InboxClient({
       {/* Comments panel (right) */}
       <div className="flex flex-1 flex-col">
         {needsReconnect && (
-          <div className="mx-6 mt-4 rounded-lg border border-amber-500/20 bg-amber-950/40 px-4 py-3 text-sm text-amber-400">
+          <div className="mx-6 mt-4 rounded border border-[#9A6B00]/20 bg-amber-50 px-4 py-3 text-sm text-[#9A6B00]">
             To view and reply to comments, reconnect your TikTok account with
             updated permissions.{" "}
             <a
               href="/api/connect/tiktok"
-              className="font-medium underline hover:text-amber-300"
+              className="font-medium underline hover:opacity-70"
             >
               Reconnect TikTok
             </a>
@@ -235,10 +231,10 @@ export default function InboxClient({
         {!selectedVideo && (
           <div className="flex flex-1 items-center justify-center px-6 text-center">
             <div>
-              <p className="text-sm text-zinc-500">
+              <p className="text-sm text-[#969696]">
                 Select a video to view its comments
               </p>
-              <p className="mt-1 text-xs text-zinc-600">
+              <p className="mt-1 text-xs text-[#C2C2C2]">
                 Replies are sent via TikTok&apos;s API
               </p>
             </div>
@@ -248,14 +244,14 @@ export default function InboxClient({
         {selectedVideo && (
           <>
             {/* Video header */}
-            <div className="flex items-center gap-3 border-b border-white/[0.06] px-6 py-4">
+            <div className="flex items-center gap-3 border-b border-[#E8E8E8] px-6 py-4">
               <div className="min-w-0 flex-1">
-                <h2 className="truncate text-sm font-bold text-zinc-100">
+                <h2 className="truncate text-sm font-medium text-[#0A0A0A]">
                   {selectedVideo.title ||
                     selectedVideo.video_description ||
                     "Untitled"}
                 </h2>
-                <div className="mt-1 flex items-center gap-3 text-xs text-zinc-500">
+                <div className="mt-1 flex items-center gap-3 text-xs text-[#969696]">
                   <span>&#9654; {formatCount(selectedVideo.view_count)}</span>
                   <span>&#9829; {formatCount(selectedVideo.like_count)}</span>
                   <span>
@@ -268,7 +264,7 @@ export default function InboxClient({
                   href={selectedVideo.share_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-shrink-0 rounded-lg border border-white/10 px-3 py-1.5 text-xs text-zinc-400 transition-colors hover:bg-white/5 hover:text-zinc-300"
+                  className="flex-shrink-0 rounded border border-[#DEDEDE] px-3 py-1.5 text-xs text-[#5A5A5A] transition-colors hover:bg-[#F6F6F6] hover:text-[#0A0A0A]"
                 >
                   View on TikTok &rarr;
                 </a>
@@ -278,13 +274,13 @@ export default function InboxClient({
             {/* Comment list */}
             <div className="flex-1 overflow-y-auto px-6 py-4">
               {commentsLoading && comments.length === 0 && (
-                <div className="py-16 text-center text-sm text-zinc-500">
+                <div className="py-16 text-center text-sm text-[#969696]">
                   Loading comments&hellip;
                 </div>
               )}
 
               {commentsError && (
-                <div className="rounded-lg border border-red-500/20 bg-red-950/40 px-4 py-3 text-sm text-red-400">
+                <div className="rounded border border-[#CC2A1E]/20 bg-red-50 px-4 py-3 text-sm text-[#CC2A1E]">
                   {commentsError}
                 </div>
               )}
@@ -292,7 +288,7 @@ export default function InboxClient({
               {!commentsLoading &&
                 !commentsError &&
                 comments.length === 0 && (
-                  <div className="py-16 text-center text-sm text-zinc-500">
+                  <div className="py-16 text-center text-sm text-[#969696]">
                     No comments on this video yet.
                   </div>
                 )}
@@ -303,10 +299,10 @@ export default function InboxClient({
                   .map((comment) => (
                     <div
                       key={comment.id}
-                      className="rounded-lg border border-white/[0.04] bg-white/[0.02] p-4"
+                      className="rounded border border-[#E8E8E8] bg-white p-4"
                     >
-                      <p className="text-sm text-zinc-200">{comment.text}</p>
-                      <div className="mt-2 flex items-center gap-4 text-[11px] text-zinc-500">
+                      <p className="text-sm text-[#0A0A0A]">{comment.text}</p>
+                      <div className="mt-2 flex items-center gap-4 text-[11px] text-[#969696]">
                         <span>&#9829; {comment.likes}</span>
                         {comment.reply_count > 0 && (
                           <span>
@@ -323,7 +319,7 @@ export default function InboxClient({
                             setReplyText("");
                             setReplyError(null);
                           }}
-                          className="text-indigo-400 hover:text-indigo-300"
+                          className="text-[#0A0A0A] hover:opacity-55"
                         >
                           Reply
                         </button>
@@ -344,21 +340,21 @@ export default function InboxClient({
                               }}
                               placeholder="Write a reply..."
                               maxLength={150}
-                              className="flex-1 rounded-lg border border-white/[0.06] bg-white/[0.03] px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:border-indigo-500 focus:outline-none"
+                              className="flex-1 rounded border border-[#DEDEDE] bg-white px-3 py-2 text-sm text-[#0A0A0A] placeholder-[#969696] focus:border-[#0A0A0A] focus:outline-none"
                               disabled={replySending}
                             />
                             <button
                               onClick={() => sendReply(comment.id)}
                               disabled={replySending || !replyText.trim()}
-                              className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-indigo-500 disabled:opacity-50"
+                              className="rounded bg-[#0A0A0A] px-4 py-2 text-sm font-medium text-white transition-opacity hover:opacity-85 disabled:opacity-50"
                             >
                               {replySending ? "Sending..." : "Send"}
                             </button>
                           </div>
-                          <div className="mt-1 flex items-center justify-between text-[11px] text-zinc-600">
+                          <div className="mt-1 flex items-center justify-between text-[11px] text-[#C2C2C2]">
                             <span>{replyText.length}/150</span>
                             {replyError && (
-                              <span className="text-red-400">{replyError}</span>
+                              <span className="text-[#CC2A1E]">{replyError}</span>
                             )}
                           </div>
                         </div>
@@ -374,7 +370,7 @@ export default function InboxClient({
                       loadComments(selectedVideo.id, commentsCursor)
                     }
                     disabled={commentsLoading}
-                    className="rounded-lg border border-white/10 px-4 py-2 text-sm text-zinc-400 transition-colors hover:bg-white/5 hover:text-zinc-300 disabled:opacity-50"
+                    className="rounded border border-[#DEDEDE] px-4 py-2 text-sm text-[#5A5A5A] transition-colors hover:bg-[#F6F6F6] hover:text-[#0A0A0A] disabled:opacity-50"
                   >
                     {commentsLoading ? "Loading..." : "Load more comments"}
                   </button>

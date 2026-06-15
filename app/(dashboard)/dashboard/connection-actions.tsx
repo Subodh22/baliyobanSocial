@@ -9,7 +9,6 @@ export default function ConnectionActions({ provider }: { provider: string }) {
   const [disconnecting, setDisconnecting] = useState(false);
   const [confirming, setConfirming] = useState(false);
 
-  // Providers with connect/disconnect endpoints wired up.
   const supported = [
     "tiktok",
     "facebook",
@@ -40,31 +39,31 @@ export default function ConnectionActions({ provider }: { provider: string }) {
   }
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-1">
       <ManageButton provider={provider} />
 
       {supported && (
         <>
           <a
             href={`/api/connect/${provider}`}
-            className="text-xs text-zinc-500 transition-colors hover:text-zinc-300"
+            className="text-[13px] text-[#5A5A5A] font-[450] px-[10px] py-[6px] rounded transition-colors hover:bg-[#EDEDED] hover:text-[#0A0A0A]"
           >
             Reconnect
           </a>
 
           {confirming ? (
-            <span className="flex items-center gap-2 text-xs">
+            <span className="flex items-center gap-2 text-[13px]">
               <button
                 onClick={disconnect}
                 disabled={disconnecting}
-                className="font-medium text-red-400 transition-colors hover:text-red-300 disabled:opacity-50"
+                className="font-medium text-[#CC2A1E] transition-colors hover:opacity-70 disabled:opacity-50"
               >
                 {disconnecting ? "Removing…" : "Confirm"}
               </button>
               <button
                 onClick={() => setConfirming(false)}
                 disabled={disconnecting}
-                className="text-zinc-500 transition-colors hover:text-zinc-300"
+                className="text-[#969696] transition-colors hover:text-[#0A0A0A]"
               >
                 Cancel
               </button>
@@ -72,7 +71,7 @@ export default function ConnectionActions({ provider }: { provider: string }) {
           ) : (
             <button
               onClick={() => setConfirming(true)}
-              className="text-xs text-zinc-500 transition-colors hover:text-red-400"
+              className="text-[13px] text-[#5A5A5A] font-[450] px-[10px] py-[6px] rounded transition-colors hover:text-[#CC2A1E] hover:bg-[#EDEDED]"
             >
               Disconnect
             </button>

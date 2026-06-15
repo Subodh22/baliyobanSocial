@@ -49,15 +49,13 @@ export default async function Inbox() {
 
   return (
     <>
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-zinc-100">
-            Inbox
-          </h1>
-          <p className="mt-1 text-sm text-zinc-500">
-            Read and reply to messages across your connected accounts
-          </p>
-        </div>
+      <div className="mb-11">
+        <h1 className="font-[family-name:var(--font-jetbrains-mono)] text-[21px] font-medium tracking-[-0.02em]">
+          Inbox
+        </h1>
+        <p className="mt-1.5 text-sm text-[#5A5A5A]">
+          Read and reply across your connected accounts.
+        </p>
       </div>
 
       <InboxTabs tiktok={tiktok} gmail={gmail} instagram={instagram} />

@@ -11,24 +11,24 @@ const LAST_UPDATED = "June 15, 2026";
 
 export default function TermsOfService() {
   return (
-    <main className="bg-[#0a0a0a] text-zinc-100">
-      <nav className="sticky top-0 z-50 border-b border-white/10 bg-[#0a0a0a]/80 backdrop-blur">
+    <main className="text-[#0A0A0A]">
+      <nav className="sticky top-0 z-50 border-b border-[#E8E8E8] bg-white/80 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <Link href="/" className="text-lg font-bold tracking-tight">
             baliyoban
           </Link>
-          <div className="flex items-center gap-6 text-sm text-zinc-400">
-            <Link href="/privacy" className="hover:text-white">Privacy</Link>
-            <Link href="/terms" className="text-white">Terms</Link>
-            <Link href="/data-deletion" className="hover:text-white">Data Deletion</Link>
+          <div className="flex items-center gap-6 text-sm text-[#5A5A5A]">
+            <Link href="/privacy" className="hover:text-[#0A0A0A]">Privacy</Link>
+            <Link href="/terms" className="text-[#0A0A0A]">Terms</Link>
+            <Link href="/data-deletion" className="hover:text-[#0A0A0A]">Data Deletion</Link>
           </div>
         </div>
       </nav>
 
       <div className="mx-auto max-w-3xl px-6 py-16 space-y-10">
-        <div className="space-y-3 border-b border-white/10 pb-8">
+        <div className="space-y-3 border-b border-[#E8E8E8] pb-8">
           <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Terms of Service</h1>
-          <p className="text-sm text-zinc-500">Last updated: {LAST_UPDATED}</p>
+          <p className="text-sm text-[#969696]">Last updated: {LAST_UPDATED}</p>
         </div>
 
         <Section title="1. Acceptance">
@@ -104,7 +104,7 @@ export default function TermsOfService() {
           <p>
             You may stop using the Service and delete your data at any time via
             the{" "}
-            <Link href="/data-deletion" className="text-indigo-400 hover:underline">
+            <Link href="/data-deletion" className="text-[#0A0A0A] hover:underline">
               Data Deletion
             </Link>{" "}
             page. We may suspend access for violations of these Terms.
@@ -114,7 +114,7 @@ export default function TermsOfService() {
         <Section title="9. Contact">
           <p>
             Questions about these Terms? Email{" "}
-            <a href={`mailto:${CONTACT_EMAIL}`} className="text-indigo-400 hover:underline">
+            <a href={`mailto:${CONTACT_EMAIL}`} className="text-[#0A0A0A] hover:underline">
               {CONTACT_EMAIL}
             </a>
             .
@@ -127,8 +127,8 @@ export default function TermsOfService() {
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="space-y-3 text-zinc-300 leading-relaxed text-[15px]">
-      <h2 className="text-xl font-semibold text-zinc-100">{title}</h2>
+    <section className="space-y-3 text-[#5A5A5A] leading-relaxed text-[15px]">
+      <h2 className="text-xl font-semibold text-[#0A0A0A]">{title}</h2>
       {children}
     </section>
   );

@@ -29,9 +29,9 @@ type EmailDetail = {
 function timeAgo(unix: number): string {
   const diff = Math.floor(Date.now() / 1000) - unix;
   if (diff < 60) return "just now";
-  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
-  return `${Math.floor(diff / 86400)}d ago`;
+  if (diff < 3600) return `${Math.floor(diff / 60)}m`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h`;
+  return `${Math.floor(diff / 86400)}d`;
 }
 
 function replySubject(subject: string): string {
@@ -158,13 +158,13 @@ export default function GmailClient({ canSend }: { canSend: boolean }) {
   }
 
   return (
-    <div className="mt-8 flex flex-1 overflow-hidden">
+    <div className="mt-6 flex flex-1 overflow-hidden">
       {/* Email list (left) */}
-      <div className="flex w-full max-w-sm flex-col border-r border-white/[0.06]">
-        <div className="flex items-center justify-between border-b border-white/[0.06] px-4 py-3">
+      <div className="flex w-full max-w-sm flex-col border-r border-[#E8E8E8]">
+        <div className="flex items-center justify-between border-b border-[#E8E8E8] px-4 py-3">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-zinc-300">Gmail</span>
-            <span className="rounded-full bg-indigo-500/10 px-2 py-0.5 text-[11px] text-indigo-400">
+            <span className="font-[family-name:var(--font-jetbrains-mono)] text-[11px] font-medium uppercase tracking-[0.04em] text-[#969696]">Gmail</span>
+            <span className="font-[family-name:var(--font-jetbrains-mono)] text-[11px] text-[#969696]">
               {emails.length}
             </span>
           </div>
@@ -173,7 +173,7 @@ export default function GmailClient({ canSend }: { canSend: boolean }) {
               onClick={refresh}
               disabled={refreshing || loading}
               title="Refresh"
-              className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-zinc-400 transition-colors hover:bg-white/5 hover:text-zinc-200 disabled:opacity-50"
+              className="rounded border border-[#DEDEDE] px-3 py-1.5 text-xs text-[#5A5A5A] transition-colors hover:bg-[#F6F6F6] hover:text-[#0A0A0A] disabled:opacity-50"
             >
               {refreshing ? "Refreshing…" : "Refresh"}
             </button>
@@ -183,67 +183,68 @@ export default function GmailClient({ canSend }: { canSend: boolean }) {
                 setCError(null);
                 setCSent(false);
               }}
-              className="rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-indigo-500"
+              className="text-[13px] text-[#0A0A0A] font-[450] inline-flex items-center gap-[5px] border-b border-[#0A0A0A] transition-opacity hover:opacity-55"
             >
               Compose
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="h-[13px] w-[13px]">
+                <path d="M12 5v14M5 12h14" />
+              </svg>
             </button>
           </div>
         </div>
 
         <div className="flex-1 overflow-y-auto">
           {loading && (
-            <div className="py-16 text-center text-sm text-zinc-500">
+            <div className="py-16 text-center text-sm text-[#969696]">
               Loading email&hellip;
             </div>
           )}
 
           {error && !loading && (
-            <div className="m-4 rounded-lg border border-red-500/20 bg-red-950/40 px-4 py-3 text-sm text-red-400">
+            <div className="m-4 rounded border border-[#CC2A1E]/20 bg-red-50 px-4 py-3 text-sm text-[#CC2A1E]">
               {error}
             </div>
           )}
 
           {!loading && !error && emails.length === 0 && (
-            <div className="py-16 text-center text-sm text-zinc-500">
+            <div className="py-16 text-center text-sm text-[#969696]">
               No emails in your inbox.
             </div>
           )}
 
-          {emails.map((m) => (
-            <button
-              key={m.id}
-              onClick={() => openEmail(m)}
-              className={`flex w-full flex-col items-start gap-1 border-b border-white/[0.04] px-4 py-3 text-left transition-colors hover:bg-white/[0.03] ${
-                selected?.id === m.id ? "bg-white/[0.05]" : ""
-              }`}
-            >
-              <div className="flex w-full items-center justify-between gap-2">
-                <span className="truncate text-sm font-medium text-zinc-200">
+          <div className="border border-[#E8E8E8] rounded overflow-hidden mx-0">
+            {emails.map((m, i) => (
+              <button
+                key={m.id}
+                onClick={() => openEmail(m)}
+                className={`flex w-full items-baseline gap-[14px] px-5 py-[15px] text-left transition-colors hover:bg-[#F6F6F6] ${
+                  i < emails.length - 1 ? "border-b border-[#E8E8E8]" : ""
+                } ${selected?.id === m.id ? "bg-[#F6F6F6]" : ""}`}
+              >
+                <span className="w-[160px] shrink-0 text-[13.5px] font-[450] truncate text-[#0A0A0A]">
                   {m.author}
                 </span>
-                <span className="flex-shrink-0 text-[11px] text-zinc-600">
+                <span className="flex-1 min-w-0 text-[13.5px] truncate">
+                  <span className="font-[450]">{m.title}</span>{" "}
+                  <span className="text-[#969696] font-normal">— {m.snippet}</span>
+                </span>
+                <span className="font-[family-name:var(--font-jetbrains-mono)] text-[11.5px] text-[#969696] shrink-0">
                   {timeAgo(m.timestamp)}
                 </span>
-              </div>
-              <span className="truncate text-xs font-medium text-zinc-400">
-                {m.title}
-              </span>
-              <span className="line-clamp-1 text-xs text-zinc-600">
-                {m.snippet}
-              </span>
-            </button>
-          ))}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
       {/* Reading pane (right) */}
       <div className="flex flex-1 flex-col">
         {needsReconnect && (
-          <div className="mx-6 mt-4 rounded-lg border border-amber-500/20 bg-amber-950/40 px-4 py-3 text-sm text-amber-400">
+          <div className="mx-6 mt-4 rounded border border-[#9A6B00]/20 bg-amber-50 px-4 py-3 text-sm text-[#9A6B00]">
             To send and reply to email, reconnect Gmail with send permission.{" "}
             <a
               href="/api/connect/gmail"
-              className="font-medium underline hover:text-amber-300"
+              className="font-medium underline hover:opacity-70"
             >
               Reconnect Gmail
             </a>
@@ -253,10 +254,10 @@ export default function GmailClient({ canSend }: { canSend: boolean }) {
         {!selected && !detailLoading && !detailError && (
           <div className="flex flex-1 items-center justify-center px-6 text-center">
             <div>
-              <p className="text-sm text-zinc-500">
+              <p className="text-sm text-[#969696]">
                 Select an email to read it
               </p>
-              <p className="mt-1 text-xs text-zinc-600">
+              <p className="mt-1 text-xs text-[#C2C2C2]">
                 Replies are sent from your connected Gmail account
               </p>
             </div>
@@ -264,45 +265,45 @@ export default function GmailClient({ canSend }: { canSend: boolean }) {
         )}
 
         {detailLoading && (
-          <div className="flex flex-1 items-center justify-center text-sm text-zinc-500">
+          <div className="flex flex-1 items-center justify-center text-sm text-[#969696]">
             Loading&hellip;
           </div>
         )}
 
         {detailError && (
-          <div className="m-6 rounded-lg border border-red-500/20 bg-red-950/40 px-4 py-3 text-sm text-red-400">
+          <div className="m-6 rounded border border-[#CC2A1E]/20 bg-red-50 px-4 py-3 text-sm text-[#CC2A1E]">
             {detailError}
           </div>
         )}
 
         {selected && (
           <>
-            <div className="border-b border-white/[0.06] px-6 py-4">
-              <h2 className="text-base font-bold text-zinc-100">
+            <div className="border-b border-[#E8E8E8] px-6 py-4">
+              <h2 className="text-base font-medium text-[#0A0A0A]">
                 {selected.subject}
               </h2>
-              <div className="mt-1 flex items-center gap-2 text-xs text-zinc-500">
-                <span className="font-medium text-zinc-400">
+              <div className="mt-1 flex items-center gap-2 text-xs text-[#969696]">
+                <span className="font-medium text-[#5A5A5A]">
                   {selected.from}
                 </span>
-                <span className="text-zinc-600">&lt;{selected.fromEmail}&gt;</span>
+                <span className="text-[#C2C2C2]">&lt;{selected.fromEmail}&gt;</span>
               </div>
             </div>
 
             <div className="flex-1 overflow-y-auto px-6 py-4">
-              <p className="whitespace-pre-wrap text-sm leading-relaxed text-zinc-300">
+              <p className="whitespace-pre-wrap text-sm leading-relaxed text-[#5A5A5A]">
                 {selected.body}
               </p>
             </div>
 
             {/* Reply box */}
-            <div className="border-t border-white/[0.06] px-6 py-4">
+            <div className="border-t border-[#E8E8E8] px-6 py-4">
               {replySent ? (
-                <div className="flex items-center justify-between rounded-lg border border-emerald-500/20 bg-emerald-950/30 px-4 py-2 text-sm text-emerald-400">
+                <div className="flex items-center justify-between rounded border border-[#1F7A4D]/20 bg-green-50 px-4 py-2 text-sm text-[#1F7A4D]">
                   <span>Reply sent to {selected.fromEmail}.</span>
                   <button
                     onClick={() => setReplySent(false)}
-                    className="text-xs text-emerald-300/70 hover:text-emerald-300"
+                    className="text-xs text-[#1F7A4D]/70 hover:text-[#1F7A4D]"
                   >
                     Reply again
                   </button>
@@ -315,16 +316,16 @@ export default function GmailClient({ canSend }: { canSend: boolean }) {
                     placeholder={`Reply to ${selected.from}…`}
                     rows={3}
                     disabled={replySending}
-                    className="w-full resize-none rounded-lg border border-white/[0.06] bg-white/[0.03] px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:border-indigo-500 focus:outline-none"
+                    className="w-full resize-none rounded border border-[#DEDEDE] bg-white px-[13px] py-[10px] text-[13.5px] text-[#0A0A0A] placeholder-[#969696] focus:border-[#0A0A0A] focus:outline-none"
                   />
                   <div className="mt-2 flex items-center justify-between">
-                    <span className="text-[11px] text-red-400">
+                    <span className="text-[11px] text-[#CC2A1E]">
                       {replyError}
                     </span>
                     <button
                       onClick={sendReply}
                       disabled={replySending || !replyText.trim()}
-                      className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-indigo-500 disabled:opacity-50"
+                      className="rounded bg-[#0A0A0A] px-[15px] py-[9px] text-[13px] font-medium text-white transition-opacity hover:opacity-85 disabled:opacity-50"
                     >
                       {replySending ? "Sending…" : "Send reply"}
                     </button>
@@ -339,14 +340,14 @@ export default function GmailClient({ canSend }: { canSend: boolean }) {
       {/* Compose modal */}
       {composeOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm"
           onClick={() => !cSending && setComposeOpen(false)}
         >
           <div
-            className="w-full max-w-lg rounded-2xl border border-white/10 bg-[#181818] p-6 shadow-2xl"
+            className="w-full max-w-lg rounded border border-[#E8E8E8] bg-white p-6 shadow-lg"
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 className="text-lg font-bold text-zinc-100">New email</h2>
+            <h2 className="text-lg font-medium text-[#0A0A0A]">New email</h2>
             <div className="mt-4 space-y-3">
               <input
                 type="email"
@@ -354,7 +355,7 @@ export default function GmailClient({ canSend }: { canSend: boolean }) {
                 onChange={(e) => setCTo(e.target.value)}
                 placeholder="To"
                 disabled={cSending}
-                className="w-full rounded-lg border border-white/[0.06] bg-white/[0.03] px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:border-indigo-500 focus:outline-none"
+                className="w-full rounded border border-[#DEDEDE] bg-white px-[13px] py-[10px] text-[13.5px] text-[#0A0A0A] placeholder-[#969696] focus:border-[#0A0A0A] focus:outline-none"
               />
               <input
                 type="text"
@@ -362,7 +363,7 @@ export default function GmailClient({ canSend }: { canSend: boolean }) {
                 onChange={(e) => setCSubject(e.target.value)}
                 placeholder="Subject"
                 disabled={cSending}
-                className="w-full rounded-lg border border-white/[0.06] bg-white/[0.03] px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:border-indigo-500 focus:outline-none"
+                className="w-full rounded border border-[#DEDEDE] bg-white px-[13px] py-[10px] text-[13.5px] text-[#0A0A0A] placeholder-[#969696] focus:border-[#0A0A0A] focus:outline-none"
               />
               <textarea
                 value={cBody}
@@ -370,25 +371,25 @@ export default function GmailClient({ canSend }: { canSend: boolean }) {
                 placeholder="Write your message…"
                 rows={8}
                 disabled={cSending}
-                className="w-full resize-none rounded-lg border border-white/[0.06] bg-white/[0.03] px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 focus:border-indigo-500 focus:outline-none"
+                className="w-full resize-none rounded border border-[#DEDEDE] bg-white px-[13px] py-[10px] text-[13.5px] text-[#0A0A0A] placeholder-[#969696] focus:border-[#0A0A0A] focus:outline-none"
               />
             </div>
             {cSent && (
-              <p className="mt-3 text-sm text-emerald-400">Email sent.</p>
+              <p className="mt-3 text-sm text-[#1F7A4D]">Email sent.</p>
             )}
-            {cError && <p className="mt-3 text-sm text-red-400">{cError}</p>}
+            {cError && <p className="mt-3 text-sm text-[#CC2A1E]">{cError}</p>}
             <div className="mt-5 flex items-center justify-end gap-3">
               <button
                 onClick={() => setComposeOpen(false)}
                 disabled={cSending}
-                className="rounded-lg border border-white/10 px-4 py-2 text-sm font-medium text-zinc-400 transition-colors hover:bg-white/[0.04] hover:text-zinc-200 disabled:opacity-50"
+                className="rounded border border-[#DEDEDE] px-[15px] py-[9px] text-[13px] font-[450] text-[#5A5A5A] transition-colors hover:bg-[#F6F6F6] hover:text-[#0A0A0A] disabled:opacity-50"
               >
                 Cancel
               </button>
               <button
                 onClick={sendCompose}
                 disabled={cSending || !cTo.trim() || !cBody.trim()}
-                className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-indigo-500 disabled:opacity-50"
+                className="rounded bg-[#0A0A0A] px-[15px] py-[9px] text-[13px] font-medium text-white transition-opacity hover:opacity-85 disabled:opacity-50"
               >
                 {cSending ? "Sending…" : "Send"}
               </button>

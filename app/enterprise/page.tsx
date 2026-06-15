@@ -19,7 +19,7 @@ const FEATURES = [
 
 export default function Enterprise() {
   return (
-    <main className="bg-[#0a0a0a] text-zinc-100">
+    <main className="text-[#0A0A0A]">
       <MarketingNav />
 
       <div className="mx-auto max-w-6xl px-6 py-20">
@@ -27,28 +27,28 @@ export default function Enterprise() {
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
             Enterprise
           </h1>
-          <p className="mx-auto mt-4 max-w-xl text-lg text-zinc-400">
+          <p className="mx-auto mt-4 max-w-xl text-lg text-[#5A5A5A]">
             Social media infrastructure for large teams, agencies, and platforms.
           </p>
         </div>
 
         <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {FEATURES.map((f) => (
-            <div key={f.title} className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6">
-              <h3 className="font-semibold text-zinc-100">{f.title}</h3>
-              <p className="mt-2 text-sm text-zinc-400">{f.desc}</p>
+            <div key={f.title} className="rounded-2xl border border-[#E8E8E8] bg-[#F6F6F6] p-6">
+              <h3 className="font-semibold text-[#0A0A0A]">{f.title}</h3>
+              <p className="mt-2 text-sm text-[#5A5A5A]">{f.desc}</p>
             </div>
           ))}
         </div>
 
-        <div className="mt-16 mx-auto max-w-xl rounded-2xl border border-white/[0.06] bg-white/[0.02] p-8 text-center">
-          <h2 className="text-2xl font-bold text-zinc-100">Talk to Sales</h2>
-          <p className="mt-2 text-sm text-zinc-400">
+        <div className="mt-16 mx-auto max-w-xl rounded-2xl border border-[#E8E8E8] bg-[#F6F6F6] p-8 text-center">
+          <h2 className="text-2xl font-bold text-[#0A0A0A]">Talk to Sales</h2>
+          <p className="mt-2 text-sm text-[#5A5A5A]">
             Tell us about your use case and we&apos;ll put together a custom plan.
           </p>
           <a
             href="mailto:subodhmaharjan3@gmail.com?subject=Enterprise%20Inquiry"
-            className="mt-6 inline-block rounded-lg bg-[#EB3514] px-8 py-3 font-semibold text-white transition-opacity hover:opacity-90"
+            className="mt-6 inline-block rounded-lg bg-[#0A0A0A] px-8 py-3 font-semibold text-white transition-opacity hover:opacity-90"
           >
             Contact Us
           </a>

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Social Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FFFFFF; --panel:#FFFFFF; --line:#E8E8E8; --line2:#DEDEDE;
+    --ink:#0A0A0A; --ink2:#5A5A5A; --ink3:#969696; --ink4:#C2C2C2;
+    --accent:#0A0A0A; --hover:#F6F6F6; --tagbg:#F4F4F4;
+    --green:#1F7A4D; --red:#CC2A1E; --amber:#9A6B00;
+    --r:4px;
+    --font:"Inter",-apple-system,BlinkMacSystemFont,sans-serif;
+    --mono:"JetBrains Mono",ui-monospace,monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  ::selection{background:#0A0A0A;color:#fff;}
+  body{font-family:var(--font);background:var(--bg);color:var(--ink);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;letter-spacing:-0.01em;}
+  .app{display:flex;min-height:100vh;}
+
+  /* sidebar */
+  .sidebar{width:230px;flex-shrink:0;padding:30px 20px;display:flex;flex-direction:column;justify-content:space-between;border-right:1px solid var(--line);position:sticky;top:0;height:100vh;}
+  .brand{display:flex;align-items:center;gap:10px;margin-bottom:40px;padding:0 8px;}
+  .brand-mark{width:24px;height:24px;border-radius:3px;background:#0A0A0A;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:12px;flex-shrink:0;}
+  .brand-name{font-size:14px;font-weight:600;letter-spacing:-0.02em;}
+  nav{display:flex;flex-direction:column;gap:1px;}
+  .nav-item{display:flex;align-items:center;gap:11px;padding:8px;border-radius:5px;color:var(--ink2);font-size:13.5px;font-weight:450;text-decoration:none;cursor:pointer;transition:background .14s,color .14s;}
+  .nav-item svg{width:16px;height:16px;opacity:.6;flex-shrink:0;}
+  .nav-item:hover{background:var(--hover);color:var(--ink);}
+  .nav-item.active{color:var(--ink);font-weight:500;}
+  .nav-item.active svg{opacity:1;}
+  .nav-item.muted{color:var(--ink3);font-size:13px;}
+
+  /* main shell */
+  .main{flex:1;min-width:0;display:flex;justify-content:center;padding:64px 40px;}
+  .container{width:100%;max-width:680px;}
+  .head{margin-bottom:44px;}
+  h1{font-family:var(--mono);font-size:21px;font-weight:500;letter-spacing:-0.02em;margin-bottom:6px;}
+  .head-sub{font-size:14px;color:var(--ink2);font-weight:400;}
+
+  .section-row{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:18px;}
+  .section-label{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--ink3);letter-spacing:0.04em;text-transform:uppercase;}
+  .section-row + .section-row{margin-top:40px;}
+  .link-btn{font-size:13px;color:var(--ink);font-weight:450;text-decoration:none;display:inline-flex;align-items:center;gap:5px;padding:5px 0;border-bottom:1px solid var(--ink);transition:opacity .14s;background:none;border-left:none;border-right:none;border-top:none;cursor:pointer;font-family:var(--font);}
+  .link-btn:hover{opacity:.55;}
+  .link-btn svg{width:13px;height:13px;}
+
+  /* list */
+  .list{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;}
+  .row{display:flex;align-items:center;gap:16px;padding:18px 20px;border-bottom:1px solid var(--line);transition:background .14s;}
+  .row:last-child{border-bottom:none;}
+  .row:hover{background:var(--hover);}
+  .row:hover .row-actions{opacity:1;}
+  .logo{width:34px;height:34px;border-radius:var(--r);flex-shrink:0;display:flex;align-items:center;justify-content:center;background:#0A0A0A;color:#fff;}
+  .logo svg{width:18px;height:18px;}
+  .row-main{flex:1;min-width:0;}
+  .row-name{font-size:14px;font-weight:500;letter-spacing:-0.01em;margin-bottom:2px;display:flex;align-items:center;gap:9px;}
+  .row-handle{font-size:13px;color:var(--ink3);font-weight:400;font-family:var(--mono);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .dot-live{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--green);font-weight:450;}
+  .dot-live::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--green);}
+  .tag{font-family:var(--mono);font-size:10.5px;font-weight:500;color:var(--ink2);background:var(--tagbg);border:1px solid var(--line2);padding:2px 7px;border-radius:3px;letter-spacing:0;}
+  .row-actions{display:flex;align-items:center;gap:4px;opacity:0;transition:opacity .14s;}
+  .ghost-btn{font-size:13px;color:var(--ink2);font-weight:450;background:none;border:none;cursor:pointer;padding:6px 10px;border-radius:var(--r);font-family:var(--font);transition:background .14s,color .14s;}
+  .ghost-btn:hover{background:#EDEDED;color:var(--ink);}
+  .ghost-btn.danger:hover{color:var(--red);}
+  .foot-note{margin-top:18px;font-size:13px;color:var(--ink3);font-weight:400;text-align:center;font-family:var(--mono);}
+
+  /* mono logos: neutral, brand-agnostic for an editorial monochrome feel */
+  .logo svg{color:#fff;}
+
+  /* buttons */
+  .btn{display:inline-flex;align-items:center;gap:7px;background:#0A0A0A;color:#fff;border:1px solid #0A0A0A;border-radius:var(--r);padding:9px 15px;font-size:13px;font-weight:500;cursor:pointer;font-family:var(--font);transition:opacity .14s;}
+  .btn:hover{opacity:.85;}
+  .btn svg{width:14px;height:14px;}
+  .btn-ghost{display:inline-flex;align-items:center;gap:7px;background:none;color:var(--ink);border:1px solid var(--line2);border-radius:var(--r);padding:9px 15px;font-size:13px;font-weight:450;cursor:pointer;font-family:var(--font);transition:background .14s;}
+  .btn-ghost:hover{background:var(--hover);}
+  .btn-ghost svg{width:14px;height:14px;}
+
+  /* form fields */
+  .field{margin-bottom:22px;}
+  .field-label{display:block;font-size:13px;font-weight:500;margin-bottom:7px;color:var(--ink);}
+  .field-input{width:100%;border:1px solid var(--line2);border-radius:var(--r);padding:10px 13px;font-size:13.5px;font-family:var(--font);color:var(--ink);background:#fff;transition:border-color .14s;}
+  .field-input:focus{outline:none;border-color:var(--ink);}
+  .field-input:disabled{color:var(--ink3);background:var(--hover);}
+  .field-hint{font-size:12px;color:var(--ink3);margin-top:7px;font-family:var(--mono);}
+
+  /* stat cells */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-bottom:14px;}
+  .stat{padding:20px 22px;border-right:1px solid var(--line);}
+  .stat:last-child{border-right:none;}
+  .stat-num{font-family:var(--mono);font-size:30px;font-weight:500;letter-spacing:-0.03em;line-height:1;margin-bottom:8px;}
+  .stat-num.muted{color:var(--ink3);}
+  .stat-cap{font-size:12px;color:var(--ink2);font-weight:450;}
+
+  /* generic panel */
+  .panel{border:1px solid var(--line);border-radius:var(--r);padding:24px;background:var(--panel);}
+  .panel + .panel{margin-top:18px;}
+
+  /* table */
+  .tbl{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;}
+  .tbl-head{display:flex;gap:16px;padding:11px 20px;background:var(--hover);border-bottom:1px solid var(--line);font-family:var(--mono);font-size:10.5px;font-weight:500;color:var(--ink3);text-transform:uppercase;letter-spacing:0.04em;}
+  .tbl-row{display:flex;gap:16px;padding:15px 20px;border-bottom:1px solid var(--line);align-items:center;transition:background .14s;}
+  .tbl-row:last-child{border-bottom:none;}
+  .tbl-row:hover{background:var(--hover);}
+  .c1{flex:1;min-width:0;} .c2{flex:2;min-width:0;} .c-num{font-family:var(--mono);}
+  .pos{color:var(--green);} .neg{color:var(--red);}
+
+  /* tabs */
+  .tabs{display:flex;gap:24px;margin-bottom:24px;border-bottom:1px solid var(--line);}
+  .tab{padding:0 0 12px;font-size:13.5px;font-weight:450;color:var(--ink3);cursor:pointer;border-bottom:1px solid transparent;margin-bottom:-1px;transition:color .14s;}
+  .tab.active{color:var(--ink);font-weight:500;border-bottom-color:var(--ink);}
+
+  /* inbox */
+  .mail{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;}
+  .mail-row{display:flex;align-items:baseline;gap:14px;padding:15px 20px;border-bottom:1px solid var(--line);cursor:pointer;transition:background .14s;}
+  .mail-row:last-child{border-bottom:none;}
+  .mail-row:hover{background:var(--hover);}
+  .mail-row.unread .mail-sender{font-weight:600;}
+  .mail-row.unread::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--ink);flex-shrink:0;align-self:center;}
+  .mail-row.read::before{content:"";width:6px;height:6px;flex-shrink:0;}
+  .mail-sender{width:160px;flex-shrink:0;font-size:13.5px;font-weight:450;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .mail-body{flex:1;min-width:0;overflow:hidden;}
+  .mail-subject{font-size:13.5px;font-weight:450;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .mail-subject .preview{color:var(--ink3);font-weight:400;}
+  .mail-time{font-family:var(--mono);font-size:11.5px;color:var(--ink3);flex-shrink:0;white-space:nowrap;}
+
+  /* compose */
+  .pill-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;}
+  .pill{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line2);border-radius:var(--r);padding:8px 13px;font-size:13px;font-weight:450;cursor:pointer;transition:all .14s;background:#fff;color:var(--ink2);}
+  .pill svg{width:15px;height:15px;}
+  .pill.on{background:#0A0A0A;color:#fff;border-color:#0A0A0A;}
+  .pill.off:hover{border-color:var(--ink);color:var(--ink);}
+  .pill.disabled{color:var(--ink4);border-style:dashed;cursor:not-allowed;}
+  .pill.disabled .mini{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:0.04em;color:var(--ink4);}
+  textarea.field-input{min-height:120px;resize:vertical;line-height:1.6;}
+  .drop{border:1px dashed var(--line2);border-radius:var(--r);padding:34px;text-align:center;color:var(--ink2);}
+  .drop svg{width:24px;height:24px;color:var(--ink3);margin-bottom:10px;}
+  .drop .sub{font-size:12px;color:var(--ink3);margin-top:5px;font-family:var(--mono);}
+  .note{font-size:12.5px;color:var(--ink2);background:var(--hover);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;line-height:1.55;}
+
+  /* avatar */
+  .avatar{width:34px;height:34px;border-radius:50%;background:#0A0A0A;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0;}
+  .role-tag{font-family:var(--mono);font-size:10.5px;font-weight:500;color:var(--ink);background:var(--tagbg);border:1px solid var(--line2);padding:2px 8px;border-radius:3px;text-transform:uppercase;letter-spacing:0.03em;}
+
+  @media(max-width:760px){.sidebar{display:none;}.main{padding:40px 22px;}}
+
+  .main{padding-top:64px;padding-bottom:64px;align-items:flex-start;}
+  .page{width:100%;display:flex;justify-content:center;}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div>
+      <div class="brand"><div class="brand-mark">S</div><div class="brand-name">Social Hub</div></div>
+      <nav>
+        <a class="nav-item active" href="#" data-page="connections"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="2.5"/><path d="M12 3v3M12 18v3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M3 12h3M18 12h3M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg>Connections</a>
+        <a class="nav-item" href="#" data-page="posts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>Posts</a>
+        <a class="nav-item" href="#" data-page="analytics"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 2 4-5"/></svg>Analytics</a>
+        <a class="nav-item" href="#" data-page="inbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>Inbox</a>
+        <a class="nav-item" href="#" data-page="users"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Users</a>
+        <a class="nav-item" href="#" data-page="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.6 1.6 0 00-1.8-.3 1.6 1.6 0 00-1 1.5V21a2 2 0 11-4 0v-.1A1.6 1.6 0 009 19.4a1.6 1.6 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.6 1.6 0 00.3-1.8 1.6 1.6 0 00-1.5-1H3a2 2 0 110-4h.1A1.6 1.6 0 004.6 9a1.6 1.6 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.6 1.6 0 001.8.3H9a1.6 1.6 0 001-1.5V3a2 2 0 114 0v.1a1.6 1.6 0 001 1.5 1.6 1.6 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.6 1.6 0 00-.3 1.8V9a1.6 1.6 0 001.5 1H21a2 2 0 110 4h-.1a1.6 1.6 0 00-1.5 1z"/></svg>Settings</a>
+      </nav>
+    </div>
+    <div class="sidebar-foot">
+      <a class="nav-item muted" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>Log out</a>
+    </div>
+  </aside>
+  <main class="main">
+      <section class="page" data-page="connections" style="display:block;">
+        <div class="container">
+      <div class="head"><h1>Connections</h1><div class="head-sub">The accounts Social Hub can publish to and read from.</div></div>
+      <div class="section-row"><div class="section-label">Connected</div><button class="link-btn">Add account <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></button></div>
+      <div class="list">
+        <div class="row">
+          <div class="logo"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2v-1.5C10 8.57 11.57 7 13.5 7c.93 0 1.91.17 1.91.17v2.5h-1.07c-1.06 0-1.34.66-1.34 1.33V12h2.33l-.37 3h-1.96v6.8c4.56-.93 8-4.96 8-9.8z"/></svg></div>
+          <div class="row-main"><div class="row-name">Facebook <span class="tag">Default</span></div><div class="row-handle">/subodh.maharjan</div></div>
+          <div class="dot-live">Connected</div>
+          <div class="row-actions"><button class="ghost-btn">Reconnect</button><button class="ghost-btn danger">Disconnect</button></div>
+        </div>
+        <div class="row">
+          <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5.5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/></svg></div>
+          <div class="row-main"><div class="row-name">Instagram <span class="tag">Default</span></div><div class="row-handle">@subodh.maharjan</div></div>
+          <div class="dot-live">Connected</div>
+          <div class="row-actions"><button class="ghost-btn">Reconnect</button><button class="ghost-btn danger">Disconnect</button></div>
+        </div>
+        <div class="row">
+          <div class="logo"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.6 7.2c-.25-1-1-1.75-2-2C17.8 4.7 12 4.7 12 4.7s-5.8 0-7.6.5c-1 .25-1.75 1-2 2C2 9 2 12 2 12s0 3 .4 4.8c.25 1 1 1.75 2 2 1.8.5 7.6.5 7.6.5s5.8 0 7.6-.5c1-.25 1.75-1 2-2C22 15 22 12 22 12s0-3-.4-4.8zM10 15V9l5.2 3-5.2 3z"/></svg></div>
+          <div class="row-main"><div class="row-name">YouTube <span class="tag">Default</span></div><div class="row-handle">@subodhmaharjan</div></div>
+          <div class="dot-live">Connected</div>
+          <div class="row-actions"><button class="ghost-btn">Reconnect</button><button class="ghost-btn danger">Disconnect</button></div>
+        </div>
+        <div class="row">
+          <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2.5"/><path d="M2.5 6.5L12 13l9.5-6.5"/></svg></div>
+          <div class="row-main"><div class="row-name">Gmail <span class="tag">Default</span></div><div class="row-handle">subodhmaharjan33@gmail.com</div></div>
+          <div class="dot-live">Connected</div>
+          <div class="row-actions"><button class="ghost-btn">Reconnect</button><button class="ghost-btn danger">Disconnect</button></div>
+        </div>
+        <div class="row">
+          <div class="logo"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 5.82s.51.5 0 0A4.278 4.278 0 0115.54 3h-3.09v12.4a2.59 2.59 0 01-2.59 2.5c-1.42 0-2.6-1.16-2.6-2.6 0-1.72 1.66-3.01 3.37-2.48V9.66c-3.45-.46-6.47 2.22-6.47 5.64 0 3.33 2.76 5.7 5.69 5.7 3.14 0 5.69-2.55 5.69-5.7V9.01a7.35 7.35 0 004.3 1.38V7.3s-1.88.09-3.24-1.48z"/></svg></div>
+          <div class="row-main"><div class="row-name">TikTok <span class="tag">Default</span></div><div class="row-handle">@subodh.maharjan</div></div>
+          <div class="dot-live">Connected</div>
+          <div class="row-actions"><button class="ghost-btn">Reconnect</button><button class="ghost-btn danger">Disconnect</button></div>
+        </div>
+      </div>
+      <div class="foot-note">5 accounts connected · Last synced 4 minutes ago</div>
+        </div>
+      </section>
+      <section class="page" data-page="posts" style="display:none;">
+        <div class="container">
+      <div class="head"><h1>New post</h1><div class="head-sub">Write once, publish to every connected account.</div></div>
+      <div class="field"><label class="field-label">Publish to</label><div class="pill-row">
+          <span class="pill on"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2v-1.5C10 8.57 11.57 7 13.5 7c.93 0 1.91.17 1.91.17v2.5h-1.07c-1.06 0-1.34.66-1.34 1.33V12h2.33l-.37 3h-1.96v6.8c4.56-.93 8-4.96 8-9.8z"/></svg> Facebook</span><span class="pill on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5.5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/></svg> Instagram</span>
+          <span class="pill on"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.6 7.2c-.25-1-1-1.75-2-2C17.8 4.7 12 4.7 12 4.7s-5.8 0-7.6.5c-1 .25-1.75 1-2 2C2 9 2 12 2 12s0 3 .4 4.8c.25 1 1 1.75 2 2 1.8.5 7.6.5 7.6.5s5.8 0 7.6-.5c1-.25 1.75-1 2-2C22 15 22 12 22 12s0-3-.4-4.8zM10 15V9l5.2 3-5.2 3z"/></svg> YouTube</span><span class="pill on"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 5.82s.51.5 0 0A4.278 4.278 0 0115.54 3h-3.09v12.4a2.59 2.59 0 01-2.59 2.5c-1.42 0-2.6-1.16-2.6-2.6 0-1.72 1.66-3.01 3.37-2.48V9.66c-3.45-.46-6.47 2.22-6.47 5.64 0 3.33 2.76 5.7 5.69 5.7 3.14 0 5.69-2.55 5.69-5.7V9.01a7.35 7.35 0 004.3 1.38V7.3s-1.88.09-3.24-1.48z"/></svg> TikTok</span>
+          <span class="pill disabled"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.24 2H21l-6.1 7 7.18 9.5h-5.62L11.5 12.5 6.13 18.5H3.34l6.53-7.49L2.91 2h5.75l4.43 5.86L18.24 2z"/></svg> X <span class="mini">connect</span></span>
+          <span class="pill disabled"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 110-4.14 2.07 2.07 0 010 4.14zM7.12 20.45H3.56V9h3.56z"/></svg> LinkedIn <span class="mini">connect</span></span>
+      </div></div>
+      <div class="field"><label class="field-label">Content</label><textarea class="field-input" placeholder="What's on your mind?"></textarea><div class="field-hint">0 characters</div></div>
+      <div class="field"><label class="field-label">Media</label><div class="drop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><div>Drag a video, image, or audio file here</div><div class="sub">or paste a URL — required for Instagram, TikTok, YouTube</div></div></div>
+      <div class="field"><div class="note">TikTok posts are sent to your TikTok inbox. Open the app and tap the notification to finish posting.</div></div>
+      <div style="display:flex;gap:10px;align-items:center;"><button class="btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg> Publish now</button><button class="btn-ghost"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Schedule</button></div>
+        </div>
+      </section>
+      <section class="page" data-page="analytics" style="display:none;">
+        <div class="container">
+      <div class="head"><h1>Analytics</h1><div class="head-sub">Publishing history and engagement across your accounts.</div></div>
+      <div class="stats">
+        <div class="stat"><div class="stat-num">11</div><div class="stat-cap">Posts created</div></div>
+        <div class="stat"><div class="stat-num">3</div><div class="stat-cap">Publishes succeeded</div></div>
+        <div class="stat"><div class="stat-num">27<span style="font-size:18px;color:var(--ink3);">%</span></div><div class="stat-cap">Success rate</div></div>
+      </div>
+      <div class="section-row" style="margin-top:40px;"><div class="section-label">Publishing by platform</div></div>
+      <div class="tbl">
+        <div class="tbl-head"><div class="c2">Platform</div><div class="c1">Attempts</div><div class="c1">Succeeded</div><div class="c1">Failed</div></div>
+        <div class="tbl-row"><div class="c2" style="display:flex;align-items:center;gap:12px;"><div class="logo" style="width:28px;height:28px;"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 5.82s.51.5 0 0A4.278 4.278 0 0115.54 3h-3.09v12.4a2.59 2.59 0 01-2.59 2.5c-1.42 0-2.6-1.16-2.6-2.6 0-1.72 1.66-3.01 3.37-2.48V9.66c-3.45-.46-6.47 2.22-6.47 5.64 0 3.33 2.76 5.7 5.69 5.7 3.14 0 5.69-2.55 5.69-5.7V9.01a7.35 7.35 0 004.3 1.38V7.3s-1.88.09-3.24-1.48z"/></svg></div>TikTok</div><div class="c1 c-num">10</div><div class="c1 c-num pos">3</div><div class="c1 c-num neg">7</div></div>
+        <div class="tbl-row"><div class="c2" style="display:flex;align-items:center;gap:12px;"><div class="logo" style="width:28px;height:28px;"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 110-4.14 2.07 2.07 0 010 4.14zM7.12 20.45H3.56V9h3.56z"/></svg></div>LinkedIn</div><div class="c1 c-num">1</div><div class="c1 c-num pos">0</div><div class="c1 c-num neg">1</div></div>
+      </div>
+      <div class="section-row" style="margin-top:40px;"><div class="section-label">Engagement</div></div>
+      <div class="tbl">
+        <div class="tbl-head"><div class="c2">Account</div><div class="c1">Reach</div><div class="c1">Likes</div><div class="c1">Comments</div></div>
+        <div class="tbl-row"><div class="c2" style="display:flex;align-items:center;gap:12px;"><div class="logo" style="width:28px;height:28px;"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 5.82s.51.5 0 0A4.278 4.278 0 0115.54 3h-3.09v12.4a2.59 2.59 0 01-2.59 2.5c-1.42 0-2.6-1.16-2.6-2.6 0-1.72 1.66-3.01 3.37-2.48V9.66c-3.45-.46-6.47 2.22-6.47 5.64 0 3.33 2.76 5.7 5.69 5.7 3.14 0 5.69-2.55 5.69-5.7V9.01a7.35 7.35 0 004.3 1.38V7.3s-1.88.09-3.24-1.48z"/></svg></div>TikTok</div><div class="c1 c-num">5.3K</div><div class="c1 c-num">173</div><div class="c1 c-num">4</div></div>
+        <div class="tbl-row"><div class="c2" style="display:flex;align-items:center;gap:12px;"><div class="logo" style="width:28px;height:28px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5.5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/></svg></div>Instagram</div><div class="c1 c-num">2.0K</div><div class="c1 c-num">569</div><div class="c1 c-num">42</div></div>
+      </div>
+      <div class="section-row" style="margin-top:40px;"><div class="section-label">Recent posts</div></div>
+      <div class="tbl">
+        <div class="tbl-head"><div class="c2">Content</div><div class="c1">Platform</div><div class="c1">Date</div></div>
+        <div class="tbl-row"><div class="c2">dd</div><div class="c1"><span class="tag">TikTok</span></div><div class="c1 c-num" style="color:var(--ink3);">15/06/2026</div></div>
+      </div>
+        </div>
+      </section>
+      <section class="page" data-page="inbox" style="display:none;">
+        <div class="container">
+      <div class="head"><h1>Inbox</h1><div class="head-sub">Read and reply across your connected accounts.</div></div>
+      <div class="tabs"><div class="tab active">Gmail <span style="color:var(--ink3);font-family:var(--mono);font-size:11px;">15</span></div><div class="tab">Instagram</div><div class="tab">TikTok</div></div>
+      <div class="section-row" style="margin-bottom:14px;"><div class="section-label">Gmail</div><button class="link-btn">Compose <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></button></div>
+      <div class="mail">
+        <div class="mail-row unread"><div class="mail-sender">Google</div><div class="mail-body"><div class="mail-subject">Security alert <span class="preview">— A copy of a security alert sent to your account</span></div></div><div class="mail-time">18m</div></div>
+        <div class="mail-row unread"><div class="mail-sender">Google</div><div class="mail-body"><div class="mail-subject">Account recovered successfully <span class="preview">— This is a copy of a security alert sent to</span></div></div><div class="mail-time">18m</div></div>
+        <div class="mail-row read"><div class="mail-sender">Google</div><div class="mail-body"><div class="mail-subject">Security alert <span class="preview">— A copy of a security alert sent to your account</span></div></div><div class="mail-time">20m</div></div>
+        <div class="mail-row read"><div class="mail-sender">Property Developer Network</div><div class="mail-body"><div class="mail-subject">Adelaide Event — June 27 <span class="preview">— The AFH Strategy Developers Mixer. In-person & Zoom</span></div></div><div class="mail-time">26m</div></div>
+        <div class="mail-row read"><div class="mail-sender">Medium Daily Digest</div><div class="mail-body"><div class="mail-subject">Building an AI Agent from Scratch <span class="preview">— No magic, just a deterministic loop</span></div></div><div class="mail-time">36m</div></div>
+        <div class="mail-row read"><div class="mail-sender">Our Sage</div><div class="mail-body"><div class="mail-subject">Is it time to get something checked? <span class="preview">— Men's Health Week is a good time to check in</span></div></div><div class="mail-time">38m</div></div>
+      </div>
+        </div>
+      </section>
+      <section class="page" data-page="users" style="display:none;">
+        <div class="container">
+      <div class="head"><h1>Users</h1><div class="head-sub">Team members and their access to your profiles.</div></div>
+      <div class="stats">
+        <div class="stat"><div class="stat-num">1</div><div class="stat-cap">Owner</div></div>
+        <div class="stat"><div class="stat-num muted">0</div><div class="stat-cap">Admin</div></div>
+        <div class="stat"><div class="stat-num muted">0</div><div class="stat-cap">Member</div></div>
+      </div>
+      <div class="section-row" style="margin-top:40px;"><div class="section-label">Members</div><button class="link-btn">Invite <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></button></div>
+      <div class="tbl">
+        <div class="tbl-head"><div class="c2">User</div><div class="c1">Role</div><div class="c1">Profiles</div><div class="c1">Active</div></div>
+        <div class="tbl-row">
+          <div class="c2" style="display:flex;align-items:center;gap:12px;"><div class="avatar">SM</div><div><div style="font-weight:500;">Subodh Maharjan</div><div class="row-handle" style="font-family:var(--mono);">subodhmaharjan33@gmail.com</div></div></div>
+          <div class="c1"><span class="role-tag">Owner</span></div><div class="c1">All</div><div class="c1 c-num" style="color:var(--ink3);">Now</div>
+        </div>
+      </div>
+      <div class="foot-note">Team seats arrive with the Pro plan.</div>
+        </div>
+      </section>
+      <section class="page" data-page="settings" style="display:none;">
+        <div class="container">
+      <div class="head"><h1>Settings</h1><div class="head-sub">Account preferences and connected platforms.</div></div>
+      <div class="section-row"><div class="section-label">Profile</div></div>
+      <div class="panel">
+        <div class="field"><label class="field-label">Display name</label><input class="field-input" value="Subodh Maharjan"></div>
+        <div class="field" style="margin-bottom:0;"><label class="field-label">Email</label><input class="field-input" value="subodhmaharjan33@gmail.com" disabled><div class="field-hint">Managed by your authentication provider (Clerk)</div></div>
+      </div>
+      <div class="section-row" style="margin-top:40px;"><div class="section-label">Connected accounts</div></div>
+      <div class="list">
+        <div class="row"><div class="logo"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 5.82s.51.5 0 0A4.278 4.278 0 0115.54 3h-3.09v12.4a2.59 2.59 0 01-2.59 2.5c-1.42 0-2.6-1.16-2.6-2.6 0-1.72 1.66-3.01 3.37-2.48V9.66c-3.45-.46-6.47 2.22-6.47 5.64 0 3.33 2.76 5.7 5.69 5.7 3.14 0 5.69-2.55 5.69-5.7V9.01a7.35 7.35 0 004.3 1.38V7.3s-1.88.09-3.24-1.48z"/></svg></div><div class="row-main"><div class="row-name">TikTok</div><div class="row-handle">Connected</div></div><div class="dot-live">Active</div></div>
+        <div class="row"><div class="logo"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2v-1.5C10 8.57 11.57 7 13.5 7c.93 0 1.91.17 1.91.17v2.5h-1.07c-1.06 0-1.34.66-1.34 1.33V12h2.33l-.37 3h-1.96v6.8c4.56-.93 8-4.96 8-9.8z"/></svg></div><div class="row-main"><div class="row-name">Facebook</div><div class="row-handle">Connected</div></div><div class="dot-live">Active</div></div>
+        <div class="row"><div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5.5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/></svg></div><div class="row-main"><div class="row-name">Instagram</div><div class="row-handle">Connected</div></div><div class="dot-live">Active</div></div>
+        <div class="row"><div class="logo"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.6 7.2c-.25-1-1-1.75-2-2C17.8 4.7 12 4.7 12 4.7s-5.8 0-7.6.5c-1 .25-1.75 1-2 2C2 9 2 12 2 12s0 3 .4 4.8c.25 1 1 1.75 2 2 1.8.5 7.6.5 7.6.5s5.8 0 7.6-.5c1-.25 1.75-1 2-2C22 15 22 12 22 12s0-3-.4-4.8zM10 15V9l5.2 3-5.2 3z"/></svg></div><div class="row-main"><div class="row-name">YouTube</div><div class="row-handle">Connected</div></div><div class="dot-live">Active</div></div>
+        <div class="row"><div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2.5"/><path d="M2.5 6.5L12 13l9.5-6.5"/></svg></div><div class="row-main"><div class="row-name">Gmail</div><div class="row-handle">Connected</div></div><div class="dot-live">Active</div></div>
+        <div class="row"><div class="logo"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 15a2 2 0 11-2-2h2v2zm1 0a2 2 0 014 0v5a2 2 0 01-4 0v-5zM8 5a2 2 0 11-2 2V5h2zm0 1a2 2 0 010 4H3a2 2 0 010-4h5zm11 2a2 2 0 112 2h-2V8zm-1 0a2 2 0 01-4 0V3a2 2 0 014 0v5zm-2 11a2 2 0 11-2-2h2v2zm0-1a2 2 0 010-4h5a2 2 0 010 4h-5z"/></svg></div><div class="row-main"><div class="row-name">Slack</div><div class="row-handle">Not connected</div></div><button class="btn-ghost" style="padding:6px 12px;font-size:12px;">Connect</button></div>
+      </div>
+        </div>
+      </section>
+  </main>
+</div>
+<script>
+  const links=document.querySelectorAll('.sidebar nav .nav-item[data-page]');
+  const pages=document.querySelectorAll('.page[data-page]');
+  links.forEach(l=>l.addEventListener('click',e=>{
+    e.preventDefault();
+    const t=l.getAttribute('data-page');
+    links.forEach(x=>x.classList.toggle('active',x.getAttribute('data-page')===t));
+    pages.forEach(p=>p.style.display=(p.getAttribute('data-page')===t)?'flex':'none');
+    window.scrollTo(0,0);
+  }));
+</script>
+</body>
+</html>

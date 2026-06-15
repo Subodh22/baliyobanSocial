@@ -42,23 +42,23 @@ const USE_CASES = [
 
 export default function Customers() {
   return (
-    <main className="bg-[#0a0a0a] text-zinc-100">
+    <main className="text-[#0A0A0A]">
       <MarketingNav />
 
       <div className="mx-auto max-w-6xl px-6 py-20">
         <div className="text-center">
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">Customers</h1>
-          <p className="mx-auto mt-4 max-w-xl text-lg text-zinc-400">
+          <p className="mx-auto mt-4 max-w-xl text-lg text-[#5A5A5A]">
             Teams of every size use baliyoban to ship social media features faster.
           </p>
         </div>
 
         <div className="mt-16 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {USE_CASES.map((uc) => (
-            <div key={uc.type} className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6">
-              <h3 className="text-lg font-semibold text-zinc-100">{uc.type}</h3>
-              <p className="mt-2 text-sm text-zinc-400">{uc.desc}</p>
-              <p className="mt-4 rounded-lg bg-white/[0.03] px-3 py-2 text-xs italic text-zinc-500">
+            <div key={uc.type} className="rounded-2xl border border-[#E8E8E8] bg-[#F6F6F6] p-6">
+              <h3 className="text-lg font-semibold text-[#0A0A0A]">{uc.type}</h3>
+              <p className="mt-2 text-sm text-[#5A5A5A]">{uc.desc}</p>
+              <p className="mt-4 rounded-lg bg-[#F6F6F6] px-3 py-2 text-xs italic text-[#969696]">
                 &ldquo;{uc.example}&rdquo;
               </p>
             </div>
@@ -68,7 +68,7 @@ export default function Customers() {
         <div className="mt-16 text-center">
           <Link
             href="/sign-up"
-            className="inline-block rounded-lg bg-[#EB3514] px-8 py-3.5 text-lg font-semibold text-white transition-opacity hover:opacity-90"
+            className="inline-block rounded-lg bg-[#0A0A0A] px-8 py-3.5 text-lg font-semibold text-white transition-opacity hover:opacity-90"
           >
             Join Them — Start for Free
           </Link>

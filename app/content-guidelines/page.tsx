@@ -9,13 +9,13 @@ export const metadata: Metadata = {
 
 export default function ContentGuidelines() {
   return (
-    <main className="bg-[#0a0a0a] text-zinc-100">
+    <main className="text-[#0A0A0A]">
       <MarketingNav />
 
       <div className="mx-auto max-w-3xl px-6 py-16 space-y-10">
-        <div className="space-y-3 border-b border-white/10 pb-8">
+        <div className="space-y-3 border-b border-[#E8E8E8] pb-8">
           <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Content Guidelines</h1>
-          <p className="text-sm text-zinc-500">Last updated: June 8, 2026</p>
+          <p className="text-sm text-[#969696]">Last updated: June 8, 2026</p>
         </div>
 
         <Section title="Overview">
@@ -62,15 +62,15 @@ export default function ContentGuidelines() {
           <p>
             Accounts that violate these guidelines may be warned, suspended, or
             terminated. If you believe content was flagged in error, contact{" "}
-            <a href="mailto:subodhmaharjan3@gmail.com" className="text-indigo-400 hover:underline">
+            <a href="mailto:subodhmaharjan3@gmail.com" className="text-[#0A0A0A] hover:underline">
               subodhmaharjan3@gmail.com
             </a>.
           </p>
         </Section>
 
         <div className="pt-4 flex gap-4 text-sm">
-          <Link href="/terms" className="text-indigo-400 hover:underline">Terms of Service</Link>
-          <Link href="/privacy" className="text-indigo-400 hover:underline">Privacy Policy</Link>
+          <Link href="/terms" className="text-[#0A0A0A] hover:underline">Terms of Service</Link>
+          <Link href="/privacy" className="text-[#0A0A0A] hover:underline">Privacy Policy</Link>
         </div>
       </div>
     </main>
@@ -79,8 +79,8 @@ export default function ContentGuidelines() {
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="space-y-3 text-zinc-300 leading-relaxed text-[15px]">
-      <h2 className="text-xl font-semibold text-zinc-100">{title}</h2>
+    <section className="space-y-3 text-[#5A5A5A] leading-relaxed text-[15px]">
+      <h2 className="text-xl font-semibold text-[#0A0A0A]">{title}</h2>
       {children}
     </section>
   );

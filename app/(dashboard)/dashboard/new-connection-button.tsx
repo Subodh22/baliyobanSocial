@@ -3,13 +3,13 @@
 import { useState } from "react";
 
 const PLATFORMS = [
-  { id: "twitter",   label: "Twitter / X", icon: "𝕏",  color: "bg-zinc-100 text-black" },
-  { id: "facebook",  label: "Facebook",    icon: "f",   color: "bg-blue-600 text-white" },
-  { id: "instagram", label: "Instagram",   icon: "📷",  color: "bg-gradient-to-br from-purple-600 via-pink-500 to-amber-400 text-white" },
-  { id: "linkedin",  label: "LinkedIn",    icon: "in",  color: "bg-sky-700 text-white" },
-  { id: "tiktok",    label: "TikTok",      icon: "♪",   color: "bg-pink-600 text-white" },
-  { id: "google",    label: "YouTube",     icon: "▶",   color: "bg-red-600 text-white" },
-  { id: "gmail",     label: "Gmail",       icon: "✉",   color: "bg-white text-red-600" },
+  { id: "twitter",   label: "Twitter / X", icon: "𝕏" },
+  { id: "facebook",  label: "Facebook",    icon: "f" },
+  { id: "instagram", label: "Instagram",   icon: "📷" },
+  { id: "linkedin",  label: "LinkedIn",    icon: "in" },
+  { id: "tiktok",    label: "TikTok",      icon: "♪" },
+  { id: "google",    label: "YouTube",     icon: "▶" },
+  { id: "gmail",     label: "Gmail",       icon: "✉" },
 ];
 
 export default function NewConnectionButton() {
@@ -19,32 +19,36 @@ export default function NewConnectionButton() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-indigo-500"
+        className="text-[13px] text-[#0A0A0A] font-[450] inline-flex items-center gap-[5px] border-b border-[#0A0A0A] transition-opacity hover:opacity-55"
       >
-        + New Connection
+        Add account
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="h-[13px] w-[13px]">
+          <path d="M12 5v14M5 12h14" />
+        </svg>
       </button>
 
       {open && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm"
           onClick={() => setOpen(false)}
         >
           <div
-            className="w-full max-w-md rounded-2xl border border-white/10 bg-[#181818] p-6 shadow-2xl"
+            className="w-full max-w-md rounded border border-[#E8E8E8] bg-white p-6 shadow-lg"
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 className="text-lg font-bold text-zinc-100">Connect a platform</h2>
-            <p className="mt-1 text-sm text-zinc-500">
+            <h2 className="text-lg font-medium text-[#0A0A0A]">Connect a platform</h2>
+            <p className="mt-1 text-sm text-[#5A5A5A]">
               Select a social platform to connect to your account.
             </p>
 
-            <div className="mt-5 space-y-2">
-              {PLATFORMS.map((p) => (
+            <div className="mt-5 border border-[#E8E8E8] rounded overflow-hidden">
+              {PLATFORMS.map((p, i) => (
                 <button
                   key={p.id}
-                  className="flex w-full items-center gap-3 rounded-xl border border-white/[0.06] bg-white/[0.02] px-4 py-3 text-left transition-colors hover:border-white/10 hover:bg-white/[0.06]"
+                  className={`flex w-full items-center gap-4 px-5 py-[14px] text-left transition-colors hover:bg-[#F6F6F6] ${
+                    i < PLATFORMS.length - 1 ? "border-b border-[#E8E8E8]" : ""
+                  }`}
                   onClick={() => {
-                    // OAuth flow will be wired here per-platform
                     window.open(
                       `/api/connect/${p.id}`,
                       "_blank",
@@ -53,12 +57,10 @@ export default function NewConnectionButton() {
                     setOpen(false);
                   }}
                 >
-                  <span
-                    className={`flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold ${p.color}`}
-                  >
+                  <span className="flex h-[34px] w-[34px] items-center justify-center rounded bg-[#0A0A0A] text-white text-sm font-bold">
                     {p.icon}
                   </span>
-                  <span className="text-sm font-medium text-zinc-200">
+                  <span className="text-sm font-medium text-[#0A0A0A]">
                     {p.label}
                   </span>
                 </button>
@@ -67,7 +69,7 @@ export default function NewConnectionButton() {
 
             <button
               onClick={() => setOpen(false)}
-              className="mt-5 w-full rounded-lg border border-white/10 px-4 py-2 text-sm font-medium text-zinc-400 transition-colors hover:bg-white/[0.04] hover:text-zinc-200"
+              className="mt-5 w-full rounded border border-[#DEDEDE] px-4 py-[9px] text-[13px] font-[450] text-[#5A5A5A] transition-colors hover:bg-[#F6F6F6] hover:text-[#0A0A0A]"
             >
               Cancel
             </button>

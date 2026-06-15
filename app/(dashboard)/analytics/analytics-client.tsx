@@ -51,30 +51,30 @@ function EngagementCard({
 }) {
   const views = sum(videos, "view_count");
   return (
-    <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-5">
-      <p className="text-sm font-semibold text-zinc-200">{label}</p>
+    <div className="border border-[#E8E8E8] rounded p-5">
+      <p className="text-sm font-medium text-[#0A0A0A]">{label}</p>
       <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
         <div>
-          <p className="text-xl font-bold text-zinc-100">{videos.length}</p>
-          <p className="text-xs text-zinc-500">{countLabel}</p>
+          <p className="text-xl font-bold text-[#0A0A0A]">{videos.length}</p>
+          <p className="text-xs text-[#5A5A5A]">{countLabel}</p>
         </div>
         {views > 0 && (
           <div>
-            <p className="text-xl font-bold text-zinc-100">{formatCount(views)}</p>
-            <p className="text-xs text-zinc-500">Views</p>
+            <p className="text-xl font-bold text-[#0A0A0A]">{formatCount(views)}</p>
+            <p className="text-xs text-[#5A5A5A]">Views</p>
           </div>
         )}
         <div>
-          <p className="text-xl font-bold text-zinc-100">
+          <p className="text-xl font-bold text-[#0A0A0A]">
             {formatCount(sum(videos, "like_count"))}
           </p>
-          <p className="text-xs text-zinc-500">Likes</p>
+          <p className="text-xs text-[#5A5A5A]">Likes</p>
         </div>
         <div>
-          <p className="text-xl font-bold text-zinc-100">
+          <p className="text-xl font-bold text-[#0A0A0A]">
             {formatCount(sum(videos, "comment_count"))}
           </p>
-          <p className="text-xs text-zinc-500">Comments</p>
+          <p className="text-xs text-[#5A5A5A]">Comments</p>
         </div>
       </div>
     </div>
@@ -107,39 +107,33 @@ export default function AnalyticsClient({
   return (
     <div className="mt-8 space-y-8">
       {/* Posting overview */}
-      <div className="grid gap-4 sm:grid-cols-3">
-        <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-5">
-          <p className="text-xs uppercase tracking-wider text-zinc-500">
-            Posts created
-          </p>
-          <p className="mt-2 text-2xl font-bold text-zinc-100">
+      <div className="grid grid-cols-3 border border-[#E8E8E8] rounded overflow-hidden">
+        <div className="p-5 border-r border-[#E8E8E8]">
+          <p className="font-[family-name:var(--font-jetbrains-mono)] text-[30px] font-medium tracking-[-0.03em] leading-none mb-2">
             {loading ? "…" : totals?.posts ?? 0}
           </p>
+          <p className="text-xs text-[#5A5A5A] font-[450]">Posts created</p>
         </div>
-        <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-5">
-          <p className="text-xs uppercase tracking-wider text-zinc-500">
-            Publishes succeeded
-          </p>
-          <p className="mt-2 text-2xl font-bold text-emerald-400">
+        <div className="p-5 border-r border-[#E8E8E8]">
+          <p className="font-[family-name:var(--font-jetbrains-mono)] text-[30px] font-medium tracking-[-0.03em] leading-none mb-2">
             {loading ? "…" : totals?.succeeded ?? 0}
           </p>
+          <p className="text-xs text-[#5A5A5A] font-[450]">Publishes succeeded</p>
         </div>
-        <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-5">
-          <p className="text-xs uppercase tracking-wider text-zinc-500">
-            Success rate
+        <div className="p-5">
+          <p className="font-[family-name:var(--font-jetbrains-mono)] text-[30px] font-medium tracking-[-0.03em] leading-none mb-2">
+            {loading ? "…" : successRate === null ? "—" : <>{successRate}<span className="text-lg text-[#969696]">%</span></>}
           </p>
-          <p className="mt-2 text-2xl font-bold text-zinc-100">
-            {loading ? "…" : successRate === null ? "—" : `${successRate}%`}
-          </p>
+          <p className="text-xs text-[#5A5A5A] font-[450]">Success rate</p>
         </div>
       </div>
 
-      {/* Platform engagement (from connected platform APIs) */}
+      {/* Platform engagement */}
       {(hasTikTok || hasInstagram) && (
         <div className="space-y-4">
-          <h2 className="text-lg font-semibold text-zinc-200">
-            Platform engagement
-          </h2>
+          <div className="flex items-baseline justify-between">
+            <span className="font-[family-name:var(--font-jetbrains-mono)] text-[11px] font-medium uppercase tracking-[0.04em] text-[#969696]">Engagement</span>
+          </div>
           {hasTikTok && tiktok?.videos && (
             <EngagementCard label="TikTok" videos={tiktok.videos} countLabel="Videos" />
           )}
@@ -152,103 +146,90 @@ export default function AnalyticsClient({
       {/* Per-platform posting breakdown */}
       {analytics && Object.keys(analytics.perPlatform).length > 0 && (
         <div>
-          <h2 className="text-lg font-semibold text-zinc-200">
-            Publishing by platform
-          </h2>
-          <div className="mt-4 overflow-hidden rounded-xl border border-white/[0.06] bg-white/[0.02]">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-white/[0.06] text-left text-xs uppercase tracking-wider text-zinc-500">
-                  <th className="px-5 py-3 font-medium">Platform</th>
-                  <th className="px-5 py-3 font-medium">Attempts</th>
-                  <th className="px-5 py-3 font-medium">Succeeded</th>
-                  <th className="px-5 py-3 font-medium">Failed</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/[0.04]">
-                {Object.entries(analytics.perPlatform).map(([platform, s]) => (
-                  <tr key={platform} className="text-zinc-300">
-                    <td className="px-5 py-3 font-medium">
-                      {PLATFORM_LABELS[platform] ?? platform}
-                    </td>
-                    <td className="px-5 py-3">{s.posts}</td>
-                    <td className="px-5 py-3 text-emerald-400">{s.succeeded}</td>
-                    <td className="px-5 py-3 text-red-400">{s.failed}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="flex items-baseline justify-between mb-[18px]">
+            <span className="font-[family-name:var(--font-jetbrains-mono)] text-[11px] font-medium uppercase tracking-[0.04em] text-[#969696]">Publishing by platform</span>
+          </div>
+          <div className="border border-[#E8E8E8] rounded overflow-hidden">
+            <div className="flex gap-4 px-5 py-[11px] bg-[#F6F6F6] border-b border-[#E8E8E8] font-[family-name:var(--font-jetbrains-mono)] text-[10.5px] font-medium text-[#969696] uppercase tracking-[0.04em]">
+              <div className="flex-[2] min-w-0">Platform</div>
+              <div className="flex-1 min-w-0">Attempts</div>
+              <div className="flex-1 min-w-0">Succeeded</div>
+              <div className="flex-1 min-w-0">Failed</div>
+            </div>
+            {Object.entries(analytics.perPlatform).map(([platform, s], i, arr) => (
+              <div key={platform} className={`flex gap-4 px-5 py-[15px] items-center transition-colors hover:bg-[#F6F6F6] ${i < arr.length - 1 ? "border-b border-[#E8E8E8]" : ""}`}>
+                <div className="flex-[2] min-w-0 flex items-center gap-3">
+                  <div className="flex h-7 w-7 items-center justify-center rounded bg-[#0A0A0A] text-white text-xs font-bold shrink-0">
+                    {platform === "tiktok" ? "♪" : platform === "linkedin" ? "in" : platform.charAt(0).toUpperCase()}
+                  </div>
+                  {PLATFORM_LABELS[platform] ?? platform}
+                </div>
+                <div className="flex-1 min-w-0 font-[family-name:var(--font-jetbrains-mono)]">{s.posts}</div>
+                <div className="flex-1 min-w-0 font-[family-name:var(--font-jetbrains-mono)] text-[#1F7A4D]">{s.succeeded}</div>
+                <div className="flex-1 min-w-0 font-[family-name:var(--font-jetbrains-mono)] text-[#CC2A1E]">{s.failed}</div>
+              </div>
+            ))}
           </div>
         </div>
       )}
 
       {/* Post history */}
       <div>
-        <h2 className="text-lg font-semibold text-zinc-200">Recent posts</h2>
+        <div className="flex items-baseline justify-between mb-[18px]">
+          <span className="font-[family-name:var(--font-jetbrains-mono)] text-[11px] font-medium uppercase tracking-[0.04em] text-[#969696]">Recent posts</span>
+        </div>
         {!loading && (analytics?.recent.length ?? 0) === 0 && (
-          <div className="mt-4 rounded-xl border border-dashed border-white/10 bg-white/[0.02] px-6 py-12 text-center">
-            <p className="text-sm text-zinc-400">No posts yet.</p>
+          <div className="rounded border border-dashed border-[#DEDEDE] bg-white px-6 py-12 text-center">
+            <p className="text-sm text-[#5A5A5A]">No posts yet.</p>
             <Link
               href="/compose"
-              className="mt-3 inline-block text-sm font-medium text-indigo-400 hover:text-indigo-300"
+              className="mt-3 inline-block text-sm font-medium text-[#0A0A0A] underline"
             >
-              Write your first post →
+              Write your first post &rarr;
             </Link>
           </div>
         )}
-        <div className="mt-4 space-y-3">
-          {analytics?.recent.map((post) => (
-            <div
-              key={post.id}
-              className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4"
-            >
-              <div className="flex items-start justify-between gap-4">
-                <p className="line-clamp-2 text-sm text-zinc-200">
+        {analytics && analytics.recent.length > 0 && (
+          <div className="border border-[#E8E8E8] rounded overflow-hidden">
+            <div className="flex gap-4 px-5 py-[11px] bg-[#F6F6F6] border-b border-[#E8E8E8] font-[family-name:var(--font-jetbrains-mono)] text-[10.5px] font-medium text-[#969696] uppercase tracking-[0.04em]">
+              <div className="flex-[2] min-w-0">Content</div>
+              <div className="flex-1 min-w-0">Platform</div>
+              <div className="flex-1 min-w-0">Date</div>
+            </div>
+            {analytics.recent.map((post, i) => (
+              <div
+                key={post.id}
+                className={`flex gap-4 px-5 py-[15px] items-center transition-colors hover:bg-[#F6F6F6] ${i < analytics.recent.length - 1 ? "border-b border-[#E8E8E8]" : ""}`}
+              >
+                <div className="flex-[2] min-w-0 truncate text-sm">
                   {post.content || "(media only)"}
-                </p>
-                <span className="flex-shrink-0 text-xs text-zinc-600">
-                  {new Date(post.createdAt).toLocaleDateString()}
-                </span>
-              </div>
-              <div className="mt-2 flex flex-wrap items-center gap-2">
-                {post.status === "scheduled" && (
-                  <span className="rounded-full bg-amber-500/10 px-2.5 py-0.5 text-xs font-medium text-amber-400">
-                    Scheduled
-                    {post.scheduledAt
-                      ? ` · ${new Date(post.scheduledAt).toLocaleString()}`
-                      : ""}
-                  </span>
-                )}
-                {Object.entries(post.results).map(([platform, r]) =>
-                  r.ok && r.url ? (
-                    <a
-                      key={platform}
-                      href={r.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-400 hover:bg-emerald-500/20"
-                    >
-                      {PLATFORM_LABELS[platform] ?? platform} ↗
-                    </a>
-                  ) : (
+                </div>
+                <div className="flex-1 min-w-0 flex flex-wrap gap-1">
+                  {post.status === "scheduled" && (
+                    <span className="font-[family-name:var(--font-jetbrains-mono)] text-[10.5px] font-medium text-[#9A6B00] bg-amber-50 border border-[#9A6B00]/20 px-[7px] py-[2px] rounded-[3px]">
+                      Scheduled
+                    </span>
+                  )}
+                  {Object.entries(post.results).map(([platform, r]) => (
                     <span
                       key={platform}
-                      title={r.error}
-                      className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                      className={`font-[family-name:var(--font-jetbrains-mono)] text-[10.5px] font-medium px-[7px] py-[2px] rounded-[3px] border ${
                         r.ok
-                          ? "bg-emerald-500/10 text-emerald-400"
-                          : "bg-red-500/10 text-red-400"
+                          ? "text-[#1F7A4D] bg-green-50 border-[#1F7A4D]/20"
+                          : "text-[#CC2A1E] bg-red-50 border-[#CC2A1E]/20"
                       }`}
                     >
                       {PLATFORM_LABELS[platform] ?? platform}
-                      {r.ok ? "" : " ✕"}
                     </span>
-                  )
-                )}
+                  ))}
+                </div>
+                <div className="flex-1 min-w-0 font-[family-name:var(--font-jetbrains-mono)] text-[#969696] text-sm">
+                  {new Date(post.createdAt).toLocaleDateString()}
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -24,7 +24,7 @@ const CLIENTS = [
 
 export default function AiAgents() {
   return (
-    <main className="bg-[#0a0a0a] text-zinc-100">
+    <main className="text-[#0A0A0A]">
       <MarketingNav />
 
       <div className="mx-auto max-w-6xl px-6 py-20">
@@ -36,7 +36,7 @@ export default function AiAgents() {
           <h1 className="mt-6 text-4xl font-bold tracking-tight sm:text-5xl">
             Social media for AI agents
           </h1>
-          <p className="mx-auto mt-4 max-w-xl text-lg text-zinc-400">
+          <p className="mx-auto mt-4 max-w-xl text-lg text-[#5A5A5A]">
             We&apos;re building an MCP server so your AI agent can post,
             schedule, analyze, and manage DMs through natural language. Sign up
             now for early access when it launches.
@@ -44,8 +44,8 @@ export default function AiAgents() {
         </div>
 
         {/* Code example */}
-        <div className="mx-auto mt-12 max-w-2xl rounded-xl border border-white/10 bg-[#1a1a1a] p-6 font-mono text-sm text-zinc-300">
-          <p className="text-zinc-500"># Claude Desktop config (preview)</p>
+        <div className="mx-auto mt-12 max-w-2xl rounded-xl border border-[#E8E8E8] bg-[#F6F6F6] p-6 font-mono text-sm text-[#5A5A5A]">
+          <p className="text-[#969696]"># Claude Desktop config (preview)</p>
           <pre className="mt-2 overflow-x-auto">{`{
   "mcpServers": {
     "baliyoban": {
@@ -64,9 +64,9 @@ export default function AiAgents() {
           <h2 className="text-center text-2xl font-bold tracking-tight">What your agent will be able to do</h2>
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {CAPABILITIES.map((c) => (
-              <div key={c.title} className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-5">
-                <h3 className="font-semibold text-zinc-100">{c.title}</h3>
-                <p className="mt-1.5 text-sm text-zinc-400">{c.desc}</p>
+              <div key={c.title} className="rounded-xl border border-[#E8E8E8] bg-[#F6F6F6] p-5">
+                <h3 className="font-semibold text-[#0A0A0A]">{c.title}</h3>
+                <p className="mt-1.5 text-sm text-[#5A5A5A]">{c.desc}</p>
               </div>
             ))}
           </div>
@@ -77,9 +77,9 @@ export default function AiAgents() {
           <h2 className="text-center text-2xl font-bold tracking-tight">Compatible Clients</h2>
           <div className="mt-8 grid gap-4 sm:grid-cols-3">
             {CLIENTS.map((c) => (
-              <div key={c.name} className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-5 text-center">
-                <h3 className="font-semibold text-zinc-100">{c.name}</h3>
-                <p className="mt-1 text-sm text-zinc-500">{c.desc}</p>
+              <div key={c.name} className="rounded-xl border border-[#E8E8E8] bg-[#F6F6F6] p-5 text-center">
+                <h3 className="font-semibold text-[#0A0A0A]">{c.name}</h3>
+                <p className="mt-1 text-sm text-[#969696]">{c.desc}</p>
               </div>
             ))}
           </div>
@@ -88,7 +88,7 @@ export default function AiAgents() {
         <div className="mt-16 text-center">
           <Link
             href="/sign-up"
-            className="inline-block rounded-lg bg-[#EB3514] px-8 py-3.5 text-lg font-semibold text-white transition-opacity hover:opacity-90"
+            className="inline-block rounded-lg bg-[#0A0A0A] px-8 py-3.5 text-lg font-semibold text-white transition-opacity hover:opacity-90"
           >
             Get Early Access
           </Link>

@@ -5,63 +5,72 @@ export default async function Users() {
 
   return (
     <>
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-zinc-100">Users</h1>
-          <p className="mt-1 text-sm text-zinc-500">Manage team members and their access to your profiles</p>
-        </div>
-        <span className="rounded-lg border border-white/10 px-4 py-2 text-sm text-zinc-500">
-          Team seats arrive with the Pro plan
-        </span>
+      <div className="mb-11">
+        <h1 className="font-[family-name:var(--font-jetbrains-mono)] text-[21px] font-medium tracking-[-0.02em]">Users</h1>
+        <p className="mt-1.5 text-sm text-[#5A5A5A]">Team members and their access to your profiles.</p>
       </div>
 
       {/* Roles overview */}
-      <div className="mt-8 grid gap-4 sm:grid-cols-3">
+      <div className="grid grid-cols-3 border border-[#E8E8E8] rounded overflow-hidden mb-4">
         {[
-          { role: "Owner", desc: "Full access to all settings, billing, and team management", count: 1 },
-          { role: "Admin", desc: "Manage connections, post, and view analytics", count: 0 },
-          { role: "Member", desc: "Create and schedule posts, view analytics", count: 0 },
-        ].map((r) => (
-          <div key={r.role} className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-5">
-            <div className="flex items-center justify-between">
-              <p className="text-sm font-semibold text-zinc-200">{r.role}</p>
-              <span className="rounded-full bg-white/[0.06] px-2 py-0.5 text-xs text-zinc-400">{r.count}</span>
-            </div>
-            <p className="mt-1 text-xs text-zinc-500">{r.desc}</p>
+          { role: "Owner", count: 1 },
+          { role: "Admin", count: 0 },
+          { role: "Member", count: 0 },
+        ].map((r, i) => (
+          <div key={r.role} className={`p-5 ${i < 2 ? "border-r border-[#E8E8E8]" : ""}`}>
+            <p className={`font-[family-name:var(--font-jetbrains-mono)] text-[30px] font-medium tracking-[-0.03em] leading-none mb-2 ${r.count === 0 ? "text-[#969696]" : ""}`}>
+              {r.count}
+            </p>
+            <p className="text-xs text-[#5A5A5A] font-[450]">{r.role}</p>
           </div>
         ))}
       </div>
 
-      {/* Users table */}
-      <div className="mt-8 rounded-xl border border-white/[0.06] bg-white/[0.02] overflow-hidden">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-white/[0.06] text-left text-xs uppercase tracking-wider text-zinc-500">
-              <th className="px-5 py-3 font-medium">User</th>
-              <th className="px-5 py-3 font-medium">Role</th>
-              <th className="px-5 py-3 font-medium">Profiles</th>
-              <th className="px-5 py-3 font-medium">Last Active</th>
-              <th className="px-5 py-3 font-medium" />
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="text-zinc-400">
-              <td className="px-5 py-4">
-                <div>
-                  <p className="font-medium text-zinc-200">{name}</p>
-                  <p className="text-xs text-zinc-500">{email}</p>
-                </div>
-              </td>
-              <td className="px-5 py-4">
-                <span className="rounded-full bg-indigo-500/10 px-2 py-0.5 text-xs font-medium text-indigo-400">Owner</span>
-              </td>
-              <td className="px-5 py-4 text-zinc-500">All</td>
-              <td className="px-5 py-4 text-zinc-500">Now</td>
-              <td className="px-5 py-4 text-zinc-600 text-right">—</td>
-            </tr>
-          </tbody>
-        </table>
+      {/* Members header */}
+      <div className="flex items-baseline justify-between mb-[18px] mt-10">
+        <span className="font-[family-name:var(--font-jetbrains-mono)] text-[11px] font-medium uppercase tracking-[0.04em] text-[#969696]">Members</span>
+        <button className="text-[13px] text-[#0A0A0A] font-[450] inline-flex items-center gap-[5px] border-b border-[#0A0A0A] transition-opacity hover:opacity-55">
+          Invite
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="h-[13px] w-[13px]">
+            <path d="M12 5v14M5 12h14" />
+          </svg>
+        </button>
       </div>
+
+      {/* Users table */}
+      <div className="border border-[#E8E8E8] rounded overflow-hidden">
+        <div className="flex gap-4 px-5 py-[11px] bg-[#F6F6F6] border-b border-[#E8E8E8] font-[family-name:var(--font-jetbrains-mono)] text-[10.5px] font-medium text-[#969696] uppercase tracking-[0.04em]">
+          <div className="flex-[2] min-w-0">User</div>
+          <div className="flex-1 min-w-0">Role</div>
+          <div className="flex-1 min-w-0">Profiles</div>
+          <div className="flex-1 min-w-0">Active</div>
+        </div>
+        <div className="flex gap-4 px-5 py-[15px] items-center">
+          <div className="flex-[2] min-w-0 flex items-center gap-3">
+            <div className="flex h-[34px] w-[34px] items-center justify-center rounded-full bg-[#0A0A0A] text-white text-xs font-semibold shrink-0">
+              {name
+                .split(" ")
+                .map((n) => n[0])
+                .join("")
+                .slice(0, 2)
+                .toUpperCase()}
+            </div>
+            <div>
+              <p className="text-sm font-medium text-[#0A0A0A]">{name}</p>
+              <p className="text-xs text-[#969696] font-[family-name:var(--font-jetbrains-mono)]">{email}</p>
+            </div>
+          </div>
+          <div className="flex-1 min-w-0">
+            <span className="font-[family-name:var(--font-jetbrains-mono)] text-[10.5px] font-medium text-[#0A0A0A] bg-[#F4F4F4] border border-[#DEDEDE] px-2 py-[2px] rounded-[3px] uppercase tracking-[0.03em]">Owner</span>
+          </div>
+          <div className="flex-1 min-w-0 text-sm text-[#5A5A5A]">All</div>
+          <div className="flex-1 min-w-0 font-[family-name:var(--font-jetbrains-mono)] text-sm text-[#969696]">Now</div>
+        </div>
+      </div>
+
+      <p className="mt-[18px] text-[13px] text-[#969696] text-center font-[family-name:var(--font-jetbrains-mono)]">
+        Team seats arrive with the Pro plan.
+      </p>
     </>
   );
 }

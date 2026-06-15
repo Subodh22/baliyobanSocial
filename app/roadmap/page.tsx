@@ -44,12 +44,12 @@ const PHASES = [
 
 export default function Roadmap() {
   return (
-    <main className="bg-[#0a0a0a] text-zinc-100">
+    <main className="text-[#0A0A0A]">
       <MarketingNav />
 
       <div className="mx-auto max-w-3xl px-6 py-20">
         <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">Roadmap</h1>
-        <p className="mt-4 text-lg text-zinc-400">
+        <p className="mt-4 text-lg text-[#5A5A5A]">
           Where we are and where we&apos;re headed. Updated regularly.
         </p>
 
@@ -58,13 +58,13 @@ export default function Roadmap() {
             <div key={phase.status}>
               <div className="flex items-center gap-2.5">
                 <span className={`h-2.5 w-2.5 rounded-full ${phase.color}`} />
-                <h2 className="text-xl font-bold text-zinc-100">{phase.status}</h2>
+                <h2 className="text-xl font-bold text-[#0A0A0A]">{phase.status}</h2>
               </div>
-              <div className="mt-4 space-y-3 pl-5 border-l border-white/[0.06]">
+              <div className="mt-4 space-y-3 pl-5 border-l border-[#E8E8E8]">
                 {phase.items.map((item) => (
-                  <div key={item.title} className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 ml-4">
-                    <h3 className="font-semibold text-zinc-200">{item.title}</h3>
-                    <p className="mt-1 text-sm text-zinc-500">{item.desc}</p>
+                  <div key={item.title} className="rounded-xl border border-[#E8E8E8] bg-[#F6F6F6] p-4 ml-4">
+                    <h3 className="font-semibold text-[#0A0A0A]">{item.title}</h3>
+                    <p className="mt-1 text-sm text-[#969696]">{item.desc}</p>
                   </div>
                 ))}
               </div>

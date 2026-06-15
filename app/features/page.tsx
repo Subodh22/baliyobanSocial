@@ -64,7 +64,7 @@ const FEATURES: {
 
 export default function Features() {
   return (
-    <main className="bg-[#0a0a0a] text-zinc-100">
+    <main className="text-[#0A0A0A]">
       <MarketingNav />
 
       <div className="mx-auto max-w-6xl px-6 py-20">
@@ -72,31 +72,31 @@ export default function Features() {
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
             Everything you need for social media at scale
           </h1>
-          <p className="mx-auto mt-4 max-w-xl text-lg text-zinc-400">
+          <p className="mx-auto mt-4 max-w-xl text-lg text-[#5A5A5A]">
             Publishing and a unified inbox are live today. The rest of the
             platform is shipping in the open — see the{" "}
-            <Link href="/roadmap" className="text-zinc-200 underline">roadmap</Link>.
+            <Link href="/roadmap" className="text-[#0A0A0A] underline">roadmap</Link>.
           </p>
         </div>
 
         <div className="mt-16 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {FEATURES.map((f) => (
-            <div key={f.title} className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6">
+            <div key={f.title} className="rounded-2xl border border-[#E8E8E8] bg-[#F6F6F6] p-6">
               <div className="flex items-start justify-between gap-3">
-                <h3 className="text-lg font-semibold text-zinc-100">{f.title}</h3>
+                <h3 className="text-lg font-semibold text-[#0A0A0A]">{f.title}</h3>
                 {f.status === "live" ? (
                   <span className="mt-1 inline-flex shrink-0 items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[11px] font-medium text-emerald-400">
                     <span className="h-1 w-1 rounded-full bg-emerald-400" /> Live
                   </span>
                 ) : (
-                  <span className="mt-1 shrink-0 rounded-full bg-white/[0.06] px-2 py-0.5 text-[11px] font-medium text-zinc-500">
+                  <span className="mt-1 shrink-0 rounded-full bg-[#F6F6F6] px-2 py-0.5 text-[11px] font-medium text-[#969696]">
                     Coming soon
                   </span>
                 )}
               </div>
-              <p className="mt-2 text-sm leading-relaxed text-zinc-400">{f.desc}</p>
+              <p className="mt-2 text-sm leading-relaxed text-[#5A5A5A]">{f.desc}</p>
               {f.platforms && (
-                <p className="mt-3 text-xs text-zinc-600">{f.platforms}</p>
+                <p className="mt-3 text-xs text-[#969696]">{f.platforms}</p>
               )}
             </div>
           ))}
@@ -105,11 +105,11 @@ export default function Features() {
         <div className="mt-16 text-center">
           <Link
             href="/sign-up"
-            className="inline-block rounded-lg bg-[#EB3514] px-8 py-3.5 text-lg font-semibold text-white transition-opacity hover:opacity-90"
+            className="inline-block rounded-lg bg-[#0A0A0A] px-8 py-3.5 text-lg font-semibold text-white transition-opacity hover:opacity-90"
           >
             Start for Free
           </Link>
-          <p className="mt-3 text-sm text-zinc-500">No credit card required</p>
+          <p className="mt-3 text-sm text-[#969696]">No credit card required</p>
         </div>
       </div>
     </main>

@@ -16,24 +16,24 @@ export default async function DataDeletion({
   const { code } = await searchParams;
 
   return (
-    <main className="bg-[#0a0a0a] text-zinc-100">
-      <nav className="sticky top-0 z-50 border-b border-white/10 bg-[#0a0a0a]/80 backdrop-blur">
+    <main className="text-[#0A0A0A]">
+      <nav className="sticky top-0 z-50 border-b border-[#E8E8E8] bg-white/80 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <Link href="/" className="text-lg font-bold tracking-tight">
             baliyoban
           </Link>
-          <div className="flex items-center gap-6 text-sm text-zinc-400">
-            <Link href="/privacy" className="hover:text-white">Privacy</Link>
-            <Link href="/terms" className="hover:text-white">Terms</Link>
-            <Link href="/data-deletion" className="text-white">Data Deletion</Link>
+          <div className="flex items-center gap-6 text-sm text-[#5A5A5A]">
+            <Link href="/privacy" className="hover:text-[#0A0A0A]">Privacy</Link>
+            <Link href="/terms" className="hover:text-[#0A0A0A]">Terms</Link>
+            <Link href="/data-deletion" className="text-[#0A0A0A]">Data Deletion</Link>
           </div>
         </div>
       </nav>
 
       <div className="mx-auto max-w-3xl px-6 py-16 space-y-10">
-        <div className="space-y-3 border-b border-white/10 pb-8">
+        <div className="space-y-3 border-b border-[#E8E8E8] pb-8">
           <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Data Deletion</h1>
-          <p className="text-sm text-zinc-500">
+          <p className="text-sm text-[#969696]">
             Delete your account and all associated data at any time.
           </p>
         </div>
@@ -50,7 +50,7 @@ export default async function DataDeletion({
           </div>
         )}
 
-        <section className="space-y-3 text-zinc-300 leading-relaxed text-[15px]">
+        <section className="space-y-3 text-[#5A5A5A] leading-relaxed text-[15px]">
           <p>
             You can delete your baliyoban account and all data we hold about you —
             including connected-account tokens, profile information, and your post
@@ -58,8 +58,8 @@ export default async function DataDeletion({
           </p>
         </section>
 
-        <section className="space-y-3 text-zinc-300 leading-relaxed text-[15px]">
-          <h2 className="text-xl font-semibold text-zinc-100">
+        <section className="space-y-3 text-[#5A5A5A] leading-relaxed text-[15px]">
+          <h2 className="text-xl font-semibold text-[#0A0A0A]">
             How to request deletion
           </h2>
           <ol className="list-decimal pl-5 space-y-2">
@@ -71,7 +71,7 @@ export default async function DataDeletion({
             </li>
             <li>
               <strong>By email:</strong> Send a request to{" "}
-              <a href={`mailto:${CONTACT_EMAIL}`} className="text-indigo-400 hover:underline">
+              <a href={`mailto:${CONTACT_EMAIL}`} className="text-[#0A0A0A] hover:underline">
                 {CONTACT_EMAIL}
               </a>{" "}
               from the email address on your account. We complete deletions within
@@ -80,7 +80,7 @@ export default async function DataDeletion({
           </ol>
           <p>
             Removing a connected platform on your{" "}
-            <Link href="/dashboard" className="text-indigo-400 hover:underline">
+            <Link href="/dashboard" className="text-[#0A0A0A] hover:underline">
               dashboard
             </Link>{" "}
             revokes that platform&rsquo;s tokens immediately.

@@ -37,23 +37,23 @@ const ENTRIES = [
 
 export default function Changelog() {
   return (
-    <main className="bg-[#0a0a0a] text-zinc-100">
+    <main className="text-[#0A0A0A]">
       <MarketingNav />
 
       <div className="mx-auto max-w-3xl px-6 py-20">
         <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">Changelog</h1>
-        <p className="mt-4 text-lg text-zinc-400">Product updates and improvements</p>
+        <p className="mt-4 text-lg text-[#5A5A5A]">Product updates and improvements</p>
 
         <div className="mt-12 space-y-12">
           {ENTRIES.map((entry) => (
-            <div key={entry.date} className="relative border-l-2 border-white/[0.06] pl-8">
-              <div className="absolute -left-[9px] top-0 h-4 w-4 rounded-full border-2 border-indigo-500 bg-[#0a0a0a]" />
-              <p className="text-xs font-semibold uppercase tracking-wider text-indigo-400">{entry.date}</p>
-              <h2 className="mt-2 text-xl font-bold text-zinc-100">{entry.title}</h2>
+            <div key={entry.date} className="relative border-l-2 border-[#E8E8E8] pl-8">
+              <div className="absolute -left-[9px] top-0 h-4 w-4 rounded-full border-2 border-[#0A0A0A]" />
+              <p className="text-xs font-semibold uppercase tracking-wider text-[#0A0A0A]">{entry.date}</p>
+              <h2 className="mt-2 text-xl font-bold text-[#0A0A0A]">{entry.title}</h2>
               <ul className="mt-4 space-y-2">
                 {entry.items.map((item) => (
-                  <li key={item} className="flex items-start gap-2 text-sm text-zinc-400">
-                    <span className="mt-1 text-zinc-600">&#8226;</span>
+                  <li key={item} className="flex items-start gap-2 text-sm text-[#5A5A5A]">
+                    <span className="mt-1 text-[#969696]">&#8226;</span>
                     {item}
                   </li>
                 ))}

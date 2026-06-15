@@ -62,7 +62,7 @@ const PLANS = [
 
 export default function Pricing() {
   return (
-    <main className="bg-[#0a0a0a] text-zinc-100">
+    <main className="text-[#0A0A0A]">
       <MarketingNav />
 
       <div className="mx-auto max-w-6xl px-6 py-20">
@@ -70,7 +70,7 @@ export default function Pricing() {
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
             Simple, transparent pricing
           </h1>
-          <p className="mx-auto mt-4 max-w-xl text-lg text-zinc-400">
+          <p className="mx-auto mt-4 max-w-xl text-lg text-[#5A5A5A]">
             Start free. Scale as you grow. No hidden fees.
           </p>
         </div>
@@ -81,25 +81,25 @@ export default function Pricing() {
               key={plan.name}
               className={`rounded-2xl border p-8 ${
                 plan.highlight
-                  ? "border-indigo-500/50 bg-indigo-500/5"
-                  : "border-white/[0.06] bg-white/[0.02]"
+                  ? "border-[#0A0A0A]/20 bg-[#F6F6F6]"
+                  : "border-[#E8E8E8] bg-[#F6F6F6]"
               }`}
             >
               {plan.highlight && (
-                <span className="inline-block rounded-full bg-indigo-500/10 px-3 py-1 text-xs font-semibold text-indigo-400 mb-4">
+                <span className="inline-block rounded-full bg-[#0A0A0A]/10 px-3 py-1 text-xs font-semibold text-[#0A0A0A] mb-4">
                   Most Popular
                 </span>
               )}
-              <h2 className="text-xl font-bold text-zinc-100">{plan.name}</h2>
-              <p className="mt-1 text-sm text-zinc-500">{plan.desc}</p>
+              <h2 className="text-xl font-bold text-[#0A0A0A]">{plan.name}</h2>
+              <p className="mt-1 text-sm text-[#969696]">{plan.desc}</p>
               <div className="mt-4 flex items-baseline gap-1">
-                <span className="text-4xl font-bold text-zinc-100">{plan.price}</span>
-                <span className="text-sm text-zinc-500">{plan.period}</span>
+                <span className="text-4xl font-bold text-[#0A0A0A]">{plan.price}</span>
+                <span className="text-sm text-[#969696]">{plan.period}</span>
               </div>
               <ul className="mt-6 space-y-2.5">
                 {plan.features.map((f) => (
-                  <li key={f} className="flex items-start gap-2 text-sm text-zinc-300">
-                    <span className="mt-0.5 text-indigo-400">&#10003;</span>
+                  <li key={f} className="flex items-start gap-2 text-sm text-[#5A5A5A]">
+                    <span className="mt-0.5 text-[#0A0A0A]">&#10003;</span>
                     {f}
                   </li>
                 ))}
@@ -108,8 +108,8 @@ export default function Pricing() {
                 href="/sign-up"
                 className={`mt-8 block rounded-lg px-4 py-2.5 text-center text-sm font-semibold transition-colors ${
                   plan.highlight
-                    ? "bg-indigo-600 text-white hover:bg-indigo-500"
-                    : "border border-white/10 text-zinc-300 hover:bg-white/[0.04]"
+                    ? "bg-[#0A0A0A] text-white hover:opacity-85"
+                    : "border border-[#E8E8E8] text-[#5A5A5A] hover:bg-[#F6F6F6]"
                 }`}
               >
                 {plan.cta}
@@ -119,8 +119,8 @@ export default function Pricing() {
         </div>
 
         <div className="mt-12 text-center">
-          <p className="text-sm text-zinc-500">
-            Need more? <Link href="/enterprise" className="text-indigo-400 hover:underline">Contact us for Enterprise pricing</Link>.
+          <p className="text-sm text-[#969696]">
+            Need more? <Link href="/enterprise" className="text-[#0A0A0A] hover:underline">Contact us for Enterprise pricing</Link>.
           </p>
         </div>
       </div>

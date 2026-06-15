@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import Link from "next/link";
 import { ClerkProvider } from "@clerk/nextjs";
-import { dark } from "@clerk/themes";
 import "./globals.css";
 
-const geist = Geist({ variable: "--font-geist", subsets: ["latin"] });
+const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
   title: "baliyoban — Social Media API for Developers & AI Agents | 15 Platforms, One Call",
@@ -80,21 +83,20 @@ export default function RootLayout({
       signUpUrl="/sign-up"
       signInFallbackRedirectUrl="/dashboard"
       signUpFallbackRedirectUrl="/dashboard"
-      appearance={{ baseTheme: dark }}
     >
-      <html lang="en" className={`${geist.variable} h-full antialiased`}>
-        <body className="min-h-full flex flex-col bg-[#0a0a0a] text-zinc-100 font-[family-name:var(--font-geist)]">
+      <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable} h-full antialiased`}>
+        <body className="min-h-full flex flex-col bg-white text-[#0A0A0A] font-[family-name:var(--font-inter)]">
           <div className="flex-1 flex flex-col">{children}</div>
-          <footer className="border-t border-white/10 bg-[#0a0a0a]">
+          <footer className="border-t border-[#E8E8E8] bg-white">
             <div className="mx-auto max-w-6xl px-6 py-14">
               <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-6">
                 {Object.entries(FOOTER).map(([heading, links]) => (
                   <div key={heading}>
-                    <h3 className="text-xs font-semibold uppercase tracking-widest text-zinc-500">{heading}</h3>
+                    <h3 className="font-[family-name:var(--font-jetbrains-mono)] text-[11px] font-medium uppercase tracking-[0.04em] text-[#969696]">{heading}</h3>
                     <ul className="mt-4 space-y-2.5 text-sm">
                       {links.map((label) => (
                         <li key={label}>
-                          <Link href={LINK_HREF[label] ?? "#"} className="text-zinc-400 transition-colors hover:text-white">
+                          <Link href={LINK_HREF[label] ?? "#"} className="text-[#5A5A5A] transition-colors hover:text-[#0A0A0A]">
                             {label}
                           </Link>
                         </li>
@@ -103,13 +105,13 @@ export default function RootLayout({
                   </div>
                 ))}
               </div>
-              <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 text-sm text-zinc-500 sm:flex-row">
-                <span className="font-semibold text-zinc-300">baliyoban</span>
+              <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-[#E8E8E8] pt-8 text-sm text-[#969696] sm:flex-row">
+                <span className="font-semibold text-[#0A0A0A]">baliyoban</span>
                 <div className="flex items-center gap-6">
-                  <Link href="/privacy" className="hover:text-white">Privacy</Link>
-                  <Link href="/terms" className="hover:text-white">Terms</Link>
-                  <Link href="/data-deletion" className="hover:text-white">Data Deletion</Link>
-                  <span>© 2026 baliyoban</span>
+                  <Link href="/privacy" className="hover:text-[#0A0A0A]">Privacy</Link>
+                  <Link href="/terms" className="hover:text-[#0A0A0A]">Terms</Link>
+                  <Link href="/data-deletion" className="hover:text-[#0A0A0A]">Data Deletion</Link>
+                  <span>&copy; 2026 baliyoban</span>
                 </div>
               </div>
             </div>
