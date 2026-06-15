@@ -46,7 +46,26 @@ export default function TermsOfService() {
           </p>
         </Section>
 
-        <Section title="3. Your responsibilities">
+        <Section title="3. Eligibility">
+          <p>
+            You must be at least 13 years old to use the Service. If you are
+            under 18, you may only use the Service with the involvement of a
+            parent or legal guardian. By using the Service, you represent that
+            you meet these age requirements.
+          </p>
+        </Section>
+
+        <Section title="4. User content ownership">
+          <p>
+            You retain full ownership of any content you create or publish
+            through the Service. By using baliyoban, you grant us a limited,
+            non-exclusive license to transmit your content to the platforms you
+            select solely to perform the publishing actions you request. We
+            claim no intellectual property rights over your content.
+          </p>
+        </Section>
+
+        <Section title="5. Your responsibilities">
           <ul className="list-disc pl-5 space-y-2">
             <li>
               You must own or be authorized to use every account you connect.
@@ -62,7 +81,7 @@ export default function TermsOfService() {
           </ul>
         </Section>
 
-        <Section title="4. Account access &amp; tokens">
+        <Section title="6. Account access &amp; tokens">
           <p>
             You grant baliyoban permission to act on your behalf on connected
             platforms solely to perform the actions you request. You can revoke
@@ -71,7 +90,7 @@ export default function TermsOfService() {
           </p>
         </Section>
 
-        <Section title="5. Availability &amp; disclaimer">
+        <Section title="7. Availability &amp; disclaimer">
           <p>
             The Service is provided &ldquo;as is&rdquo; without warranties of any
             kind. We do not guarantee that a post will succeed on every platform,
@@ -81,7 +100,7 @@ export default function TermsOfService() {
           </p>
         </Section>
 
-        <Section title="6. Termination">
+        <Section title="8. Termination">
           <p>
             You may stop using the Service and delete your data at any time via
             the{" "}
@@ -92,7 +111,7 @@ export default function TermsOfService() {
           </p>
         </Section>
 
-        <Section title="7. Contact">
+        <Section title="9. Contact">
           <p>
             Questions about these Terms? Email{" "}
             <a href={`mailto:${CONTACT_EMAIL}`} className="text-indigo-400 hover:underline">

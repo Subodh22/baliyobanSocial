@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 };
 
 const CONTACT_EMAIL = "subodhmaharjan3@gmail.com";
-const LAST_UPDATED = "June 8, 2026";
+const LAST_UPDATED = "June 15, 2026";
 
 export default function PrivacyPolicy() {
   return (
@@ -94,6 +94,29 @@ export default function PrivacyPolicy() {
               Data Deletion
             </Link>{" "}
             page. Deletion requests are completed within 30 days.
+          </p>
+        </Section>
+
+        <Section title="Cookies">
+          <p>
+            We use essential cookies for authentication and session management.
+            These cookies are necessary for the Service to function and cannot
+            be disabled. We do not use tracking, analytics, or advertising
+            cookies.
+          </p>
+        </Section>
+
+        <Section title="Children&rsquo;s privacy">
+          <p>
+            Our Service is not directed to children under 13. We do not
+            knowingly collect personal information from children under 13. If
+            we learn that we have collected personal data from a child under 13,
+            we will delete that information promptly. If you believe a child
+            under 13 has provided us with personal data, please contact us at{" "}
+            <a href={`mailto:${CONTACT_EMAIL}`} className="text-indigo-400 hover:underline">
+              {CONTACT_EMAIL}
+            </a>
+            .
           </p>
         </Section>
 
