@@ -11,9 +11,13 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "baliyoban — Social Media API for Developers & AI Agents | 15 Platforms, One Call",
+  title: "baliyoban",
   description:
     "Unified social media API: post, schedule, promote and engage across 15 platforms with one REST call. Free up to 2 accounts. MCP server for AI agents.",
+  icons: {
+    icon: "/favicon.png",
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 const FOOTER = {

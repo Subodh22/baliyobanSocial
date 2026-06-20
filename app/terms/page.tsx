@@ -14,7 +14,8 @@ export default function TermsOfService() {
     <main className="text-[#0A0A0A]">
       <nav className="sticky top-0 z-50 border-b border-[#E8E8E8] bg-white/80 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <Link href="/" className="text-lg font-bold tracking-tight">
+          <Link href="/" className="flex items-center gap-2 text-lg font-bold tracking-tight">
+            <img src="/logo.png" alt="baliyoban" className="h-8 w-8" />
             baliyoban
           </Link>
           <div className="flex items-center gap-6 text-sm text-[#5A5A5A]">
