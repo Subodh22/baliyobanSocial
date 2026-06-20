@@ -20,61 +20,63 @@ export const metadata: Metadata = {
   },
 };
 
-const FOOTER = {
-  PRODUCT: ["Dashboard", "Compose", "Documentation", "Pricing", "Features", "AI Agents", "Sign In", "Sign Up"],
-  INTEGRATIONS: [
-    "Twitter/X", "Instagram", "TikTok", "WhatsApp", "LinkedIn", "Facebook",
-    "YouTube", "Threads", "Reddit", "Pinterest", "Bluesky", "Telegram",
-    "Snapchat", "Google Business", "Discord", "Meta Ads", "Google Ads",
+const FOOTER: Record<string, { label: string; href: string }[]> = {
+  PRODUCT: [
+    { label: "Dashboard", href: "/dashboard" },
+    { label: "Compose", href: "/compose" },
+    { label: "Documentation", href: "/docs" },
+    { label: "Pricing", href: "/pricing" },
+    { label: "Features", href: "/features" },
+    { label: "AI Agents", href: "/ai-agents" },
+    { label: "Sign In", href: "/sign-in" },
+    { label: "Sign Up", href: "/sign-up" },
   ],
-  LEGAL: ["Terms of Service", "Privacy Policy", "Data Deletion", "Content Guidelines"],
-  COMPANY: ["About", "Blog", "Customers", "Careers", "Status"],
-  COMPARISONS: ["vs Buffer", "vs Ayrshare", "vs Blotato", "vs Publer", "vs Postiz", "vs Unipile"],
-  COMMUNITY: ["LinkedIn", "YouTube", "Telegram", "GitHub"],
-} as const;
-
-const LINK_HREF: Record<string, string> = {
-  Dashboard: "/dashboard",
-  Compose: "/compose",
-  Documentation: "/#endpoints",
-  Pricing: "/#pricing",
-  Features: "/#what",
-  "AI Agents": "/#endpoints",
-  "Sign In": "/sign-in",
-  "Sign Up": "/sign-up",
-  "Twitter/X": "/#platforms",
-  Instagram: "/#platforms",
-  TikTok: "/#platforms",
-  WhatsApp: "/#platforms",
-  LinkedIn: "/#platforms",
-  Facebook: "/#platforms",
-  YouTube: "/#platforms",
-  Threads: "/#platforms",
-  Reddit: "/#platforms",
-  Pinterest: "/#platforms",
-  Bluesky: "/#platforms",
-  Telegram: "/#platforms",
-  Snapchat: "/#platforms",
-  "Google Business": "/#platforms",
-  Discord: "/#platforms",
-  "Meta Ads": "/#platforms",
-  "Google Ads": "/#platforms",
-  "Terms of Service": "/terms",
-  "Privacy Policy": "/privacy",
-  "Data Deletion": "/data-deletion",
-  "Content Guidelines": "/terms",
-  About: "/",
-  Blog: "/",
-  Customers: "/",
-  Careers: "/",
-  Status: "/",
-  "vs Buffer": "/",
-  "vs Ayrshare": "/",
-  "vs Blotato": "/",
-  "vs Publer": "/",
-  "vs Postiz": "/",
-  "vs Unipile": "/",
-  GitHub: "/docs",
+  INTEGRATIONS: [
+    { label: "Twitter/X", href: "/integrations/twitter" },
+    { label: "Instagram", href: "/integrations/instagram" },
+    { label: "TikTok", href: "/integrations/tiktok" },
+    { label: "WhatsApp", href: "/integrations/whatsapp" },
+    { label: "LinkedIn", href: "/integrations/linkedin" },
+    { label: "Facebook", href: "/integrations/facebook" },
+    { label: "YouTube", href: "/integrations/youtube" },
+    { label: "Threads", href: "/integrations/threads" },
+    { label: "Reddit", href: "/integrations/reddit" },
+    { label: "Pinterest", href: "/integrations/pinterest" },
+    { label: "Bluesky", href: "/integrations/bluesky" },
+    { label: "Telegram", href: "/integrations/telegram" },
+    { label: "Snapchat", href: "/integrations/snapchat" },
+    { label: "Google Business", href: "/integrations/google-business" },
+    { label: "Discord", href: "/integrations/discord" },
+    { label: "Meta Ads", href: "/integrations/meta-ads" },
+    { label: "Google Ads", href: "/integrations/google-ads" },
+  ],
+  LEGAL: [
+    { label: "Terms of Service", href: "/terms" },
+    { label: "Privacy Policy", href: "/privacy" },
+    { label: "Data Deletion", href: "/data-deletion" },
+    { label: "Content Guidelines", href: "/content-guidelines" },
+  ],
+  COMPANY: [
+    { label: "About", href: "/about" },
+    { label: "Blog", href: "/blog" },
+    { label: "Customers", href: "/customers" },
+    { label: "Careers", href: "/careers" },
+    { label: "Status", href: "/status" },
+  ],
+  COMPARISONS: [
+    { label: "vs Buffer", href: "/compare/buffer" },
+    { label: "vs Ayrshare", href: "/compare/ayrshare" },
+    { label: "vs Blotato", href: "/compare/blotato" },
+    { label: "vs Publer", href: "/compare/publer" },
+    { label: "vs Postiz", href: "/compare/postiz" },
+    { label: "vs Unipile", href: "/compare/unipile" },
+  ],
+  COMMUNITY: [
+    { label: "LinkedIn", href: "https://linkedin.com/company/baliyoban" },
+    { label: "YouTube", href: "https://youtube.com/@baliyoban" },
+    { label: "Telegram", href: "https://t.me/baliyoban" },
+    { label: "GitHub", href: "https://github.com/baliyoban" },
+  ],
 };
 
 export default function RootLayout({
@@ -98,10 +100,10 @@ export default function RootLayout({
                   <div key={heading}>
                     <h3 className="font-[family-name:var(--font-jetbrains-mono)] text-[11px] font-medium uppercase tracking-[0.04em] text-[#969696]">{heading}</h3>
                     <ul className="mt-4 space-y-2.5 text-sm">
-                      {links.map((label) => (
-                        <li key={label}>
-                          <Link href={LINK_HREF[label] ?? "#"} className="text-[#5A5A5A] transition-colors hover:text-[#0A0A0A]">
-                            {label}
+                      {links.map((item) => (
+                        <li key={item.label}>
+                          <Link href={item.href} className="text-[#5A5A5A] transition-colors hover:text-[#0A0A0A]">
+                            {item.label}
                           </Link>
                         </li>
                       ))}
