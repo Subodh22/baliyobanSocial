@@ -49,3 +49,6 @@ next-env.d.ts
 /app/generated/prisma
 
 .worktrees/
+
+# claude code attachments
+_factory_*
