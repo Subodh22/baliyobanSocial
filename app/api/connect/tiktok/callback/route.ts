@@ -123,6 +123,11 @@ export async function GET(req: NextRequest) {
       data: accountData,
     });
   } else {
+    // Remove any stale row from a previous user that holds the same provider +
+    // providerAccountId to avoid a UNIQUE constraint error.
+    await prisma.account.deleteMany({
+      where: { provider: "tiktok", providerAccountId: openId, userId: { not: userId } },
+    });
     await prisma.account.create({
       data: {
         userId,

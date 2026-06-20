@@ -75,6 +75,9 @@ export async function GET(req: NextRequest) {
       },
     });
   } else {
+    await prisma.account.deleteMany({
+      where: { provider: "twitter", providerAccountId: String(twitterId), userId: { not: userId } },
+    });
     await prisma.account.create({
       data: { userId, type: "oauth", provider: "twitter", ...accountData },
     });

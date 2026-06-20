@@ -95,6 +95,9 @@ export async function GET(req: NextRequest) {
   if (existing) {
     await prisma.account.update({ where: { id: existing.id }, data: accountData });
   } else {
+    await prisma.account.deleteMany({
+      where: { provider: "facebook", providerAccountId: me.id as string, userId: { not: userId } },
+    });
     await prisma.account.create({
       data: { userId, type: "oauth", provider: "facebook", ...accountData },
     });

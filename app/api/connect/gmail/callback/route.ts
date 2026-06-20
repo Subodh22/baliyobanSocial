@@ -60,6 +60,9 @@ export async function GET(req: NextRequest) {
       data: { ...accountData, refresh_token: accountData.refresh_token ?? existing.refresh_token },
     });
   } else {
+    await prisma.account.deleteMany({
+      where: { provider: "gmail", providerAccountId: info.id, userId: { not: userId } },
+    });
     await prisma.account.create({
       data: { userId, type: "oauth", provider: "gmail", ...accountData },
     });
