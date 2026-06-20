@@ -16,6 +16,15 @@ export async function ensureUser() {
   const existing = await prisma.user.findUnique({ where: { id: user.id } });
 
   if (!existing || existing.email !== email || existing.name !== name || existing.image !== image) {
+    // If a stale User row holds the same email (e.g. the user re-registered
+    // with a new Clerk ID), clear it first to avoid a UNIQUE constraint error.
+    if (email && !existing) {
+      await prisma.user.updateMany({
+        where: { email, id: { not: user.id } },
+        data: { email: null },
+      });
+    }
+
     await prisma.user.upsert({
       where: { id: user.id },
       update: { email, name, image },
